@@ -86,7 +86,7 @@ def run():
 
 	window = sdl2.ext.Window("Hello world!", size=WINSIZE, position=None, flags=sdl2.SDL_WINDOW_SHOWN)
 
-	renderer = sdl2.ext.Renderer(window)
+	renderer = sdl2.ext.Renderer(window, index=-1, logical_size=None, flags=sdl2.SDL_RENDERER_ACCELERATED|sdl2.SDL_RENDERER_PRESENTVSYNC)
 	# factory = sdl2.ext.SpriteFactory(sdl2.ext.TEXTURE, renderer=renderer)
 	# spriterenderer = sdl2.ext.TextureSpriteRenderSystem(renderer)
 
@@ -126,7 +126,7 @@ def run():
 		ball.render(renderer)
 		renderer.present()
 
-		ball.update(0.5)
+		ball.update(2.5)
 
 	sdl2.ext.quit()
 	return 0
