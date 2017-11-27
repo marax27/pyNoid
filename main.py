@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import sys
+import math
 import sdl2.ext
 
 level = [
@@ -47,14 +48,20 @@ class Palette:
 """Ball class"""
 class Ball:
 	RADIUS = 15
+	SPEED = (1.0, -1.0)
 
 	def __init__(self, x, y):
 		self.x = x
 		self.y = y
 	
 	def render(self, renderer):
-		renderer.draw_line((self.x - self.RADIUS, self.y, self.x + self.RADIUS, self.y), (0xff, 0xff, 0xff, 0xff))
-		renderer.draw_line((self.x, self.y - self.RADIUS, self.x, self.y + self.RADIUS), (0xff, 0xff, 0xff, 0xff))
+		_x, _y = int(self.x), int(self.y)
+		renderer.draw_line((_x - self.RADIUS, _y, _x + self.RADIUS, _y), (0xff, 0xff, 0xff, 0xff))
+		renderer.draw_line((_x, _y - self.RADIUS, _x, _y + self.RADIUS), (0xff, 0xff, 0xff, 0xff))
+
+	def update(self, dt):
+		self.x += self.SPEED[0] * dt
+		self.y += self.SPEED[1] * dt
 
 #------------------------------
 def brickToScreenCoords(x, y):
@@ -118,6 +125,8 @@ def run():
 		renderer.fill(palette.rect(), palette.COLOR)
 		ball.render(renderer)
 		renderer.present()
+
+		ball.update(0.5)
 
 	sdl2.ext.quit()
 	return 0
