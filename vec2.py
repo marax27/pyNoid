@@ -42,7 +42,7 @@ class vec2(object):
 		"""__mul__ equivalent when expression looks like 'scalar * vector'"""
 		return self.__mul__(scalar)
 
-	def __div__(self, scalar):
+	def __truediv__(self, scalar):
 		"""Vector division."""
 		return vec2(self.x / scalar, self.y / scalar)
 
