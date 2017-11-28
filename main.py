@@ -4,6 +4,8 @@ import sys
 import math
 import sdl2.ext
 
+import vec2
+
 level = [
 	[0, 1, 1, 1, 2],
 	[0, 0, 2, 0, 0],
@@ -48,11 +50,14 @@ class Palette:
 """Ball class"""
 class Ball:
 	RADIUS = 15
-	SPEED = (1.0, -1.0)
+	SPEED = 3.0
 
-	def __init__(self, x, y):
+	def __init__(self, x, y, binding=None):
 		self.x = x
 		self.y = y
+		self.velocity = 0.0, 0.0
+		self.binding = binding  # If a ball lies upon a palette, binding represents
+		                        # the palette. If ball flies, binding=None.
 	
 	def render(self, renderer):
 		_x, _y = int(self.x), int(self.y)
@@ -60,8 +65,11 @@ class Ball:
 		renderer.draw_line((_x, _y - self.RADIUS, _x, _y + self.RADIUS), (0xff, 0xff, 0xff, 0xff))
 
 	def update(self, dt):
-		self.x += self.SPEED[0] * dt
-		self.y += self.SPEED[1] * dt
+		if self.attached is None:
+			self.x += self.SPEED[0] * dt
+			self.y += self.SPEED[1] * dt
+		else:
+
 
 #------------------------------
 def brickToScreenCoords(x, y):
