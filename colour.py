@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 
 class Colour:
-	"""Contains RGB definitions of several colours and some
-	helper functions. Should ease a use of colours in rendering
-	functions and so forth."""
+	"""Contains RGB definitions of several colours,
+	as well as helper functions.
+	Should ease a use of colours in rendering functions and so forth."""
 
 	# Color definitions.
 	White = 0xff, 0xff, 0xff, 0xff
