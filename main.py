@@ -25,6 +25,8 @@ LOWER_MARGIN = 80
 ADDITIONAL = (SIDE_MARGIN*2, UPPER_MARGIN+LOWER_MARGIN)  # Since window contains not only bricks.
 WINSIZE = (BRICKSIZE[0]*TILES[0] + ADDITIONAL[0], BRICKSIZE[1]*TILES[1] + ADDITIONAL[1])  # Total window size.
 
+RESOURCES = sdl2.ext.Resources(__file__, "resources")
+
 """Palette class"""
 class Palette:
 	HEIGHT = 30
@@ -58,7 +60,8 @@ class Ball:
 		self.velocity = 0.0, 0.0
 		self.binding = binding  # If a ball lies upon a palette, binding represents
 		                        # the palette. If ball flies, binding=None.
-	
+		self.attached = None
+
 	def render(self, renderer):
 		_x, _y = int(self.x), int(self.y)
 		renderer.draw_line((_x - self.RADIUS, _y, _x + self.RADIUS, _y), (0xff, 0xff, 0xff, 0xff))
@@ -66,10 +69,10 @@ class Ball:
 
 	def update(self, dt):
 		if self.attached is None:
-			self.x += self.SPEED[0] * dt
-			self.y += self.SPEED[1] * dt
+			self.x += dt * 5
+			self.y += dt * 5
 		else:
-
+			pass
 
 #------------------------------
 def brickToScreenCoords(x, y):
@@ -88,15 +91,21 @@ def drawGrid(renderer, color=(0x44, 0x44, 0x44, 0xff)):
 			renderer.draw_rect( brickCoordsToRect(i, j) )
 #------------------------------
 
+def loadTextures(sprite_factory):
+	result = {}
+	result["standard"] = sprite_factory.from_image(RESOURCES.get_path("brick.bmp"))
+	result["invulnerable"] = sprite_factory.from_image(RESOURCES.get_path("invulnerable.bmp"))
+	return result
+
 def run():
 	sdl2.ext.init()
-	RESOURCES = sdl2.ext.Resources(__file__, "resources")
 
 	window = sdl2.ext.Window("Hello world!", size=WINSIZE, position=None, flags=sdl2.SDL_WINDOW_SHOWN)
 
 	renderer = sdl2.ext.Renderer(window, index=-1, logical_size=None, flags=sdl2.SDL_RENDERER_ACCELERATED|sdl2.SDL_RENDERER_PRESENTVSYNC)
-	# factory = sdl2.ext.SpriteFactory(sdl2.ext.TEXTURE, renderer=renderer)
-	# spriterenderer = sdl2.ext.TextureSpriteRenderSystem(renderer)
+	factory = sdl2.ext.SpriteFactory(sdl2.ext.TEXTURE, renderer=renderer)
+	spriterenderer = sdl2.ext.TextureSpriteRenderSystem(renderer)
+	textures = loadTextures(factory)
 
 	palette = Palette()
 	ball = Ball(WINSIZE[0]//2, WINSIZE[1] - 80)
@@ -125,10 +134,13 @@ def run():
 
 		for i,tab in enumerate(level):
 			for j,_id in enumerate(tab):
+				dest = brickCoordsToRect(i, j)
 				if _id == 1:
-					renderer.fill(brickCoordsToRect(i, j), BRICK_COLOUR)
+					#renderer.fill(brickCoordsToRect(i, j), BRICK_COLOUR)
+					renderer.copy(textures["standard"], None, dest)
 				elif _id == 2:
-					renderer.fill(brickCoordsToRect(i, j), INVUL_COLOUR)
+					#renderer.fill(brickCoordsToRect(i, j), INVUL_COLOUR)
+					renderer.copy(textures["invulnerable"], None, dest)					
 		
 		renderer.fill(palette.rect(), palette.COLOR)
 		ball.render(renderer)
