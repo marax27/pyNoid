@@ -23,17 +23,17 @@ level_data = [
 
 #------------------------------
 
-def brickToScreenCoords(pos):
+def brickToScreenCoords(x, y):
 	"""Turn brick's position into window pixel coordinates."""
-	return pos.x * BRICKSIZE.x + SIDE_MARGIN, pos.y * BRICKSIZE.y + UPPER_MARGIN
+	return x * BRICKSIZE.x + SIDE_MARGIN, y * BRICKSIZE.y + UPPER_MARGIN
 
 # def physicalToScreenCoords(x, y):
 	# """Turn physical coordinates into window pixel coordinates. Designed for objects such as ball or bonuses."""
 	# return NotImplemented
 
-def brickCoordsToRect(pos):
+def brickCoordsToRect(x, y):
 	"""Returns x-, y-position, width, height of a specific brick."""
-	return brickToScreenCoords(pos) + tuple(BRICKSIZE)
+	return brickToScreenCoords(x, y) + tuple(BRICKSIZE)
 
 #------------------------------
 
@@ -44,7 +44,7 @@ def drawGrid(renderer, color=(0x44, 0x44, 0x44, 0xff)):
 	renderer.color = color
 	for i in range(TILES.x):
 		for j in range(0, TILES.y):
-			renderer.draw_rect( brickCoordsToRect(vec2(i, j)) )
+			renderer.draw_rect( brickCoordsToRect(i, j) )
 
 def dissectWindow(renderer):
 	drawGrid(renderer)
@@ -66,6 +66,8 @@ def loadTextures(renderer):
 	#result["palette"] = sprite_factory.from_image(RESOURCES.get_path("palette.bmp"))
 	Palette.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("palette.bmp"))
 
+	Ball.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("ball.png"))
+
 	return result
 
 def run():
@@ -79,6 +81,7 @@ def run():
 	textures = loadTextures(renderer)
 
 	palette = Palette()
+	ball = Ball(vec2(200, 400), vec2(0, 0))
 
 	# Main loop.
 	is_open = True
@@ -93,9 +96,9 @@ def run():
 			elif e.type == sdl2.SDL_KEYDOWN:
 				key = e.key.keysym.sym
 				if key == sdl2.SDLK_LEFT:
-					pass
+					palette.move(-1)
 				elif key == sdl2.SDLK_RIGHT:
-					pass
+					palette.move(+1)
 				elif key == sdl2.SDLK_ESCAPE:
 					is_open = False
 				break
@@ -106,13 +109,14 @@ def run():
 
 		for i,tab in enumerate(level_data):
 			for j,_id in enumerate(tab):
-				dest = brickCoordsToRect(vec2(j, i))
+				dest = brickCoordsToRect(j, i)
 				if _id == 1:
 					renderer.copy(textures["standard"], None, dest)
 				elif _id == 2:
 					renderer.copy(textures["invulnerable"], None, dest)					
 		
 		palette.render(renderer)
+		ball.render(renderer)
 		renderer.present()
 
 	sdl2.ext.quit()

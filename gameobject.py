@@ -13,7 +13,7 @@ class PhysicalObject(GameObject):
 	def __init__(self, position, velocity):
 		super().__init__(position)
 		self.velocity = velocity
-
+	
 class Palette(GameObject):
 	"""Palette representation."""
 	TEXTURE = None
@@ -38,27 +38,23 @@ class Palette(GameObject):
 		if self.TEXTURE is not None:
 			renderer.copy(self.TEXTURE, None, vectorsToTuple(self.position, self.SIZE))
 
-class Ball:
+class Ball(PhysicalObject):
 	"""Ball class"""
+	TEXTURE = None
 	RADIUS = 15
 	SPEED = 3.0
 
-	def __init__(self, x, y, binding=None):
-		self.x = x
-		self.y = y
-		self.velocity = 0.0, 0.0
+	def __init__(self, position, velocity, binding=None):
+		super().__init__(position, velocity) 
 		self.binding = binding  # If a ball lies upon a palette, binding represents
 		                        # the palette. If ball flies, binding=None.
-		self.attached = None
 
 	def render(self, renderer):
-		_x, _y = int(self.x), int(self.y)
-		renderer.draw_line((_x - self.RADIUS, _y, _x + self.RADIUS, _y), (0xff, 0xff, 0xff, 0xff))
-		renderer.draw_line((_x, _y - self.RADIUS, _x, _y + self.RADIUS), (0xff, 0xff, 0xff, 0xff))
+		t = self.position.x, self.position.y, 2*self.RADIUS, 2*self.RADIUS
+		renderer.copy(self.TEXTURE, None, t )
+		#_x, _y = int(self.x), int(self.y)
+		#renderer.draw_line((_x - self.RADIUS, _y, _x + self.RADIUS, _y), (0xff, 0xff, 0xff, 0xff))
+		#renderer.draw_line((_x, _y - self.RADIUS, _x, _y + self.RADIUS), (0xff, 0xff, 0xff, 0xff))
 
 	def update(self, dt):
-		if self.attached is None:
-			self.x += dt * 5
-			self.y += dt * 5
-		else:
-			pass
+		pass
