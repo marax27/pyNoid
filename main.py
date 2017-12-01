@@ -5,7 +5,7 @@ import math
 import sdl2.ext
 from colour import Colour
 from constants import *
-#import gameobject
+from gameobject import Ball, Palette
 
 from vec2 import vec2
 
@@ -27,9 +27,9 @@ def brickToScreenCoords(pos):
 	"""Turn brick's position into window pixel coordinates."""
 	return pos.x * BRICKSIZE.x + SIDE_MARGIN, pos.y * BRICKSIZE.y + UPPER_MARGIN
 
-def physicalToScreenCoords(x, y):
-	"""Turn physical coordinates into window pixel coordinates. Designed for objects such as ball or bonuses."""
-	return NotImplemented
+# def physicalToScreenCoords(x, y):
+	# """Turn physical coordinates into window pixel coordinates. Designed for objects such as ball or bonuses."""
+	# return NotImplemented
 
 def brickCoordsToRect(pos):
 	"""Returns x-, y-position, width, height of a specific brick."""
@@ -62,6 +62,10 @@ def loadTextures(renderer):
 	result = {}
 	result["standard"] = sprite_factory.from_image(RESOURCES.get_path("brick.bmp"))
 	result["invulnerable"] = sprite_factory.from_image(RESOURCES.get_path("invulnerable.bmp"))
+
+	#result["palette"] = sprite_factory.from_image(RESOURCES.get_path("palette.bmp"))
+	Palette.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("palette.bmp"))
+
 	return result
 
 def run():
@@ -73,6 +77,8 @@ def run():
 
 	spriterenderer = sdl2.ext.TextureSpriteRenderSystem(renderer)
 	textures = loadTextures(renderer)
+
+	palette = Palette()
 
 	# Main loop.
 	is_open = True
@@ -90,7 +96,7 @@ def run():
 					pass
 				elif key == sdl2.SDLK_RIGHT:
 					pass
-				elif key in sdl2.SDLK_ESCAPE:
+				elif key == sdl2.SDLK_ESCAPE:
 					is_open = False
 				break
 
@@ -106,6 +112,7 @@ def run():
 				elif _id == 2:
 					renderer.copy(textures["invulnerable"], None, dest)					
 		
+		palette.render(renderer)
 		renderer.present()
 
 	sdl2.ext.quit()

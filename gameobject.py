@@ -1,29 +1,45 @@
 #!/usr/bin/python3
 
-"""Palette class"""
-class Palette:
-	HEIGHT = 30
-	COLOR = (0x77, 0x77, 0x77, 0xff)
+from vec2 import *
+from constants import WINDOW_SIZE
+
+class GameObject:
+	"""GameObject - base class for many game objects (duh)."""
+	def __init__(self, position):
+		self.position = position
+
+class PhysicalObject(GameObject):
+	"""PhysicalObject - base class for bonuses and balls."""
+	def __init__(self, position, velocity):
+		super().__init__(position)
+		self.velocity = velocity
+
+class Palette(GameObject):
+	"""Palette representation."""
+	TEXTURE = None
+	SIZE = vec2(200, 30)
 	SPEED = 20
 
 	def __init__(self):
-		self.x = int(WINDOW_SIZE[0] * 0.25)
-		self.y = WINDOW_SIZE[1] - self.HEIGHT - 10
-		self.width = 200
-	
-	def rect(self):
-		return self.x, self.y, self.width, self.HEIGHT
+		super().__init__(vec2(
+			self.SIZE.x // 2,
+			WINDOW_SIZE.y - self.SIZE.y - 10
+		))
 
-	def move(self, direction):
-		new_x = self.x + direction * self.SPEED
+	def move(self, offset):
+		new_x = self.position.x + offset * self.SPEED
 		if new_x < 0:
 			new_x = 0
-		elif new_x >= WINDOW_SIZE[0] - self.width:
-			new_x = WINDOW_SIZE[0] - self.width
-		self.x = new_x
+		elif new_x >= WINDOW_SIZE.x - self.SIZE.x:
+			new_x = WINDOW_SIZE.x - self.SIZE.x
+		self.position.x = new_x
+	
+	def render(self, renderer):
+		if self.TEXTURE is not None:
+			renderer.copy(self.TEXTURE, None, vectorsToTuple(self.position, self.SIZE))
 
-"""Ball class"""
 class Ball:
+	"""Ball class"""
 	RADIUS = 15
 	SPEED = 3.0
 

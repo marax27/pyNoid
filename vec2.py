@@ -49,3 +49,7 @@ class vec2(object):
 	def __neg__(self):
 		"""Equivalent of -1 * vector"""
 		return vec2(-self.x, -self.y)
+
+# Other functions.
+def vectorsToTuple(v1, v2):
+	return tuple(v1) + tuple(v2)
