@@ -4,27 +4,12 @@ import sys
 import math
 import sdl2.ext
 from colour import Colour
+from constants import *
 
 import vec2
 
-level = [
-	[0, 1, 1, 1, 2],
-	[0, 0, 2, 0, 0],
-	[0, 2, 0, 2, 0],
-	[0, 1, 2, 1, 0]
-]
-
 BRICK_COLOUR = (0x22, 0x22, 0x99, 0xff)
 INVUL_COLOUR = (0xf4, 0xbf, 0x42, 0xff)
-
-TILES = (15, 20)  # How many tiles/bricks should fit into a window.
-BRICKSIZE = (85, 30)  # Size (in pixels) of a single brick.
-SIDE_MARGIN = BRICKSIZE[0]  # Left and right side of the brick field.
-UPPER_MARGIN = 80
-LOWER_MARGIN = 80
-
-ADDITIONAL = (SIDE_MARGIN*2, UPPER_MARGIN+LOWER_MARGIN)  # Since window contains not only bricks.
-WINSIZE = (BRICKSIZE[0]*TILES[0] + ADDITIONAL[0], BRICKSIZE[1]*TILES[1] + ADDITIONAL[1])  # Total window size.
 
 RESOURCES = sdl2.ext.Resources(__file__, "resources")
 
@@ -35,8 +20,8 @@ class Palette:
 	SPEED = 20
 
 	def __init__(self):
-		self.x = int(WINSIZE[0] * 0.25)
-		self.y = WINSIZE[1] - self.HEIGHT - 10
+		self.x = int(WINDOW_SIZE[0] * 0.25)
+		self.y = WINDOW_SIZE[1] - self.HEIGHT - 10
 		self.width = 200
 	
 	def rect(self):
@@ -46,8 +31,8 @@ class Palette:
 		new_x = self.x + direction * self.SPEED
 		if new_x < 0:
 			new_x = 0
-		elif new_x >= WINSIZE[0] - self.width:
-			new_x = WINSIZE[0] - self.width
+		elif new_x >= WINDOW_SIZE[0] - self.width:
+			new_x = WINDOW_SIZE[0] - self.width
 		self.x = new_x
 
 """Ball class"""
@@ -101,15 +86,15 @@ def loadTextures(sprite_factory):
 def run():
 	sdl2.ext.init()
 
-	window = sdl2.ext.Window("Hello world!", size=WINSIZE, position=None, flags=sdl2.SDL_WINDOW_SHOWN)
+	window = sdl2.ext.Window("Hello world!", size=tuple(WINDOW_SIZE), position=None, flags=sdl2.SDL_WINDOW_SHOWN)
 
-	renderer = sdl2.ext.Renderer(window, index=-1, logical_size=None, flags=sdl2.SDL_RENDERER_ACCELERATED|sdl2.SDL_RENDERER_PRESENTVSYNC)
+	renderer = sdl2.ext.Renderer(window, flags=sdl2.SDL_RENDERER_ACCELERATED|sdl2.SDL_RENDERER_PRESENTVSYNC)
 	factory = sdl2.ext.SpriteFactory(sdl2.ext.TEXTURE, renderer=renderer)
 	spriterenderer = sdl2.ext.TextureSpriteRenderSystem(renderer)
 	textures = loadTextures(factory)
 
 	palette = Palette()
-	ball = Ball(WINSIZE[0]//2, WINSIZE[1] - 80)
+	ball = Ball(WINDOW_SIZE[0]//2, WINDOW_SIZE[1] - 80)
 
 	is_open = True
 	while is_open:
