@@ -5,99 +5,80 @@ import math
 import sdl2.ext
 from colour import Colour
 from constants import *
+#import gameobject
 
-import vec2
+from vec2 import vec2
 
 BRICK_COLOUR = (0x22, 0x22, 0x99, 0xff)
 INVUL_COLOUR = (0xf4, 0xbf, 0x42, 0xff)
 
 RESOURCES = sdl2.ext.Resources(__file__, "resources")
 
-"""Palette class"""
-class Palette:
-	HEIGHT = 30
-	COLOR = (0x77, 0x77, 0x77, 0xff)
-	SPEED = 20
-
-	def __init__(self):
-		self.x = int(WINDOW_SIZE[0] * 0.25)
-		self.y = WINDOW_SIZE[1] - self.HEIGHT - 10
-		self.width = 200
-	
-	def rect(self):
-		return self.x, self.y, self.width, self.HEIGHT
-
-	def move(self, direction):
-		new_x = self.x + direction * self.SPEED
-		if new_x < 0:
-			new_x = 0
-		elif new_x >= WINDOW_SIZE[0] - self.width:
-			new_x = WINDOW_SIZE[0] - self.width
-		self.x = new_x
-
-"""Ball class"""
-class Ball:
-	RADIUS = 15
-	SPEED = 3.0
-
-	def __init__(self, x, y, binding=None):
-		self.x = x
-		self.y = y
-		self.velocity = 0.0, 0.0
-		self.binding = binding  # If a ball lies upon a palette, binding represents
-		                        # the palette. If ball flies, binding=None.
-		self.attached = None
-
-	def render(self, renderer):
-		_x, _y = int(self.x), int(self.y)
-		renderer.draw_line((_x - self.RADIUS, _y, _x + self.RADIUS, _y), (0xff, 0xff, 0xff, 0xff))
-		renderer.draw_line((_x, _y - self.RADIUS, _x, _y + self.RADIUS), (0xff, 0xff, 0xff, 0xff))
-
-	def update(self, dt):
-		if self.attached is None:
-			self.x += dt * 5
-			self.y += dt * 5
-		else:
-			pass
+level_data = [
+	[0, 0, 1, 1, 0, 1, 1],
+	[0, 1, 1, 2, 1, 2, 0],
+	[1, 1, 2, 1, 2, 1, 1],
+	[1, 1, 2, 1, 2, 1, 1]
+]
 
 #------------------------------
-def brickToScreenCoords(x, y):
-	return x * BRICKSIZE[0] + SIDE_MARGIN, y * BRICKSIZE[1] + UPPER_MARGIN
+
+def brickToScreenCoords(pos):
+	"""Turn brick's position into window pixel coordinates."""
+	return pos.x * BRICKSIZE.x + SIDE_MARGIN, pos.y * BRICKSIZE.y + UPPER_MARGIN
 
 def physicalToScreenCoords(x, y):
+	"""Turn physical coordinates into window pixel coordinates. Designed for objects such as ball or bonuses."""
 	return NotImplemented
+
+def brickCoordsToRect(pos):
+	"""Returns x-, y-position, width, height of a specific brick."""
+	return brickToScreenCoords(pos) + tuple(BRICKSIZE)
+
 #------------------------------
-def brickCoordsToRect(x, y):
-	return brickToScreenCoords(x, y) + BRICKSIZE
+
+# Mainly-debug stuff.
 
 def drawGrid(renderer, color=(0x44, 0x44, 0x44, 0xff)):
+	"""Mainly for debugging purposes."""
 	renderer.color = color
-	for i in range(0, TILES[0]):
-		for j in range(0, TILES[1]):
-			renderer.draw_rect( brickCoordsToRect(i, j) )
+	for i in range(TILES.x):
+		for j in range(0, TILES.y):
+			renderer.draw_rect( brickCoordsToRect(vec2(i, j)) )
+
+def dissectWindow(renderer):
+	drawGrid(renderer)
+
+	#renderer.draw_rect( (0, 0, SIDE_MARGIN, WINDOW_SIZE.y) )
+	#renderer.draw_rect( (WINDOW_SIZE.x-SIDE_MARGIN, 0, SIDE_MARGIN, WINDOW_SIZE.y) )
+
+	renderer.draw_rect( (0, 0, WINDOW_SIZE.x, UPPER_MARGIN) )
+	renderer.draw_rect( (0, WINDOW_SIZE.y-LOWER_MARGIN, WINDOW_SIZE.x, LOWER_MARGIN) )
+
 #------------------------------
 
-def loadTextures(sprite_factory):
+def loadTextures(renderer):
+	sprite_factory = sdl2.ext.SpriteFactory(sdl2.ext.TEXTURE, renderer=renderer)
 	result = {}
 	result["standard"] = sprite_factory.from_image(RESOURCES.get_path("brick.bmp"))
 	result["invulnerable"] = sprite_factory.from_image(RESOURCES.get_path("invulnerable.bmp"))
 	return result
 
 def run():
+	# Initialization.
 	sdl2.ext.init()
 
-	window = sdl2.ext.Window("Hello world!", size=tuple(WINDOW_SIZE), position=None, flags=sdl2.SDL_WINDOW_SHOWN)
-
+	window = sdl2.ext.Window("pyNoid", size=tuple(WINDOW_SIZE), position=None, flags=sdl2.SDL_WINDOW_SHOWN)
 	renderer = sdl2.ext.Renderer(window, flags=sdl2.SDL_RENDERER_ACCELERATED|sdl2.SDL_RENDERER_PRESENTVSYNC)
-	factory = sdl2.ext.SpriteFactory(sdl2.ext.TEXTURE, renderer=renderer)
+
 	spriterenderer = sdl2.ext.TextureSpriteRenderSystem(renderer)
-	textures = loadTextures(factory)
+	textures = loadTextures(renderer)
 
-	palette = Palette()
-	ball = Ball(WINDOW_SIZE[0]//2, WINDOW_SIZE[1] - 80)
-
+	# Main loop.
 	is_open = True
 	while is_open:
+
+		# Event loop.
 		events = sdl2.ext.get_events()
 		for e in events:
 			if e.type == sdl2.SDL_QUIT:
@@ -106,33 +87,26 @@ def run():
 			elif e.type == sdl2.SDL_KEYDOWN:
 				key = e.key.keysym.sym
 				if key == sdl2.SDLK_LEFT:
-					palette.move(-1)
+					pass
 				elif key == sdl2.SDLK_RIGHT:
-					palette.move(+1)
-				elif key == sdl2.SDLK_ESCAPE:
+					pass
+				elif key in sdl2.SDLK_ESCAPE:
 					is_open = False
 				break
 
 		renderer.clear(color=(0, 0, 0, 0xff))		
-		#spriterenderer.render(brick_sprite)
 
-		drawGrid(renderer)
+		dissectWindow(renderer)
 
-		for i,tab in enumerate(level):
+		for i,tab in enumerate(level_data):
 			for j,_id in enumerate(tab):
-				dest = brickCoordsToRect(i, j)
+				dest = brickCoordsToRect(vec2(j, i))
 				if _id == 1:
-					#renderer.fill(brickCoordsToRect(i, j), BRICK_COLOUR)
 					renderer.copy(textures["standard"], None, dest)
 				elif _id == 2:
-					#renderer.fill(brickCoordsToRect(i, j), INVUL_COLOUR)
 					renderer.copy(textures["invulnerable"], None, dest)					
 		
-		renderer.fill(palette.rect(), palette.COLOR)
-		ball.render(renderer)
 		renderer.present()
-
-		ball.update(2.5)
 
 	sdl2.ext.quit()
 	return 0
