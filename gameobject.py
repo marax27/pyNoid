@@ -73,16 +73,17 @@ class Ball(PhysicalObject):
 	"""Ball class"""
 	TEXTURE = None
 	RADIUS = 15
-	SPEED = 3.0
+	SPEED = 6.0
 
 	def __init__(self, position, velocity, binding=None):
-		super().__init__(position, velocity) 
+		super().__init__(position, self.SPEED * velocity.normalized()) 
 		self.binding = binding  # If a ball lies upon a palette, binding represents
 		                        # the palette. If ball flies, binding=None.
 
 	def render(self, renderer):
-		t = self.position.x, self.position.y, 2*self.RADIUS, 2*self.RADIUS
+		p = self.position
+		t = int(p.x), int(p.y), 2*self.RADIUS, 2*self.RADIUS
 		renderer.copy(self.TEXTURE, None, t )
 
-	def update(self, dt):
-		pass
+	def update(self):
+		self.position += self.velocity * DELTA_T

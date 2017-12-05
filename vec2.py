@@ -16,6 +16,8 @@ class vec2(object):
 	def normalized(self):
 		"""Returns a normalized unit vector."""
 		length = self.length()
+		if length == 0.0:
+			return self
 		return vec2(self.x / length, self.y / length)
 
 	def __getitem__(self, key):

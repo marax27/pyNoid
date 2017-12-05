@@ -33,25 +33,19 @@ def dissectWindow(renderer):
 	renderer.draw_rect( (0, 0, WINDOW_SIZE.x, UPPER_MARGIN) )
 	renderer.draw_rect( (BRICKSIZE.x, WINDOW_SIZE.y-LOWER_MARGIN, WINDOW_SIZE.x - 2*BRICKSIZE.x, LOWER_MARGIN) )
 
+	renderer.draw_rect( gameSpace(), color=(0xff, 0, 0, 0xff) )
+
 #------------------------------
 
 def loadTextures(renderer):
 	sprite_factory = sdl2.ext.SpriteFactory(sdl2.ext.TEXTURE, renderer=renderer)
-	result = {}
-	result["standard"] = sprite_factory.from_image(RESOURCES.get_path("brick.bmp"))
-	result["invulnerable"] = sprite_factory.from_image(RESOURCES.get_path("invulnerable.bmp"))
 
-	#result["palette"] = sprite_factory.from_image(RESOURCES.get_path("palette.bmp"))
 	Palette.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("palette.bmp"))
-
 	Ball.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("ball.png"))
-
 	Brick.TEXTURES = {
-		Brick.REGULAR : result["standard"],
-		Brick.INVULNERABLE : result["invulnerable"]
+		Brick.REGULAR : sprite_factory.from_image(RESOURCES.get_path("brick.bmp")),
+		Brick.INVULNERABLE : sprite_factory.from_image(RESOURCES.get_path("invulnerable.bmp"))
 	}
-
-	return result
 
 def run():
 	# Initialization.
@@ -61,7 +55,7 @@ def run():
 	renderer = sdl2.ext.Renderer(window, flags=sdl2.SDL_RENDERER_ACCELERATED|sdl2.SDL_RENDERER_PRESENTVSYNC)
 
 	spriterenderer = sdl2.ext.TextureSpriteRenderSystem(renderer)
-	textures = loadTextures(renderer)
+	loadTextures(renderer)
 
 	game = level.Level( loader.loadLevel('?') )
 
@@ -83,18 +77,14 @@ def run():
 					is_open = False
 				break
 
+		# Clear window.
 		renderer.clear(color=(0, 0, 0, 0xff))		
 
-		dissectWindow(renderer)
+		# Game logic.
+		game.update()
 
-		# for i,tab in enumerate(level_data):
-		# 	for j,_id in enumerate(tab):
-		# 		dest = brickCoordsToRect(j, i)
-		# 		if _id == 1:
-		# 			renderer.copy(textures["standard"], None, dest)
-		# 		elif _id == 2:
-		# 			renderer.copy(textures["invulnerable"], None, dest)
-		
+		# Draw and update window.
+		dissectWindow(renderer)
 		game.render(renderer)
 		renderer.present()
 
