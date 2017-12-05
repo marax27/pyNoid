@@ -12,10 +12,10 @@ BRICKSIZE = vec2(85, 30)
 SIDE_MARGIN = BRICKSIZE.x
 
 """"""
-UPPER_MARGIN = BRICKSIZE.y * 3
+UPPER_MARGIN = BRICKSIZE.y * 2
 
 """"""
-LOWER_MARGIN = BRICKSIZE.y * 3
+LOWER_MARGIN = BRICKSIZE.y * 2
 
 """Total size of a game window."""
 WINDOW_SIZE = vec2(
