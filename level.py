@@ -5,6 +5,25 @@ import constants
 from vec2 import *
 import sdl2
 
+def circleLineCollision(ball, x=None, y=None):
+	"""Check whether an infinite line - either horizontal or vertical - intersects a circle."""
+	if x == y or (x is not None and y is not None):
+		return False  #precisely one argument must be specified
+	if x is None:
+		# Horizontal line intersection.
+		return ball.position.y - ball.RADIUS <= y <= ball.position.y + ball.RADIUS
+	else:
+		# Vertical line intersection.
+		return ball.position.x - ball.RADIUS <= x <= ball.position.x + ball.RADIUS
+
+def circleBoxCollision(ball, box_pos, box_size):
+	"""Check whether a circle collides with a box."""
+	# Find which vertex is nearest to the circle.
+
+def boxBoxCollision(box1, box2):
+	"""Check whether two boxes intersect."""
+	return NotImplementedError
+
 class Level:
 	"""A single level representation."""
 
@@ -30,7 +49,7 @@ class Level:
 		# BONUSES    1    0     1       0       0
 		#  BRICKS    0    1     0       0       0
 		#
-		# a)ball-wall        circle-box
+		# a)ball-wall        circle-line
 		# b)ball-palette     circle-box
 		# c)ball-bricks      circle-box
 		# d)wall-palette     box-box
@@ -38,18 +57,21 @@ class Level:
 		# f)bonuses-palette  box-box
 	
 		# 2a)
-		bpos, r = self.ball.position, self.ball.RADIUS
 		gs = constants.gameSpace()
-		if (bpos.x <= gs[0]) or (bpos.x + 2*r >= gs[0] + gs[2]):
+		if circleLineCollision(self.ball, x=gs[0]) or circleLineCollision(self.ball, x=gs[0]+gs[2]):
 			self.ball.velocity.x = -self.ball.velocity.x
-		elif (bpos.y <= gs[1]) or (bpos.y + 2*r >= gs[1] + gs[3]):
-			self.ball.velocity.y = - self.ball.velocity.y
+		if circleLineCollision(self.ball, y=gs[1]) or circleLineCollision(self.ball, y=gs[1]+gs[3]):
+			self.ball.velocity.y = -self.ball.velocity.y
+
+		#bpos, r = self.ball.position, self.ball.RADIUS
+		#gs = constants.gameSpace()
+		#if (bpos.x <= gs[0]) or (bpos.x + 2*r >= gs[0] + gs[2]):
+		#	self.ball.velocity.x = -self.ball.velocity.x
+		#elif (bpos.y <= gs[1]) or (bpos.y + 2*r >= gs[1] + gs[3]):
+		#	self.ball.velocity.y = - self.ball.velocity.y
 
 		# 2b)
-
-	def collide(self, a, b):
-		"""Checks if a and b collide with each other."""
-		return NotImplemented
+		
 
 	def handleEvent(self, e):
 		"""Process events such as palette movement."""
