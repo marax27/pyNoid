@@ -27,7 +27,7 @@ WINDOW_SIZE = vec2(
 )
 
 def gameSpace():
-	"""Returns the rectangle inside of which the game 'runs'."""
+	"""Returns the rectangle within which the game 'runs'."""
 	return (SIDE_MARGIN,
 	        UPPER_MARGIN,
 		    WINDOW_SIZE.x - 2*SIDE_MARGIN,
