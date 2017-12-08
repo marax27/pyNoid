@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import collision
 from vec2 import *
 from constants import *
 
@@ -79,6 +80,12 @@ class Ball(PhysicalObject):
 		super().__init__(position, self.SPEED * velocity.normalized()) 
 		self.binding = binding  # If a ball lies upon a palette, binding represents
 		                        # the palette. If ball flies, binding=None.
+
+	def handleCollision(self, collision_type):
+		if collision_type == collision.X_AXIS_COLLISION:
+			self.velocity.y = -self.velocity.y
+		elif collision_type == collision.Y_AXIS_COLLISION:
+			self.velocity.x = -self.velocity.x
 
 	def render(self, renderer):
 		p = self.position
