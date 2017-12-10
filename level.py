@@ -46,10 +46,11 @@ class Level:
 		self.ball.handleCollision(circleBoxCollision(bpos, r, gs))
 
 		# 2b)
-		# TODO: ball glitches horribly when bounces off a moving palette.
+		# TODO: ball glitches when bounces off a moving palette.
 		self.ball.handleCollision(circleBoxCollision(bpos, r, self.palette.rect()))
 		
 		# 2c)
+		# NOTE: if ball isn't tiny enoughm it can glitch horribly.
 		for i in self.bricks:
 			c = circleBoxCollision(bpos, r, i.rect())
 			if c != NO_COLLISION:

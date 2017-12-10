@@ -17,8 +17,8 @@ UPPER_MARGIN = BRICKSIZE.y * 2
 """"""
 LOWER_MARGIN = BRICKSIZE.y * 2
 
-""""""
-DELTA_T = 1
+"""Duration of a single simulation step."""
+DELTA_T = 1.0
 
 """Total size of a game window."""
 WINDOW_SIZE = vec2(

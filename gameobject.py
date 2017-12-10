@@ -76,11 +76,11 @@ class Palette(GameObject):
 class Ball(PhysicalObject):
 	"""Ball class"""
 	TEXTURE = None
-	RADIUS = 15
+	RADIUS = 8
 	SPEED = 6.0
 
 	def __init__(self, position, velocity, binding=None):
-		super().__init__(position, self.SPEED * velocity.normalized()) 
+		super().__init__(position, velocity.normalized()) 
 		self.binding = binding  # If a ball lies upon a palette, binding represents
 		                        # the palette. If ball flies, binding=None.
 
@@ -98,4 +98,4 @@ class Ball(PhysicalObject):
 		renderer.copy(self.TEXTURE, None, t )
 
 	def update(self):
-		self.position += self.velocity * DELTA_T
+		self.position += self.velocity * self.SPEED * DELTA_T
