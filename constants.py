@@ -12,13 +12,23 @@ BRICKSIZE = vec2(85, 30)
 SIDE_MARGIN = BRICKSIZE.x
 
 """"""
-UPPER_MARGIN = BRICKSIZE.y * 3
+UPPER_MARGIN = BRICKSIZE.y * 2
 
 """"""
-LOWER_MARGIN = BRICKSIZE.y * 3
+LOWER_MARGIN = BRICKSIZE.y * 2
+
+"""Duration of a single simulation step."""
+DELTA_T = 1.0
 
 """Total size of a game window."""
 WINDOW_SIZE = vec2(
 	BRICKSIZE.x * TILES.x + 2*SIDE_MARGIN,
 	BRICKSIZE.y * TILES.y + UPPER_MARGIN + LOWER_MARGIN
 )
+
+def gameSpace():
+	"""Returns the rectangle within which the game 'runs'."""
+	return (SIDE_MARGIN,
+	        UPPER_MARGIN,
+		    WINDOW_SIZE.x - 2*SIDE_MARGIN,
+		    WINDOW_SIZE.y - UPPER_MARGIN)

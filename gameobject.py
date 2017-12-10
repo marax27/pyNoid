@@ -1,12 +1,44 @@
 #!/usr/bin/python3
 
+import collision
 from vec2 import *
-from constants import WINDOW_SIZE
+from constants import *
+
+#------------------------------------------------------------
+
+# def brickToScreenCoords(x, y):
+# 	"""Turn brick's position into window pixel coordinates."""
+# 	return x * BRICKSIZE.x + SIDE_MARGIN, y * BRICKSIZE.y + UPPER_MARGIN
+
+# def brickCoordsToRect(x, y):
+# 	"""Returns x-, y-position, width, height of a specific brick."""
+# 	return brickToScreenCoords(x, y) + tuple(BRICKSIZE)
+
+#------------------------------------------------------------
 
 class GameObject:
 	"""GameObject - base class for many game objects (duh)."""
 	def __init__(self, position):
 		self.position = position
+
+class Brick(GameObject):
+	"""A brick class."""
+	TEXTURES = None
+	EMPTY, REGULAR, HEAVY, HEAVIER, INVULNERABLE = range(5)  #TODO
+	
+	def __init__(self, position, brick_type):
+		super().__init__(position)
+		self.brick_type = brick_type
+
+	def screenPos(self):
+		return self.position.x * BRICKSIZE.x + SIDE_MARGIN, self.position.y * BRICKSIZE.y + UPPER_MARGIN
+	
+	def rect(self):
+		return self.screenPos() + tuple(BRICKSIZE)
+
+	def render(self, renderer):
+		if self.brick_type != self.EMPTY:
+			renderer.copy(self.TEXTURES[self.brick_type], None, self.rect())
 
 class PhysicalObject(GameObject):
 	"""PhysicalObject - base class for bonuses and balls."""
@@ -38,23 +70,32 @@ class Palette(GameObject):
 		if self.TEXTURE is not None:
 			renderer.copy(self.TEXTURE, None, vectorsToTuple(self.position, self.SIZE))
 
+	def rect(self):
+		return tuple(self.position) + tuple(self.SIZE)
+
 class Ball(PhysicalObject):
 	"""Ball class"""
 	TEXTURE = None
-	RADIUS = 15
-	SPEED = 3.0
+	RADIUS = 8
+	SPEED = 6.0
 
 	def __init__(self, position, velocity, binding=None):
-		super().__init__(position, velocity) 
+		super().__init__(position, velocity.normalized()) 
 		self.binding = binding  # If a ball lies upon a palette, binding represents
 		                        # the palette. If ball flies, binding=None.
 
-	def render(self, renderer):
-		t = self.position.x, self.position.y, 2*self.RADIUS, 2*self.RADIUS
-		renderer.copy(self.TEXTURE, None, t )
-		#_x, _y = int(self.x), int(self.y)
-		#renderer.draw_line((_x - self.RADIUS, _y, _x + self.RADIUS, _y), (0xff, 0xff, 0xff, 0xff))
-		#renderer.draw_line((_x, _y - self.RADIUS, _x, _y + self.RADIUS), (0xff, 0xff, 0xff, 0xff))
+	def handleCollision(self, collision_type):
+		if collision_type == collision.NO_COLLISION:
+			return
+		elif collision_type == collision.X_AXIS_COLLISION:
+			self.velocity.y = -self.velocity.y
+		else:
+			self.velocity.x = -self.velocity.x
 
-	def update(self, dt):
-		pass
+	def render(self, renderer):
+		p = self.position
+		t = int(p.x), int(p.y), 2*self.RADIUS, 2*self.RADIUS
+		renderer.copy(self.TEXTURE, None, t )
+
+	def update(self):
+		self.position += self.velocity * self.SPEED * DELTA_T
