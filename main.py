@@ -27,7 +27,7 @@ def run():
 	spriterenderer = sdl2.ext.TextureSpriteRenderSystem(renderer)
 	loader.loadTextures(renderer)
 
-	game = level.Level( loader.loadLevel('?') )
+	game = level.Level( loader.loadLevel('levels/p1.noid') )
 	
 	# Main loop.
 	is_open = True
