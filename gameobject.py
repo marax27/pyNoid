@@ -70,6 +70,9 @@ class Palette(GameObject):
 		if self.TEXTURE is not None:
 			renderer.copy(self.TEXTURE, None, vectorsToTuple(self.position, self.SIZE))
 
+	def rect(self):
+		return tuple(self.position) + tuple(self.SIZE)
+
 class Ball(PhysicalObject):
 	"""Ball class"""
 	TEXTURE = None
@@ -82,9 +85,11 @@ class Ball(PhysicalObject):
 		                        # the palette. If ball flies, binding=None.
 
 	def handleCollision(self, collision_type):
-		if collision_type == collision.X_AXIS_COLLISION:
+		if collision_type == collision.NO_COLLISION:
+			return
+		elif collision_type == collision.X_AXIS_COLLISION:
 			self.velocity.y = -self.velocity.y
-		elif collision_type == collision.Y_AXIS_COLLISION:
+		else:
 			self.velocity.x = -self.velocity.x
 
 	def render(self, renderer):

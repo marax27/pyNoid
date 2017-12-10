@@ -2,12 +2,12 @@
 
 from vec2 import *
 
-NO_COLLISION, X_AXIS_COLLISION, Y_AXIS_COLLISION = range(3)
+NO_COLLISION, X_AXIS_COLLISION, Y_AXIS_COLLISION = None, 1, 2
 
 def circleLineCollision(circle_pos, circle_radius, x=None, y=None):
 	"""Check whether an infinite line - either horizontal or vertical - intersects a circle."""
 	if x == y or (x is not None and y is not None):
-		return False  #precisely one argument must be specified
+		return NO_COLLISION  #precisely one argument must be specified
 	diameter = 2*circle_radius
 	if x is None:
 		# Horizontal line intersection.

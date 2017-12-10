@@ -38,13 +38,24 @@ class Level:
 		# e)wall-bonuses     box-box
 		# f)bonuses-palette  box-box
 	
+		bpos = self.ball.position
+		r = self.ball.RADIUS
+
 		# 2a)
 		gs = constants.gameSpace()
-		self.ball.handleCollision(circleBoxCollision(self.ball.position, self.ball.RADIUS, gs))
+		self.ball.handleCollision(circleBoxCollision(bpos, r, gs))
 
 		# 2b)
+		# TODO: ball glitches horribly when bounces off a moving palette.
+		self.ball.handleCollision(circleBoxCollision(bpos, r, self.palette.rect()))
 		
-		
+		# 2c)
+		for i in self.bricks:
+			c = circleBoxCollision(bpos, r, i.rect())
+			if c != NO_COLLISION:
+				self.ball.handleCollision(c)
+				break
+
 
 	def handleEvent(self, e):
 		"""Process events such as palette movement."""
