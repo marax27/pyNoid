@@ -2,7 +2,7 @@
 
 from vec2 import *
 
-NO_COLLISION, X_AXIS_COLLISION, Y_AXIS_COLLISION, CORNER_COLLISION = None, 1, 2, 3
+NO_COLLISION, X_AXIS_COLLISION, Y_AXIS_COLLISION, CORNER_COLLISION, INSIDE = None, 1, 2, 3, 4
 
 def circleLineCollision(circle_pos, circle_radius, x=None, y=None):
 	"""Check whether an infinite line - either horizontal or vertical - intersects a circle."""
@@ -36,7 +36,7 @@ def circleBoxCollision(circle_pos, circle_radius, box):
 			if center.x < box[0]:
 				return X_AXIS_COLLISION  #LZ
 			elif center.x < box[0]+box[2]:
-				return NO_COLLISION
+				return INSIDE
 			else:
 				return X_AXIS_COLLISION  #RZ
 		else:
