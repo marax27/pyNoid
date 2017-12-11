@@ -55,3 +55,6 @@ class vec2(object):
 # Other functions.
 def vectorsToTuple(v1, v2):
 	return tuple(v1) + tuple(v2)
+
+def intmatch(v1, v2):
+	return int(v1.x) == int(v2.x) and int(v1.y) == int(v2.y)
