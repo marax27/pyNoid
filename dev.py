@@ -6,13 +6,17 @@ from constants import *
 
 """Development tools."""
 
-def handleEvent(event):
+def handleEvent(event, game):
 	if event.type == sdl2.SDL_KEYDOWN:
 		key = event.key.keysym.sym
 		if key == sdl2.SDLK_KP_PLUS:
 			gameobject.Ball.SPEED *= 2
 		elif key == sdl2.SDLK_KP_MINUS:
 			gameobject.Ball.SPEED /= 2
+		elif key == sdl2.SDLK_UP:  game.ball.velocity.y -= 0.5;
+		elif key == sdl2.SDLK_DOWN:  game.ball.velocity.y += 0.5;
+		elif key == sdl2.SDLK_LEFT:  game.ball.velocity.x -= 0.5;
+		elif key == sdl2.SDLK_RIGHT:  game.ball.velocity.x += 0.5;		
 
 def drawGrid(renderer, color=(0x44, 0x44, 0x44, 0xff)):
 	renderer.color = color
