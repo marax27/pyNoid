@@ -88,9 +88,11 @@ class Ball(PhysicalObject):
 		if collision_type == collision.NO_COLLISION:
 			return
 		elif collision_type == collision.X_AXIS_COLLISION:
-			self.velocity.y = -self.velocity.y
-		else:
 			self.velocity.x = -self.velocity.x
+		elif collision_type == collision.Y_AXIS_COLLISION:
+			self.velocity.y = -self.velocity.y
+		else:  #TODO
+			self.velocity = -self.velocity
 
 	def render(self, renderer):
 		p = self.position
