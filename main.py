@@ -37,7 +37,7 @@ def run():
 		events = sdl2.ext.get_events()
 		for e in events:
 			game.handleEvent(e)
-			dev.handleEvent(e)
+			dev.handleEvent(e, game)
 
 			if e.type == sdl2.SDL_QUIT:
 				is_open = False

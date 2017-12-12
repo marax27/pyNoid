@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from gameobject import Brick, Palette, Ball
-from vec2 import vec2
+from vec2 import vec2, intmatch
 import sdl2.ext
 import io
 import re
@@ -35,7 +35,7 @@ def loadLevel(filename):
 
 			# A line content is determined by its first token.
 			line_type = line[0]
-			if line_type[0] == "#":
+			if len(line_type) == 0 or line_type[0] == "#":
 				# Comment - to omit.
 				continue
 			if line_type in ("regular", "invulnerable"):
@@ -71,7 +71,10 @@ def loadLevel(filename):
 					# Append new bricks.
 					for x in range(rect[0], rect[1]+1):
 						for y in range(rect[2], rect[3]+1):
-							brick = Brick(vec2(x, y), brick_types[line_type])
+							pos = vec2(x, y)
+							if [i for i in result if intmatch(i.position, pos)]:
+								raise NoidError("More than 1 brick occupy exact same space")
+							brick = Brick(pos, brick_types[line_type])
 							result.append(brick)
 	return result
 

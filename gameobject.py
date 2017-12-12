@@ -60,12 +60,15 @@ class Palette(GameObject):
 
 	def move(self, offset):
 		new_x = self.position.x + offset * self.SPEED
-		if new_x < 0:
-			new_x = 0
-		elif new_x >= WINDOW_SIZE.x - self.SIZE.x:
-			new_x = WINDOW_SIZE.x - self.SIZE.x
-		self.position.x = new_x
+		self.setPosition(new_x)
 	
+	def setPosition(self, x):
+		if x < 0:
+			x = 0
+		elif x >= WINDOW_SIZE.x - self.SIZE.x:
+			x = WINDOW_SIZE.x - self.SIZE.x
+		self.position.x = x
+
 	def render(self, renderer):
 		if self.TEXTURE is not None:
 			renderer.copy(self.TEXTURE, None, vectorsToTuple(self.position, self.SIZE))
@@ -85,12 +88,16 @@ class Ball(PhysicalObject):
 		                        # the palette. If ball flies, binding=None.
 
 	def handleCollision(self, collision_type):
-		if collision_type == collision.NO_COLLISION:
+		if collision_type in (collision.NO_COLLISION, collision.INSIDE):
 			return
 		elif collision_type == collision.X_AXIS_COLLISION:
-			self.velocity.y = -self.velocity.y
-		else:
 			self.velocity.x = -self.velocity.x
+		elif collision_type == collision.Y_AXIS_COLLISION:
+			self.velocity.y = -self.velocity.y
+		elif collision_type == collision.CORNER_NEG_COLLISION:
+			self.velocity.x, self.velocity.y = -self.velocity.y, -self.velocity.x
+		elif collision_type == collision.CORNER_COLLISION:
+			self.velocity.x, self.velocity.y = self.velocity.y, self.velocity.x			
 
 	def render(self, renderer):
 		p = self.position

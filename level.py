@@ -43,14 +43,17 @@ class Level:
 
 		# 2a)
 		gs = constants.gameSpace()
-		self.ball.handleCollision(circleBoxCollision(bpos, r, gs))
+		self.ball.handleCollision(circleLineCollision(bpos, r, x=gs[0]))
+		self.ball.handleCollision(circleLineCollision(bpos, r, y=gs[1]))
+		self.ball.handleCollision(circleLineCollision(bpos, r, x=gs[0]+gs[2]))
+		self.ball.handleCollision(circleLineCollision(bpos, r, y=gs[1]+gs[3]))		
+		#self.ball.handleCollision(circleBoxCollision(bpos, r, gs))
 
 		# 2b)
-		# TODO: ball glitches when bounces off a moving palette.
 		self.ball.handleCollision(circleBoxCollision(bpos, r, self.palette.rect()))
 		
 		# 2c)
-		# NOTE: if ball isn't tiny enoughm it can glitch horribly.
+		# NOTE: if ball isn't tiny enough it can glitch horribly.
 		for i in self.bricks:
 			c = circleBoxCollision(bpos, r, i.rect())
 			if c != NO_COLLISION:
@@ -60,12 +63,23 @@ class Level:
 
 	def handleEvent(self, e):
 		"""Process events such as palette movement."""
-		if e.type == sdl2.SDL_KEYDOWN:
+		if e.type == sdl2.SDL_MOUSEMOTION:
+			x = e.motion.x
+			self.palette.setPosition(x)
+			
+			# Since palette is considered unstoppable force, if palette now
+			# covers space occupied by the ball, the ball must bend.
+			c = circleBoxCollision(self.ball.position, self.ball.RADIUS, self.palette.rect())
+			if c != NO_COLLISION:
+				self.ball.position.y = self.palette.position.y - 2*self.ball.RADIUS
+
+		# Deprecated: moving palette with a keyboard.
+		"""if e.type == sdl2.SDL_KEYDOWN:
 			key = e.key.keysym.sym
 			if key == sdl2.SDLK_LEFT:
 				self.palette.move(-1)
 			elif key == sdl2.SDLK_RIGHT:
-				self.palette.move(+1)
+				self.palette.move(+1)"""
 
 	def render(self, renderer):
 		"""Render the level."""
