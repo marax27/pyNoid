@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from gameobject import Ball, Palette #...
+from gameobject import Ball, Palette, Brick
 from collision import *
 from vec2 import *
 import constants
@@ -53,13 +53,17 @@ class Level:
 		self.ball.handleCollision(circleBoxCollision(bpos, r, self.palette.rect()))
 		
 		# 2c)
-		# NOTE: if ball isn't tiny enough it can glitch horribly.
+		to_delete = []
 		for i in self.bricks:
 			c = circleBoxCollision(bpos, r, i.rect())
 			if c != NO_COLLISION:
 				self.ball.handleCollision(c)
-				break
 
+				i.handleCollision()
+				if i.brick_type == Brick.EMPTY:
+					to_delete.append(i)
+				break
+		self.bricks = [x for x in self.bricks if x not in to_delete]
 
 	def handleEvent(self, e):
 		"""Process events such as palette movement."""

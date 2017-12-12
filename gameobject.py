@@ -30,6 +30,17 @@ class Brick(GameObject):
 		super().__init__(position)
 		self.brick_type = brick_type
 
+	def handleCollision(self):
+		"""React to ball collision."""
+		if self.brick_type == Brick.REGULAR:
+			self.brick_type = Brick.EMPTY
+		elif self.brick_type == Brick.HEAVY:
+			self.brick_type = Brick.REGULAR
+		elif self.brick_type == Brick.HEAVIER:
+			self.brick_type = Brick.HEAVY
+		else:
+			pass
+
 	def screenPos(self):
 		return self.position.x * BRICKSIZE.x + SIDE_MARGIN, self.position.y * BRICKSIZE.y + UPPER_MARGIN
 	
