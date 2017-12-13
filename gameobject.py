@@ -24,7 +24,7 @@ class GameObject:
 class Brick(GameObject):
 	"""A brick class."""
 	TEXTURES = None
-	EMPTY, REGULAR, HEAVY, HEAVIER, INVULNERABLE = range(5)  #TODO
+	EMPTY, REGULAR, HEAVY, HEAVIER, INVULNERABLE = range(5)
 	
 	def __init__(self, position, brick_type):
 		super().__init__(position)

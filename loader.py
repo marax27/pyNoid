@@ -38,7 +38,7 @@ def loadLevel(filename):
 			if len(line_type) == 0 or line_type[0] == "#":
 				# Comment - to omit.
 				continue
-			if line_type in ("regular", "invulnerable"):
+			if line_type in brick_types.keys():
 				for i in line[1:]:
 					# Read brick coordinates and form bricks array.
 					# Supported coordinates formats:
@@ -49,6 +49,10 @@ def loadLevel(filename):
 
 					COORD_DELIM = ','  #coordinates delimiter
 					RANGE_DELIM = '-'  #range delimiter
+
+					if i == '':
+						continue
+
 					spl = i.split(COORD_DELIM)
 					if len(spl) != 2:
 						raise NoidError("Invalid coordinates")
