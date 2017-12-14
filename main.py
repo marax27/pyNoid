@@ -12,9 +12,6 @@ from gameobject import Ball, Palette, Brick
 
 from vec2 import vec2
 
-BRICK_COLOUR = (0x22, 0x22, 0x99, 0xff)
-INVUL_COLOUR = (0xf4, 0xbf, 0x42, 0xff)
-
 #------------------------------
 
 def run():
@@ -45,11 +42,11 @@ def run():
 			elif e.type == sdl2.SDL_KEYDOWN:
 				key = e.key.keysym.sym
 				if key == sdl2.SDLK_ESCAPE:
-					is_open = False				
+					is_open = False
 				break
 
 		# Clear window.
-		renderer.clear(color=(0, 0, 0, 0xff))		
+		renderer.clear(color=Colour.Black)		
 
 		# Game logic.
 		game.update()

@@ -72,6 +72,13 @@ class Level:
 					break
 		self.bricks = [x for x in self.bricks if x not in to_delete]
 
+		# 2d)
+		p_x = self.palette.position.x
+		if p_x < gs[0]:
+			self.palette.position.x = gs[0]
+		elif p_x + self.palette.SIZE.x > gs[0] + gs[2]:
+			self.palette.position.x = gs[0] + gs[2] - self.palette.SIZE.x
+
 	def handleEvent(self, e):
 		"""Process events such as palette movement."""
 		if e.type == sdl2.SDL_MOUSEMOTION:
@@ -82,7 +89,18 @@ class Level:
 			# covers space occupied by the ball, the ball must bend.
 			c = circleBoxCollision(self.ball.position, self.ball.RADIUS, self.palette.rect())
 			if c != NO_COLLISION:
-				self.ball.position.y = self.palette.position.y - 2*self.ball.RADIUS
+				#self.ball.position.y = self.palette.position.y - 2*self.ball.RADIUS
+				r = self.ball.RADIUS
+				bx, px = self.ball.position.x + r, self.palette.position.x
+				if bx < px + r:
+					# Shift left.
+					self.ball.position.x = px - 2*r
+				elif bx > px + self.palette.SIZE.x - r:
+					# Shift right.
+					self.ball.position.x = px + self.palette.SIZE.x
+				else:
+					# Shift up.
+					self.ball.position.y = self.palette.position.y - 2*r
 
 		# Deprecated: moving palette with a keyboard.
 		"""if e.type == sdl2.SDL_KEYDOWN:

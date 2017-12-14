@@ -117,7 +117,6 @@ class Ball(PhysicalObject):
 			a = self.position.x + self.RADIUS - palette.position.x
 			w = palette.SIZE.x
 			eta_prim = -math.pi/3.0 * math.cos(a * math.pi / w)
-			print("Eta' = {}".format(eta_prim))
 			self.velocity = vec2(
 				math.sin(eta_prim),
 				-math.cos(eta_prim)
