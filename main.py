@@ -18,7 +18,7 @@ from vec2 import vec2
 def run(file = None):
 	# Initialization.
 	sdl2.ext.init()
-	sdl2.sdlttf.TTF_Init()
+	#sdl2.sdlttf.TTF_Init()
 
 	if file is not None:
 		unpacked_log = dev.unpack(file)
@@ -33,8 +33,17 @@ def run(file = None):
 
 	game = level.Level( loader.loadLevel('levels/p1.noid') )
 
-	#font_kremlin = sdl2.sdlttf.TTF_OpenFont('resources/kremlin.ttf', FONT_SIZE_1)
-	#print("Font is {}".format(font_kremlin))
+	#font_kremlin = sdl2.sdlttf.TTF_OpenFont(b'resources/kremlin.ttf', FONT_SIZE_1)
+	#text_surf = sdl2.sdlttf.TTF_RenderText_Solid(font_kremlin, b'God is dead, government is lame.', sdl2.SDL_Color(*Colour.White))
+
+	font_manager = sdl2.ext.FontManager('resources/kremlin.ttf', size=FONT_SIZE_1)
+	surf1 = font_manager.render('GOD IS DEAD, GOVERNMENT IS LAME.')
+	texture1 = sdl2.SDL_CreateTextureFromSurface(renderer.renderer, surf1)
+	w, h = surf1.w, surf1.h
+
+	#sf = sprite_factory = sdl2.ext.SpriteFactory(sdl2.ext.TEXTURE, renderer=renderer)
+	#txtr1 = sf.from_surface(surf1)
+	#tsrs = sdl2.ext.TextureSpriteRenderSystem(renderer)
 
 	# Main loop.
 	is_open = True
@@ -56,7 +65,7 @@ def run(file = None):
 				break
 
 		# Clear window.
-		renderer.clear(color=Colour.Black)		
+		renderer.clear(color=Colour.Black)
 
 		# Game logic.
 		game.update()
@@ -64,9 +73,15 @@ def run(file = None):
 		# Draw and update window.
 		dev.dissectWindow(renderer)
 		game.render(renderer)
+
+		#tsrs.render(txtr1)
+		sdl2.SDL_RenderCopy(renderer.renderer, texture1, None, sdl2.SDL_Rect(0,0,w,h))
+
 		renderer.present()
 
 	sdl2.ext.quit()
+	#sdl2.sdlttf.TTF_CloseFont(font_kremlin)
+	#sdl2.sdlttf.TTF_Quit()
 	return 0
 
 
