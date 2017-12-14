@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import io
 import pickle
 import sdl2.ext
 import gameobject
@@ -36,7 +37,35 @@ def dissectWindow(renderer):
 
 	renderer.draw_rect( gameSpace(), color=(0xff, 0, 0, 0xff) )
 
+def dumpable(dump):
+	s = str(dump[0])
+	for b in dump[1:]:
+		s = s + ',' + str(b)
+	return s
+
+FIELD_DELIM = b'@!!'
+ARG_DELIM = b' '
 def report(*args):
 	for i in args:
-		print('@!!{}@!!{}@!! '.format(i, pickle.dumps(i)), end='')
+		print('@!!{}@!!{}@!! '.format(str(i).replace(' ', ''), dumpable(pickle.dumps(i))), end='') 
 	print()
+
+def unpack(log_file):
+	with io.open(log_file, 'rb') as f:
+		lines = f.readlines()
+		for line in lines:
+			print('{ ', end='')
+			spl = [x for x in line.split(ARG_DELIM) if not x.isspace() and x != b'']
+			#print("\tProceeding to {}".format(spl))
+
+			for arg in spl:
+				#print("\t\tArg{}".format(arg))
+				a = [x for x in arg.split(FIELD_DELIM) if not x.isspace() and x != b'']
+				my_bytes = b''
+				for i in a[1].split(b','):
+					my_bytes = my_bytes + bytes([int(i)])
+				result = pickle.loads(my_bytes)
+				print(result, end='; ')
+			print('}')
+					
+

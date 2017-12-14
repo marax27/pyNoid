@@ -61,4 +61,8 @@ def run():
 
 
 if __name__ == "__main__":
-	sys.exit(run())
+	args = sys.argv
+	if len(args):
+		dev.unpack("log_1456")
+	else:
+		sys.exit(run())
