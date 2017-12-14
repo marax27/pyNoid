@@ -76,11 +76,13 @@ class Palette(GameObject):
 		self.setPosition(new_x)
 	
 	def setPosition(self, x):
+		if x == self.position.x: return;
 		if x < 0:
 			x = 0
 		elif x >= WINDOW_SIZE.x - self.SIZE.x:
 			x = WINDOW_SIZE.x - self.SIZE.x
 		self.position.x = x
+		dev.report('pmov', self.position.x)
 
 	def render(self, renderer):
 		if self.TEXTURE is not None:
@@ -101,6 +103,7 @@ class Ball(PhysicalObject):
 		                        # the palette. If ball flies, binding=None.
 
 	def handleCollision(self, collision_type):
+		v = self.velocity.clone()
 		if collision_type in (collision.NO_COLLISION, collision.INSIDE):
 			return
 		elif collision_type == collision.X_AXIS_COLLISION:
@@ -111,9 +114,11 @@ class Ball(PhysicalObject):
 			self.velocity.x, self.velocity.y = -self.velocity.y, -self.velocity.x
 		elif collision_type == collision.CORNER_COLLISION:
 			self.velocity.x, self.velocity.y = self.velocity.y, self.velocity.x			
+		dev.report('wbcoll', collision_type, v, self.velocity)
 
 	def handlePaletteCollision(self, collision_type, palette):
 		if collision_type != collision.NO_COLLISION:
+			v = self.velocity.clone()
 			a = self.position.x + self.RADIUS - palette.position.x
 			w = palette.SIZE.x
 			eta_prim = -math.pi/3.0 * math.cos(a * math.pi / w)
@@ -121,6 +126,7 @@ class Ball(PhysicalObject):
 				math.sin(eta_prim),
 				-math.cos(eta_prim)
 			)
+			dev.report('pcoll', collision_type, v, self.velocity)
 
 	def render(self, renderer):
 		p = self.position

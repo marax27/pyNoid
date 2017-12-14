@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import pickle
 import sdl2.ext
 import gameobject
 from constants import *
@@ -34,3 +35,8 @@ def dissectWindow(renderer):
 	renderer.draw_rect( (BRICKSIZE.x, WINDOW_SIZE.y-LOWER_MARGIN, WINDOW_SIZE.x - 2*BRICKSIZE.x, LOWER_MARGIN) )
 
 	renderer.draw_rect( gameSpace(), color=(0xff, 0, 0, 0xff) )
+
+def report(*args):
+	for i in args:
+		print('@!!{}@!!{}@!! '.format(i, pickle.dumps(i)), end='')
+	print()
