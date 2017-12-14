@@ -89,6 +89,8 @@ def loadTextures(renderer):
 	Palette.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("palette.bmp"))
 	Ball.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("ball.png"))
 	Brick.TEXTURES = {
-		Brick.REGULAR : sprite_factory.from_image(RESOURCES.get_path("brick.bmp")),
-		Brick.INVULNERABLE : sprite_factory.from_image(RESOURCES.get_path("invulnerable.bmp"))
+		Brick.REGULAR: sprite_factory.from_image(RESOURCES.get_path("brick.bmp")),
+		Brick.INVULNERABLE: sprite_factory.from_image(RESOURCES.get_path("invulnerable.bmp")),
+		Brick.HEAVY: sprite_factory.from_image(RESOURCES.get_path("heavy.bmp")),
+		Brick.HEAVIER: sprite_factory.from_image(RESOURCES.get_path("heavier.bmp"))
 	}

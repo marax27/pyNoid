@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+import dev
+import math
 import collision
 from vec2 import *
 from constants import *
@@ -60,7 +62,7 @@ class PhysicalObject(GameObject):
 class Palette(GameObject):
 	"""Palette representation."""
 	TEXTURE = None
-	SIZE = vec2(200, 30)
+	SIZE = vec2(140, 20)
 	SPEED = 20
 
 	def __init__(self):
@@ -94,7 +96,7 @@ class Ball(PhysicalObject):
 	SPEED = 6.0
 
 	def __init__(self, position, velocity, binding=None):
-		super().__init__(position, velocity.normalized()) 
+		super().__init__(position, self.SPEED*velocity.normalized()) 
 		self.binding = binding  # If a ball lies upon a palette, binding represents
 		                        # the palette. If ball flies, binding=None.
 
@@ -110,10 +112,21 @@ class Ball(PhysicalObject):
 		elif collision_type == collision.CORNER_COLLISION:
 			self.velocity.x, self.velocity.y = self.velocity.y, self.velocity.x			
 
+	def handlePaletteCollision(self, collision_type, palette):
+		if collision_type != collision.NO_COLLISION:
+			a = self.position.x + self.RADIUS - palette.position.x
+			w = palette.SIZE.x
+			eta_prim = -math.pi/3.0 * math.cos(a * math.pi / w)
+			print("Eta' = {}".format(eta_prim))
+			self.velocity = vec2(
+				math.sin(eta_prim),
+				-math.cos(eta_prim)
+			)
+
 	def render(self, renderer):
 		p = self.position
 		t = int(p.x), int(p.y), 2*self.RADIUS, 2*self.RADIUS
 		renderer.copy(self.TEXTURE, None, t )
 
 	def update(self):
-		self.position += self.velocity * self.SPEED * DELTA_T
+		self.position += self.velocity.normalized() * self.SPEED * DELTA_T

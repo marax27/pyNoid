@@ -10,6 +10,7 @@ class Level:
 	"""A single level representation."""
 
 	def __init__(self, bricks):
+		self.endgame = False
 		self.score = 0
 		self.bonuses = []		
 		self.palette = Palette()
@@ -46,23 +47,29 @@ class Level:
 		self.ball.handleCollision(circleLineCollision(bpos, r, x=gs[0]))
 		self.ball.handleCollision(circleLineCollision(bpos, r, y=gs[1]))
 		self.ball.handleCollision(circleLineCollision(bpos, r, x=gs[0]+gs[2]))
-		self.ball.handleCollision(circleLineCollision(bpos, r, y=gs[1]+gs[3]))		
-		#self.ball.handleCollision(circleBoxCollision(bpos, r, gs))
+		if(circleLineCollision(bpos, r, y=gs[1]+gs[3]) != NO_COLLISION):
+			self.endgame = True
+			return
 
 		# 2b)
-		self.ball.handleCollision(circleBoxCollision(bpos, r, self.palette.rect()))
+		c = circleBoxCollision(bpos, r, self.palette.rect())
+		self.ball.handlePaletteCollision(c, self.palette)
 		
 		# 2c)
+		hits = 0
 		to_delete = []
 		for i in self.bricks:
 			c = circleBoxCollision(bpos, r, i.rect())
 			if c != NO_COLLISION:
+				hits += 1
 				self.ball.handleCollision(c)
 
 				i.handleCollision()
 				if i.brick_type == Brick.EMPTY:
 					to_delete.append(i)
-				break
+				
+				if hits >= 2:
+					break
 		self.bricks = [x for x in self.bricks if x not in to_delete]
 
 	def handleEvent(self, e):
@@ -88,7 +95,8 @@ class Level:
 	def render(self, renderer):
 		"""Render the level."""
 		self.palette.render(renderer)
-		self.ball.render(renderer)
+		if not self.endgame:
+			self.ball.render(renderer)
 		for i in self.bricks:
 			i.render(renderer)
 		for j in self.bonuses:
