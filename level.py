@@ -15,7 +15,7 @@ class Level:
 		self.bonuses = []		
 		self.palette = Palette()
 		self.bricks  = bricks
-		self.ball    = Ball(vec2(200, 400), vec2(3, 2), self.palette)
+		self.ball    = Ball(vec2(200, 400), vec2(0, 1), self.palette)
 
 	def update(self):
 		"""Update game state."""
@@ -73,12 +73,10 @@ class Level:
 		if len(hit_bricks) < 2:
 			for i in hit_bricks:
 				self.ball.handleCollision(i[1])
-		elif int(hit_bricks[0][0].position.x) == int(hit_bricks[1][0].position.x):
-			self.ball.handleCollision(Y_AXIS_COLLISION)
-			print("Horizontal_obstacle!")
 		elif int(hit_bricks[0][0].position.y) == int(hit_bricks[1][0].position.y):
+			self.ball.handleCollision(Y_AXIS_COLLISION)
+		elif int(hit_bricks[0][0].position.x) == int(hit_bricks[1][0].position.x):
 			self.ball.handleCollision(X_AXIS_COLLISION)
-			print("Vertical_obstacle!")
 		else:
 			self.ball.handleCollision(CORNER_NEG_COLLISION)
 
