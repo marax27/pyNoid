@@ -20,6 +20,9 @@ LOWER_MARGIN = BRICKSIZE.y * 2
 """Duration of a single simulation step."""
 DELTA_T = 1.0
 
+"""Font sizes."""
+FONT_SIZE_1 = 24
+
 """Total size of a game window."""
 WINDOW_SIZE = vec2(
 	BRICKSIZE.x * TILES.x + 2*SIDE_MARGIN,

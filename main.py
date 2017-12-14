@@ -4,6 +4,7 @@ import sys
 import dev
 import math
 import sdl2.ext
+import sdl2.sdlttf
 import level
 import loader
 from colour import Colour
@@ -14,9 +15,15 @@ from vec2 import vec2
 
 #------------------------------
 
-def run():
+def run(file = None):
 	# Initialization.
 	sdl2.ext.init()
+	sdl2.sdlttf.TTF_Init()
+
+	if file is not None:
+		unpacked_log = dev.unpack(file)
+		for i in unpacked_log:
+			print("<{}>".format(i))
 
 	window = sdl2.ext.Window("pyNoid", size=tuple(WINDOW_SIZE), position=None, flags=sdl2.SDL_WINDOW_SHOWN)
 	renderer = sdl2.ext.Renderer(window, flags=sdl2.SDL_RENDERER_ACCELERATED|sdl2.SDL_RENDERER_PRESENTVSYNC)
@@ -25,7 +32,10 @@ def run():
 	loader.loadTextures(renderer)
 
 	game = level.Level( loader.loadLevel('levels/p1.noid') )
-	
+
+	#font_kremlin = sdl2.sdlttf.TTF_OpenFont('resources/kremlin.ttf', FONT_SIZE_1)
+	#print("Font is {}".format(font_kremlin))
+
 	# Main loop.
 	is_open = True
 	while is_open:
@@ -62,7 +72,7 @@ def run():
 
 if __name__ == "__main__":
 	args = sys.argv
-	if len(args):
-		dev.unpack("log_1456")
+	if len(args) == 2:
+		sys.exit(run(args[1]))
 	else:
 		sys.exit(run())

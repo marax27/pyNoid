@@ -52,20 +52,23 @@ def report(*args):
 
 def unpack(log_file):
 	with io.open(log_file, 'rb') as f:
+		result = []
 		lines = f.readlines()
 		for line in lines:
-			print('{ ', end='')
+			#print('{ ', end='')
 			spl = [x for x in line.split(ARG_DELIM) if not x.isspace() and x != b'']
-			#print("\tProceeding to {}".format(spl))
+			obj = []
 
 			for arg in spl:
-				#print("\t\tArg{}".format(arg))
 				a = [x for x in arg.split(FIELD_DELIM) if not x.isspace() and x != b'']
 				my_bytes = b''
 				for i in a[1].split(b','):
 					my_bytes = my_bytes + bytes([int(i)])
-				result = pickle.loads(my_bytes)
-				print(result, end='; ')
-			print('}')
-					
+				value = pickle.loads(my_bytes)
+
+				obj.append(value)
+				#print(value, end='; ')
+			#print('}')
+			result.append(tuple(obj))
+		return result
 
