@@ -56,20 +56,48 @@ class Level:
 		self.ball.handlePaletteCollision(c, self.palette)
 		
 		# 2c)
-		hits = 0
-		to_delete = []
+		hit_bricks, to_delete = [], []
 		for i in self.bricks:
 			c = circleBoxCollision(bpos, r, i.rect())
-			if c != NO_COLLISION:
-				hits += 1
-				self.ball.handleCollision(c)
+			if c == NO_COLLISION:
+				continue
 
-				i.handleCollision()
-				if i.brick_type == Brick.EMPTY:
-					to_delete.append(i)
-				
-				if hits >= 2:
-					break
+			hit_bricks.append( (i, c) )
+			i.handleCollision()
+			if i.brick_type == Brick.EMPTY:
+				to_delete.append(i)
+			
+			if len(hit_bricks) > 1:
+				break
+		
+		if len(hit_bricks) < 2:
+			for i in hit_bricks:
+				self.ball.handleCollision(i[1])
+		elif int(hit_bricks[0][0].position.x) == int(hit_bricks[1][0].position.x):
+			self.ball.handleCollision(Y_AXIS_COLLISION)
+			print("Horizontal_obstacle!")
+		elif int(hit_bricks[0][0].position.y) == int(hit_bricks[1][0].position.y):
+			self.ball.handleCollision(X_AXIS_COLLISION)
+			print("Vertical_obstacle!")
+		else:
+			self.ball.handleCollision(CORNER_NEG_COLLISION)
+
+		self.bricks = [x for x in self.bricks if x not in to_delete]
+
+		# hits = 0
+		# to_delete = []
+		# for i in self.bricks:
+			# c = circleBoxCollision(bpos, r, i.rect())
+			# if c != NO_COLLISION:
+				# hits += 1
+				# self.ball.handleCollision(c)
+
+				# i.handleCollision()
+				# if i.brick_type == Brick.EMPTY:
+					# to_delete.append(i)
+				# 
+				# if hits > 1:
+					# break
 		self.bricks = [x for x in self.bricks if x not in to_delete]
 
 		# 2d)

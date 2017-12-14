@@ -18,7 +18,7 @@ UPPER_MARGIN = BRICKSIZE.y * 2
 LOWER_MARGIN = BRICKSIZE.y * 2
 
 """Duration of a single simulation step."""
-DELTA_T = 1.0
+DELTA_T = 0.4
 
 """Font sizes."""
 FONT_SIZE_1 = 24
