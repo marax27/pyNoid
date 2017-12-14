@@ -38,7 +38,7 @@ def loadLevel(filename):
 			if len(line_type) == 0 or line_type[0] == "#":
 				# Comment - to omit.
 				continue
-			if line_type in ("regular", "invulnerable"):
+			if line_type in brick_types.keys():
 				for i in line[1:]:
 					# Read brick coordinates and form bricks array.
 					# Supported coordinates formats:
@@ -49,6 +49,10 @@ def loadLevel(filename):
 
 					COORD_DELIM = ','  #coordinates delimiter
 					RANGE_DELIM = '-'  #range delimiter
+
+					if i == '':
+						continue
+
 					spl = i.split(COORD_DELIM)
 					if len(spl) != 2:
 						raise NoidError("Invalid coordinates")
@@ -85,6 +89,8 @@ def loadTextures(renderer):
 	Palette.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("palette.bmp"))
 	Ball.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("ball.png"))
 	Brick.TEXTURES = {
-		Brick.REGULAR : sprite_factory.from_image(RESOURCES.get_path("brick.bmp")),
-		Brick.INVULNERABLE : sprite_factory.from_image(RESOURCES.get_path("invulnerable.bmp"))
+		Brick.REGULAR: sprite_factory.from_image(RESOURCES.get_path("brick.bmp")),
+		Brick.INVULNERABLE: sprite_factory.from_image(RESOURCES.get_path("invulnerable.bmp")),
+		Brick.HEAVY: sprite_factory.from_image(RESOURCES.get_path("heavy.bmp")),
+		Brick.HEAVIER: sprite_factory.from_image(RESOURCES.get_path("heavier.bmp"))
 	}

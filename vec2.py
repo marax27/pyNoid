@@ -9,6 +9,9 @@ class vec2(object):
 		self.x = x
 		self.y = y
 	
+	def clone(self):
+		return vec2(self.x, self.y)
+	
 	def length(self):
 		"""Returns length (norm, magnitude) of the vector."""
 		return math.sqrt(self.x*self.x + self.y*self.y)

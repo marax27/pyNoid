@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+import dev
+import math
 import collision
 from vec2 import *
 from constants import *
@@ -24,7 +26,7 @@ class GameObject:
 class Brick(GameObject):
 	"""A brick class."""
 	TEXTURES = None
-	EMPTY, REGULAR, HEAVY, HEAVIER, INVULNERABLE = range(5)  #TODO
+	EMPTY, REGULAR, HEAVY, HEAVIER, INVULNERABLE = range(5)
 	
 	def __init__(self, position, brick_type):
 		super().__init__(position)
@@ -60,7 +62,7 @@ class PhysicalObject(GameObject):
 class Palette(GameObject):
 	"""Palette representation."""
 	TEXTURE = None
-	SIZE = vec2(200, 30)
+	SIZE = vec2(140, 20)
 	SPEED = 20
 
 	def __init__(self):
@@ -74,11 +76,13 @@ class Palette(GameObject):
 		self.setPosition(new_x)
 	
 	def setPosition(self, x):
+		if x == self.position.x: return;
 		if x < 0:
 			x = 0
 		elif x >= WINDOW_SIZE.x - self.SIZE.x:
 			x = WINDOW_SIZE.x - self.SIZE.x
 		self.position.x = x
+		dev.report('pmov', self.position.x)
 
 	def render(self, renderer):
 		if self.TEXTURE is not None:
@@ -94,11 +98,12 @@ class Ball(PhysicalObject):
 	SPEED = 6.0
 
 	def __init__(self, position, velocity, binding=None):
-		super().__init__(position, velocity.normalized()) 
+		super().__init__(position, self.SPEED*velocity.normalized()) 
 		self.binding = binding  # If a ball lies upon a palette, binding represents
 		                        # the palette. If ball flies, binding=None.
 
 	def handleCollision(self, collision_type):
+		v = self.velocity.clone()
 		if collision_type in (collision.NO_COLLISION, collision.INSIDE):
 			return
 		elif collision_type == collision.X_AXIS_COLLISION:
@@ -109,6 +114,19 @@ class Ball(PhysicalObject):
 			self.velocity.x, self.velocity.y = -self.velocity.y, -self.velocity.x
 		elif collision_type == collision.CORNER_COLLISION:
 			self.velocity.x, self.velocity.y = self.velocity.y, self.velocity.x			
+		dev.report('wbcoll', collision_type, v, self.velocity)
+
+	def handlePaletteCollision(self, collision_type, palette):
+		if collision_type != collision.NO_COLLISION:
+			v = self.velocity.clone()
+			a = self.position.x + self.RADIUS - palette.position.x
+			w = palette.SIZE.x
+			eta_prim = -math.pi/3.0 * math.cos(a * math.pi / w)
+			self.velocity = vec2(
+				math.sin(eta_prim),
+				-math.cos(eta_prim)
+			)
+			dev.report('pcoll', collision_type, v, self.velocity)
 
 	def render(self, renderer):
 		p = self.position
@@ -116,4 +134,4 @@ class Ball(PhysicalObject):
 		renderer.copy(self.TEXTURE, None, t )
 
 	def update(self):
-		self.position += self.velocity * self.SPEED * DELTA_T
+		self.position += self.velocity.normalized() * self.SPEED * DELTA_T
