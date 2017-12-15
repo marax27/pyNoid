@@ -47,7 +47,7 @@ FIELD_DELIM = b'@!!'
 ARG_DELIM = b' '
 def report(*args):
 	for i in args:
-		print('@!!{}@!!{}@!! '.format(str(i).replace(' ', ''), dumpable(pickle.dumps(i))), end='') 
+		print('@!!{}@!!{}@!! '.format(str(i).replace(' ', ''), dumpable(pickle.dumps(i))), end='')
 	print()
 
 def unpack(log_file):

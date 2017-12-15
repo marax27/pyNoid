@@ -43,7 +43,8 @@ def run(file = None):
 	#texture1 = sdl2.SDL_CreateTextureFromSurface(renderer.renderer, surf1)
 	#w, h = surf1.w, surf1.h
 
-	text1 = text.Text('Score', font_manager, renderer)
+	score_text = text.Text('Score', font_manager, renderer)
+	score_text.position = (50, 10)
 
 	#sf = sprite_factory = sdl2.ext.SpriteFactory(sdl2.ext.TEXTURE, renderer=renderer)
 	#txtr1 = sf.from_surface(surf1)
@@ -74,15 +75,13 @@ def run(file = None):
 		# Game logic.
 		game.update()
 
-		text1 = text.Text(str(game.score), font_manager, renderer)
+		# Other updates.
+		score_text.load(str(game.score), font_manager, renderer)
 
 		# Draw and update window.
 		dev.dissectWindow(renderer)
 		game.render(renderer)
-
-		#tsrs.render(txtr1)
-		#sdl2.SDL_RenderCopy(renderer.renderer, texture1, None, sdl2.SDL_Rect(0,0,w,h))
-		text1.render(renderer)
+		score_text.render(renderer)
 
 		renderer.present()
 

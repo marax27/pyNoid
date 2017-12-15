@@ -84,7 +84,9 @@ class Level:
 		else:
 			self.ball.handleCollision(CORNER_NEG_COLLISION)
 
-		self.score += self.Score.BRICK_HIT * len(to_delete)
+		for i, j in hit_bricks:
+			if i.brick_type != Brick.INVULNERABLE:
+				self.score += self.Score.BRICK_HIT
 
 		# hits = 0
 		# to_delete = []
