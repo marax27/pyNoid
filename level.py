@@ -9,6 +9,10 @@ import sdl2
 class Level:
 	"""A single level representation."""
 
+	class Score:
+		BRICK_HIT = 10
+		# ...
+
 	def __init__(self, bricks):
 		self.endgame = False
 		self.score = 0
@@ -80,7 +84,7 @@ class Level:
 		else:
 			self.ball.handleCollision(CORNER_NEG_COLLISION)
 
-		self.bricks = [x for x in self.bricks if x not in to_delete]
+		self.score += self.Score.BRICK_HIT * len(to_delete)
 
 		# hits = 0
 		# to_delete = []

@@ -21,7 +21,7 @@ LOWER_MARGIN = BRICKSIZE.y * 2
 DELTA_T = 0.4
 
 """Font sizes."""
-FONT_SIZE_1 = 24
+FONT_SIZE_1 = 36
 
 """Total size of a game window."""
 WINDOW_SIZE = vec2(

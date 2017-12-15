@@ -7,6 +7,7 @@ import sdl2.ext
 import sdl2.sdlttf
 import level
 import loader
+import text
 from colour import Colour
 from constants import *
 from gameobject import Ball, Palette, Brick
@@ -28,7 +29,7 @@ def run(file = None):
 	window = sdl2.ext.Window("pyNoid", size=tuple(WINDOW_SIZE), position=None, flags=sdl2.SDL_WINDOW_SHOWN)
 	renderer = sdl2.ext.Renderer(window, flags=sdl2.SDL_RENDERER_ACCELERATED|sdl2.SDL_RENDERER_PRESENTVSYNC)
 
-	spriterenderer = sdl2.ext.TextureSpriteRenderSystem(renderer)
+	#spriterenderer = sdl2.ext.TextureSpriteRenderSystem(renderer)
 	loader.loadTextures(renderer)
 
 	game = level.Level( loader.loadLevel('levels/p1.noid') )
@@ -36,10 +37,13 @@ def run(file = None):
 	#font_kremlin = sdl2.sdlttf.TTF_OpenFont(b'resources/kremlin.ttf', FONT_SIZE_1)
 	#text_surf = sdl2.sdlttf.TTF_RenderText_Solid(font_kremlin, b'God is dead, government is lame.', sdl2.SDL_Color(*Colour.White))
 
-	font_manager = sdl2.ext.FontManager('resources/kremlin.ttf', size=FONT_SIZE_1)
-	surf1 = font_manager.render('GOD IS DEAD, GOVERNMENT IS LAME.')
-	texture1 = sdl2.SDL_CreateTextureFromSurface(renderer.renderer, surf1)
-	w, h = surf1.w, surf1.h
+	# Working one
+	font_manager = sdl2.ext.FontManager('resources/vga_437.ttf', size=FONT_SIZE_1)
+	#surf1 = font_manager.render('Sample text')
+	#texture1 = sdl2.SDL_CreateTextureFromSurface(renderer.renderer, surf1)
+	#w, h = surf1.w, surf1.h
+
+	text1 = text.Text('Score', font_manager, renderer)
 
 	#sf = sprite_factory = sdl2.ext.SpriteFactory(sdl2.ext.TEXTURE, renderer=renderer)
 	#txtr1 = sf.from_surface(surf1)
@@ -70,12 +74,15 @@ def run(file = None):
 		# Game logic.
 		game.update()
 
+		text1 = text.Text(str(game.score), font_manager, renderer)
+
 		# Draw and update window.
 		dev.dissectWindow(renderer)
 		game.render(renderer)
 
 		#tsrs.render(txtr1)
-		sdl2.SDL_RenderCopy(renderer.renderer, texture1, None, sdl2.SDL_Rect(0,0,w,h))
+		#sdl2.SDL_RenderCopy(renderer.renderer, texture1, None, sdl2.SDL_Rect(0,0,w,h))
+		text1.render(renderer)
 
 		renderer.present()
 
