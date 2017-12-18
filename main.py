@@ -19,6 +19,8 @@ from vec2 import vec2
 def run(file = None):
 	# Initialization.
 	sdl2.ext.init()
+	sdl2.SDL_ShowCursor(False)
+
 	#sdl2.sdlttf.TTF_Init()
 
 	if file is not None:
