@@ -11,14 +11,12 @@ BRICKSIZE = vec2(85, 30)
 """Width of space between the board and left/right window edge."""
 SIDE_MARGIN = BRICKSIZE.x
 
-""""""
 UPPER_MARGIN = BRICKSIZE.y * 2
 
-""""""
 LOWER_MARGIN = BRICKSIZE.y * 2
 
 """Duration of a single simulation step."""
-DELTA_T = 0.4
+DELTA_T = 0.6
 
 """Font sizes."""
 FONT_SIZE_1 = 36

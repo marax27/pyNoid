@@ -18,6 +18,9 @@ from constants import *
 
 #------------------------------------------------------------
 
+class Wall:
+	TEXTURE = None
+
 class GameObject:
 	"""GameObject - base class for many game objects (duh)."""
 	def __init__(self, position):

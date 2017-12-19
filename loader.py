@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from gameobject import Brick, Palette, Ball
+from gameobject import Brick, Palette, Ball, Wall
 from vec2 import vec2, intmatch
 import sdl2.ext
 import io
@@ -94,3 +94,6 @@ def loadTextures(renderer):
 		Brick.HEAVY: sprite_factory.from_image(RESOURCES.get_path("heavy.bmp")),
 		Brick.HEAVIER: sprite_factory.from_image(RESOURCES.get_path("heavier.bmp"))
 	}
+
+	Wall.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("wall.png"))
+

@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from gameobject import Ball, Palette, Brick
+from gameobject import Ball, Palette, Brick, Wall
 from collision import *
 from vec2 import *
 import constants
@@ -124,10 +124,11 @@ class Level:
 				#self.ball.position.y = self.palette.position.y - 2*self.ball.RADIUS
 				r = self.ball.RADIUS
 				bx, px = self.ball.position.x + r, self.palette.position.x
-				if bx < px + r:
+				gs = constants.gameSpace()
+				if bx < px + r and px > gs[0] + 2*r:
 					# Shift left.
 					self.ball.position.x = px - 2*r
-				elif bx > px + self.palette.SIZE.x - r:
+				elif bx>px + self.palette.SIZE.x-r and px+self.palette.SIZE.x < gs[0]+gs[2]-2*r:
 					# Shift right.
 					self.ball.position.x = px + self.palette.SIZE.x
 				else:
@@ -144,6 +145,10 @@ class Level:
 
 	def render(self, renderer):
 		"""Render the level."""
+		
+		renderer.copy(Wall.TEXTURE, None, (0, 0, constants.SIDE_MARGIN, constants.WINDOW_SIZE.y))
+		renderer.copy(Wall.TEXTURE, None, (constants.WINDOW_SIZE.x-constants.SIDE_MARGIN, 0, constants.SIDE_MARGIN, constants.WINDOW_SIZE.y))
+
 		self.palette.render(renderer)
 		if not self.endgame:
 			self.ball.render(renderer)
