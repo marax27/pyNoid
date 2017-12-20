@@ -3,7 +3,7 @@
 from vec2 import vec2
 
 """Width and height of the game board."""
-TILES = vec2(15, 20)
+TILES = vec2(18, 20)
 
 """Size of a single brick."""
 BRICKSIZE = vec2(85, 30)
@@ -30,6 +30,6 @@ WINDOW_SIZE = vec2(
 def gameSpace():
 	"""Returns the rectangle within which the game 'runs'."""
 	return (SIDE_MARGIN,
-	        UPPER_MARGIN,
+	        0, #UPPER_MARGIN,
 		    WINDOW_SIZE.x - 2*SIDE_MARGIN,
-		    WINDOW_SIZE.y - UPPER_MARGIN)
+		    WINDOW_SIZE.y ) #- UPPER_MARGIN)

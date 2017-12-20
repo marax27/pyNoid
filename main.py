@@ -40,13 +40,12 @@ def run(file = None):
 	#text_surf = sdl2.sdlttf.TTF_RenderText_Solid(font_kremlin, b'God is dead, government is lame.', sdl2.SDL_Color(*Colour.White))
 
 	# Working one
-	font_manager = sdl2.ext.FontManager('resources/vga_437.ttf', size=FONT_SIZE_1)
 	#surf1 = font_manager.render('Sample text')
 	#texture1 = sdl2.SDL_CreateTextureFromSurface(renderer.renderer, surf1)
 	#w, h = surf1.w, surf1.h
 
-	score_text = text.Text('Score', font_manager, renderer)
-	score_text.position = (50, 10)
+	score_text = text.Text('0', renderer)
+	score_text.position = (SIDE_MARGIN + 50, 5)
 
 	#sf = sprite_factory = sdl2.ext.SpriteFactory(sdl2.ext.TEXTURE, renderer=renderer)
 	#txtr1 = sf.from_surface(surf1)
@@ -78,10 +77,10 @@ def run(file = None):
 		game.update()
 
 		# Other updates.
-		score_text.load(str(game.score), font_manager, renderer)
+		score_text.load(str(game.score), renderer, UPPER_MARGIN-10)
 
 		# Draw and update window.
-		dev.dissectWindow(renderer)
+		#dev.dissectWindow(renderer)
 		game.render(renderer)
 		score_text.render(renderer)
 
