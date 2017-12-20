@@ -21,8 +21,6 @@ def run(file = None):
 	sdl2.ext.init()
 	sdl2.SDL_ShowCursor(False)
 
-	#sdl2.sdlttf.TTF_Init()
-
 	if file is not None:
 		unpacked_log = dev.unpack(file)
 		for i in unpacked_log:
@@ -31,25 +29,12 @@ def run(file = None):
 	window = sdl2.ext.Window("pyNoid", size=tuple(WINDOW_SIZE), position=None, flags=sdl2.SDL_WINDOW_SHOWN)
 	renderer = sdl2.ext.Renderer(window, flags=sdl2.SDL_RENDERER_ACCELERATED|sdl2.SDL_RENDERER_PRESENTVSYNC)
 
-	#spriterenderer = sdl2.ext.TextureSpriteRenderSystem(renderer)
 	loader.loadTextures(renderer)
 
 	game = level.Level( loader.loadLevel('levels/p1.noid') )
 
-	#font_kremlin = sdl2.sdlttf.TTF_OpenFont(b'resources/kremlin.ttf', FONT_SIZE_1)
-	#text_surf = sdl2.sdlttf.TTF_RenderText_Solid(font_kremlin, b'God is dead, government is lame.', sdl2.SDL_Color(*Colour.White))
-
-	# Working one
-	#surf1 = font_manager.render('Sample text')
-	#texture1 = sdl2.SDL_CreateTextureFromSurface(renderer.renderer, surf1)
-	#w, h = surf1.w, surf1.h
-
 	score_text = text.Text('0', renderer)
 	score_text.position = (SIDE_MARGIN + 50, 5)
-
-	#sf = sprite_factory = sdl2.ext.SpriteFactory(sdl2.ext.TEXTURE, renderer=renderer)
-	#txtr1 = sf.from_surface(surf1)
-	#tsrs = sdl2.ext.TextureSpriteRenderSystem(renderer)
 
 	# Main loop.
 	is_open = True
@@ -87,8 +72,6 @@ def run(file = None):
 		renderer.present()
 
 	sdl2.ext.quit()
-	#sdl2.sdlttf.TTF_CloseFont(font_kremlin)
-	#sdl2.sdlttf.TTF_Quit()
 	return 0
 
 
