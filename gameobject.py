@@ -6,6 +6,8 @@ import collision
 from vec2 import *
 from constants import *
 
+import sdl2
+
 #------------------------------------------------------------
 
 # def brickToScreenCoords(x, y):
@@ -53,8 +55,10 @@ class Brick(GameObject):
 		return self.screenPos() + tuple(BRICKSIZE)
 
 	def render(self, renderer):
-		if self.brick_type != self.EMPTY:
+		bt = self.brick_type
+		if bt != self.EMPTY:
 			renderer.copy(self.TEXTURES[self.brick_type], None, self.rect())
+
 
 class PhysicalObject(GameObject):
 	"""PhysicalObject - base class for bonuses and balls."""
