@@ -12,9 +12,11 @@ class Text:
 		self.position = (0, 0)
 		self.load(text, renderer, size, color)
 	
-	def render(self, renderer):
-		r = sdl2.SDL_Rect(self.position[0], self.position[1],
-		                  self.size[0], self.size[1])
+	def render(self, renderer, pos=None):
+		r = sdl2.SDL_Rect(self.position[0] if not pos else pos[0],
+		                  self.position[1] if not pos else pos[1],
+		                  self.size[0],
+		                  self.size[1])
 		sdl2.SDL_RenderCopy(renderer.renderer, self.texture, None, r)
 
 	def load(self, text, renderer, size=None, color=None):

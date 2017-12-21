@@ -33,9 +33,6 @@ def run(file = None):
 
 	game = level.Level( loader.loadLevel('levels/p1.noid') )
 
-	score_text = text.Text('0', renderer)
-	score_text.position = (SIDE_MARGIN + 50, 5)
-
 	# Main loop.
 	is_open = True
 	while is_open:
@@ -61,13 +58,9 @@ def run(file = None):
 		# Game logic.
 		game.update()
 
-		# Other updates.
-		score_text.load(str(game.score), renderer, UPPER_MARGIN-10)
-
 		# Draw and update window.
 		#dev.dissectWindow(renderer)
 		game.render(renderer)
-		score_text.render(renderer)
 
 		renderer.present()
 

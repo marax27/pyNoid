@@ -5,6 +5,7 @@ from collision import *
 from vec2 import *
 import constants
 import sdl2
+import text
 
 class Level:
 	"""A single level representation."""
@@ -156,3 +157,6 @@ class Level:
 			i.render(renderer)
 		for j in self.bonuses:
 			pass#j.render(renderer)
+
+		score_text = text.Text(str(self.score), renderer, size=constants.UPPER_MARGIN-10)
+		score_text.render(renderer, (constants.SIDE_MARGIN + 50, 5))
