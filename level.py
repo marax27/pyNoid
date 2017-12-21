@@ -3,20 +3,22 @@
 from gameobject import Ball, Palette, Brick, Wall
 from collision import *
 from vec2 import *
+import gameinstance
 import constants
 import sdl2
 import text
 
-class Level:
+class Level(gameinstance.GameInstance):
 	"""A single level representation."""
 
 	class Score:
 		BRICK_HIT = 10
-		# ...
+		# TODO
 
 	def __init__(self, bricks):
 		self.endgame = False
 		self.score = 0
+		self.lives = 3
 		self.bonuses = []		
 		self.palette = Palette()
 		self.bricks  = bricks
@@ -53,8 +55,12 @@ class Level:
 		self.ball.handleCollision(circleLineCollision(bpos, r, y=gs[1]))
 		self.ball.handleCollision(circleLineCollision(bpos, r, x=gs[0]+gs[2]))
 		if(circleLineCollision(bpos, r, y=gs[1]+gs[3]) != NO_COLLISION):
-			self.endgame = True
-			return
+			self.lives -= 1
+			if self.lives == 0:
+				self.endgame = True
+			else:
+				self.restart()
+			#return
 
 		# 2b)
 		c = circleBoxCollision(bpos, r, self.palette.rect())
@@ -158,5 +164,11 @@ class Level:
 		for j in self.bonuses:
 			pass#j.render(renderer)
 
-		score_text = text.Text(str(self.score), renderer, size=constants.UPPER_MARGIN-10)
-		score_text.render(renderer, (constants.SIDE_MARGIN + 50, 5))
+		hud = text.Text(str(self.score), renderer, size=constants.UPPER_MARGIN-10)
+		hud.render(renderer, (constants.SIDE_MARGIN + 50, 5))
+
+		hud.load(str(self.lives), renderer, size=constants.UPPER_MARGIN-10)
+		hud.render(renderer, (constants.WINDOW_SIZE.x - constants.SIDE_MARGIN - 80, 5))
+
+	def restart(self):
+		self.ball = Ball(vec2(200, 400), vec2(0, 1), self.palette)

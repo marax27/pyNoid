@@ -83,11 +83,12 @@ class Palette(GameObject):
 		self.setPosition(new_x)
 	
 	def setPosition(self, x):
-		if x == self.position.x: return;
-		if x < 0:
-			x = 0
-		elif x >= WINDOW_SIZE.x - self.SIZE.x:
-			x = WINDOW_SIZE.x - self.SIZE.x
+		if x == self.position.x:
+			return
+		if x < SIDE_MARGIN:
+			x = SIDE_MARGIN
+		elif x >= WINDOW_SIZE.x - self.SIZE.x - SIDE_MARGIN:
+			x = WINDOW_SIZE.x - self.SIZE.x - SIDE_MARGIN
 		self.position.x = x
 		dev.report('pmov', self.position.x)
 
@@ -108,6 +109,8 @@ class Ball(PhysicalObject):
 		super().__init__(position, self.SPEED*velocity.normalized()) 
 		self.binding = binding  # If a ball lies upon a palette, binding represents
 		                        # the palette. If ball flies, binding=None.
+		if binding:
+			position = binding.position + vec2(20, -2*self.RADIUS)
 
 	def handleCollision(self, collision_type):
 		v = self.velocity.clone()
@@ -124,6 +127,9 @@ class Ball(PhysicalObject):
 		dev.report('wbcoll', collision_type, v, self.velocity)
 
 	def handlePaletteCollision(self, collision_type, palette):
+		if self.binding:
+			return
+
 		if collision_type != collision.NO_COLLISION:
 			v = self.velocity.clone()
 			a = self.position.x + self.RADIUS - palette.position.x
@@ -141,4 +147,7 @@ class Ball(PhysicalObject):
 		renderer.copy(self.TEXTURE, None, t )
 
 	def update(self):
-		self.position += self.velocity.normalized() * self.SPEED * DELTA_T
+		if not self.binding:
+			self.position += self.velocity.normalized() * self.SPEED * DELTA_T
+		else:
+			self.position = self.binding.position + vec2(20, -2*self.RADIUS)
