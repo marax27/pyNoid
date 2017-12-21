@@ -1,21 +1,28 @@
 #!/usr/bin/python3
 
-from gameobject import Ball, Palette, Brick
+from gameobject import Ball, Palette, Brick, Wall
 from collision import *
 from vec2 import *
+import gameinstance
 import constants
 import sdl2
+import text
 
-class Level:
+class Level(gameinstance.GameInstance):
 	"""A single level representation."""
+
+	class Score:
+		BRICK_HIT = 10
+		# TODO
 
 	def __init__(self, bricks):
 		self.endgame = False
 		self.score = 0
+		self.lives = 3
 		self.bonuses = []		
 		self.palette = Palette()
 		self.bricks  = bricks
-		self.ball    = Ball(vec2(200, 400), vec2(0, 1), self.palette)
+		self.ball    = Ball(vec2(0, 0), vec2(0, 1), self.palette)
 
 	def update(self):
 		"""Update game state."""
@@ -48,8 +55,12 @@ class Level:
 		self.ball.handleCollision(circleLineCollision(bpos, r, y=gs[1]))
 		self.ball.handleCollision(circleLineCollision(bpos, r, x=gs[0]+gs[2]))
 		if(circleLineCollision(bpos, r, y=gs[1]+gs[3]) != NO_COLLISION):
-			self.endgame = True
-			return
+			self.lives -= 1
+			if self.lives == 0:
+				self.endgame = True
+			else:
+				self.restart()
+			#return
 
 		# 2b)
 		c = circleBoxCollision(bpos, r, self.palette.rect())
@@ -80,7 +91,9 @@ class Level:
 		else:
 			self.ball.handleCollision(CORNER_NEG_COLLISION)
 
-		self.bricks = [x for x in self.bricks if x not in to_delete]
+		for i, j in hit_bricks:
+			if i.brick_type != Brick.INVULNERABLE:
+				self.score += self.Score.BRICK_HIT
 
 		# hits = 0
 		# to_delete = []
@@ -118,15 +131,20 @@ class Level:
 				#self.ball.position.y = self.palette.position.y - 2*self.ball.RADIUS
 				r = self.ball.RADIUS
 				bx, px = self.ball.position.x + r, self.palette.position.x
-				if bx < px + r:
+				gs = constants.gameSpace()
+				if bx < px + r and px > gs[0] + 2*r:
 					# Shift left.
 					self.ball.position.x = px - 2*r
-				elif bx > px + self.palette.SIZE.x - r:
+				elif bx>px + self.palette.SIZE.x-r and px+self.palette.SIZE.x < gs[0]+gs[2]-2*r:
 					# Shift right.
 					self.ball.position.x = px + self.palette.SIZE.x
 				else:
 					# Shift up.
 					self.ball.position.y = self.palette.position.y - 2*r
+
+		elif e.type == sdl2.SDL_MOUSEBUTTONDOWN:
+			if e.button.button == sdl2.SDL_BUTTON_LEFT:
+				self.ball.handleMouseKey()
 
 		# Deprecated: moving palette with a keyboard.
 		"""if e.type == sdl2.SDL_KEYDOWN:
@@ -138,6 +156,10 @@ class Level:
 
 	def render(self, renderer):
 		"""Render the level."""
+		
+		renderer.copy(Wall.TEXTURE, None, (0, 0, constants.SIDE_MARGIN, constants.WINDOW_SIZE.y))
+		renderer.copy(Wall.TEXTURE, None, (constants.WINDOW_SIZE.x-constants.SIDE_MARGIN, 0, constants.SIDE_MARGIN, constants.WINDOW_SIZE.y))
+
 		self.palette.render(renderer)
 		if not self.endgame:
 			self.ball.render(renderer)
@@ -145,3 +167,12 @@ class Level:
 			i.render(renderer)
 		for j in self.bonuses:
 			pass#j.render(renderer)
+
+		hud = text.Text(str(self.score), renderer, size=constants.UPPER_MARGIN-10)
+		hud.render(renderer, (constants.SIDE_MARGIN + 50, 5))
+
+		hud.load(str(self.lives), renderer, size=constants.UPPER_MARGIN-10)
+		hud.render(renderer, (constants.WINDOW_SIZE.x - constants.SIDE_MARGIN - 80, 5))
+
+	def restart(self):
+		self.ball = Ball(vec2(0, 0), vec2(0, 1), self.palette)

@@ -1,10 +1,13 @@
 #!/usr/bin/python3
 
 import dev
+import copy
 import math
 import collision
 from vec2 import *
 from constants import *
+
+import sdl2
 
 #------------------------------------------------------------
 
@@ -17,6 +20,9 @@ from constants import *
 # 	return brickToScreenCoords(x, y) + tuple(BRICKSIZE)
 
 #------------------------------------------------------------
+
+class Wall:
+	TEXTURE = None
 
 class GameObject:
 	"""GameObject - base class for many game objects (duh)."""
@@ -50,8 +56,10 @@ class Brick(GameObject):
 		return self.screenPos() + tuple(BRICKSIZE)
 
 	def render(self, renderer):
-		if self.brick_type != self.EMPTY:
+		bt = self.brick_type
+		if bt != self.EMPTY:
 			renderer.copy(self.TEXTURES[self.brick_type], None, self.rect())
+
 
 class PhysicalObject(GameObject):
 	"""PhysicalObject - base class for bonuses and balls."""
@@ -76,11 +84,12 @@ class Palette(GameObject):
 		self.setPosition(new_x)
 	
 	def setPosition(self, x):
-		if x == self.position.x: return;
-		if x < 0:
-			x = 0
-		elif x >= WINDOW_SIZE.x - self.SIZE.x:
-			x = WINDOW_SIZE.x - self.SIZE.x
+		if x == self.position.x:
+			return
+		if x < SIDE_MARGIN:
+			x = SIDE_MARGIN
+		elif x >= WINDOW_SIZE.x - self.SIZE.x - SIDE_MARGIN:
+			x = WINDOW_SIZE.x - self.SIZE.x - SIDE_MARGIN
 		self.position.x = x
 		dev.report('pmov', self.position.x)
 
@@ -94,13 +103,15 @@ class Palette(GameObject):
 class Ball(PhysicalObject):
 	"""Ball class"""
 	TEXTURE = None
-	RADIUS = 8
+	RADIUS = 7
 	SPEED = 6.0
 
 	def __init__(self, position, velocity, binding=None):
 		super().__init__(position, self.SPEED*velocity.normalized()) 
 		self.binding = binding  # If a ball lies upon a palette, binding represents
 		                        # the palette. If ball flies, binding=None.
+		if binding:
+			position = binding.position + vec2(20, -2*self.RADIUS)
 
 	def handleCollision(self, collision_type):
 		v = self.velocity.clone()
@@ -116,7 +127,16 @@ class Ball(PhysicalObject):
 			self.velocity.x, self.velocity.y = self.velocity.y, self.velocity.x			
 		dev.report('wbcoll', collision_type, v, self.velocity)
 
+	def handleMouseKey(self):
+		if self.binding:
+			pal = copy.copy(self.binding)
+			self.binding = None
+			self.handlePaletteCollision(collision.Y_AXIS_COLLISION, pal)
+
 	def handlePaletteCollision(self, collision_type, palette):
+		if self.binding:
+			return
+
 		if collision_type != collision.NO_COLLISION:
 			v = self.velocity.clone()
 			a = self.position.x + self.RADIUS - palette.position.x
@@ -134,4 +154,7 @@ class Ball(PhysicalObject):
 		renderer.copy(self.TEXTURE, None, t )
 
 	def update(self):
-		self.position += self.velocity.normalized() * self.SPEED * DELTA_T
+		if not self.binding:
+			self.position += self.velocity.normalized() * self.SPEED * DELTA_T
+		else:
+			self.position = self.binding.position + vec2(20, -2*self.RADIUS)

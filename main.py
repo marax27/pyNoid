@@ -7,6 +7,7 @@ import sdl2.ext
 import sdl2.sdlttf
 import level
 import loader
+import text
 from colour import Colour
 from constants import *
 from gameobject import Ball, Palette, Brick
@@ -18,7 +19,7 @@ from vec2 import vec2
 def run(file = None):
 	# Initialization.
 	sdl2.ext.init()
-	sdl2.sdlttf.TTF_Init()
+	sdl2.SDL_ShowCursor(False)
 
 	if file is not None:
 		unpacked_log = dev.unpack(file)
@@ -28,13 +29,9 @@ def run(file = None):
 	window = sdl2.ext.Window("pyNoid", size=tuple(WINDOW_SIZE), position=None, flags=sdl2.SDL_WINDOW_SHOWN)
 	renderer = sdl2.ext.Renderer(window, flags=sdl2.SDL_RENDERER_ACCELERATED|sdl2.SDL_RENDERER_PRESENTVSYNC)
 
-	spriterenderer = sdl2.ext.TextureSpriteRenderSystem(renderer)
 	loader.loadTextures(renderer)
 
 	game = level.Level( loader.loadLevel('levels/p1.noid') )
-
-	#font_kremlin = sdl2.sdlttf.TTF_OpenFont('resources/kremlin.ttf', FONT_SIZE_1)
-	#print("Font is {}".format(font_kremlin))
 
 	# Main loop.
 	is_open = True
@@ -56,14 +53,15 @@ def run(file = None):
 				break
 
 		# Clear window.
-		renderer.clear(color=Colour.Black)		
+		renderer.clear(color=Colour.Black)
 
 		# Game logic.
 		game.update()
 
 		# Draw and update window.
-		dev.dissectWindow(renderer)
+		#dev.dissectWindow(renderer)
 		game.render(renderer)
+
 		renderer.present()
 
 	sdl2.ext.quit()

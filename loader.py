@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from gameobject import Brick, Palette, Ball
+from gameobject import Brick, Palette, Ball, Wall
 from vec2 import vec2, intmatch
 import sdl2.ext
 import io
@@ -80,7 +80,7 @@ def loadLevel(filename):
 								raise NoidError("More than 1 brick occupy exact same space")
 							brick = Brick(pos, brick_types[line_type])
 							result.append(brick)
-	return result
+	return result 
 
 def loadTextures(renderer):
 	"""Load necessary textures from drive."""
@@ -89,8 +89,10 @@ def loadTextures(renderer):
 	Palette.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("palette.bmp"))
 	Ball.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("ball.png"))
 	Brick.TEXTURES = {
-		Brick.REGULAR: sprite_factory.from_image(RESOURCES.get_path("brick.bmp")),
-		Brick.INVULNERABLE: sprite_factory.from_image(RESOURCES.get_path("invulnerable.bmp")),
+		Brick.REGULAR: sprite_factory.from_image(RESOURCES.get_path("brick.png")),
+		Brick.INVULNERABLE: sprite_factory.from_image(RESOURCES.get_path("invulnerable.png")),
 		Brick.HEAVY: sprite_factory.from_image(RESOURCES.get_path("heavy.bmp")),
 		Brick.HEAVIER: sprite_factory.from_image(RESOURCES.get_path("heavier.bmp"))
 	}
+
+	Wall.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("wall.png"))
