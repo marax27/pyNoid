@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import dev
+import copy
 import math
 import collision
 from vec2 import *
@@ -125,6 +126,12 @@ class Ball(PhysicalObject):
 		elif collision_type == collision.CORNER_COLLISION:
 			self.velocity.x, self.velocity.y = self.velocity.y, self.velocity.x			
 		dev.report('wbcoll', collision_type, v, self.velocity)
+
+	def handleMouseKey(self):
+		if self.binding:
+			pal = copy.copy(self.binding)
+			self.binding = None
+			self.handlePaletteCollision(collision.Y_AXIS_COLLISION, pal)
 
 	def handlePaletteCollision(self, collision_type, palette):
 		if self.binding:

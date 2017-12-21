@@ -22,7 +22,7 @@ class Level(gameinstance.GameInstance):
 		self.bonuses = []		
 		self.palette = Palette()
 		self.bricks  = bricks
-		self.ball    = Ball(vec2(200, 400), vec2(0, 1), self.palette)
+		self.ball    = Ball(vec2(0, 0), vec2(0, 1), self.palette)
 
 	def update(self):
 		"""Update game state."""
@@ -142,6 +142,10 @@ class Level(gameinstance.GameInstance):
 					# Shift up.
 					self.ball.position.y = self.palette.position.y - 2*r
 
+		elif e.type == sdl2.SDL_MOUSEBUTTONDOWN:
+			if e.button.button == sdl2.SDL_BUTTON_LEFT:
+				self.ball.handleMouseKey()
+
 		# Deprecated: moving palette with a keyboard.
 		"""if e.type == sdl2.SDL_KEYDOWN:
 			key = e.key.keysym.sym
@@ -171,4 +175,4 @@ class Level(gameinstance.GameInstance):
 		hud.render(renderer, (constants.WINDOW_SIZE.x - constants.SIDE_MARGIN - 80, 5))
 
 	def restart(self):
-		self.ball = Ball(vec2(200, 400), vec2(0, 1), self.palette)
+		self.ball = Ball(vec2(0, 0), vec2(0, 1), self.palette)
