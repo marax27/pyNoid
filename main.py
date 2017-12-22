@@ -32,7 +32,7 @@ def run(file = None):
 	loader.loadTextures(renderer)
 
 	#game = level.Level( loader.loadLevel('levels/p1.noid') )
-	main_menu = menu.Menu()
+	main_menu = menu.Menu(renderer)
 	instance = main_menu
 
 	# Main loop.
