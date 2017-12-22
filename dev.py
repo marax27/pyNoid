@@ -46,6 +46,7 @@ def dumpable(dump):
 FIELD_DELIM = b'@!!'
 ARG_DELIM = b' '
 def report(*args):
+	return
 	for i in args:
 		print('@!!{}@!!{}@!! '.format(str(i).replace(' ', ''), dumpable(pickle.dumps(i))), end='')
 	print()

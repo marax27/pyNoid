@@ -6,7 +6,7 @@ from vec2 import vec2
 TILES = vec2(18, 20)
 
 """Size of a single brick."""
-BRICKSIZE = vec2(85, 30)
+BRICKSIZE = vec2(50, 20) #vec2(85, 30)
 
 """Width of space between the board and left/right window edge."""
 SIDE_MARGIN = BRICKSIZE.x

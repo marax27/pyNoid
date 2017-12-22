@@ -134,10 +134,10 @@ class Ball(PhysicalObject):
 			self.handlePaletteCollision(collision.Y_AXIS_COLLISION, pal)
 
 	def handlePaletteCollision(self, collision_type, palette):
-		if self.binding:
+		if self.binding or collision_type == collision.NO_COLLISION:
 			return
 
-		if collision_type != collision.NO_COLLISION:
+		if collision_type == collision.Y_AXIS_COLLISION:
 			v = self.velocity.clone()
 			a = self.position.x + self.RADIUS - palette.position.x
 			w = palette.SIZE.x
@@ -147,6 +147,8 @@ class Ball(PhysicalObject):
 				-math.cos(eta_prim)
 			)
 			dev.report('pcoll', collision_type, v, self.velocity)
+		elif collision_type == collision.X_AXIS_COLLISION:
+			self.handleCollision(collision.X_AXIS_COLLISION)
 
 	def render(self, renderer):
 		p = self.position
