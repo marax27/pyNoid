@@ -28,6 +28,15 @@ class Text:
 class Button:
 	IDLE, HOVER, PRESSED = 0x1001, 0x1002, 0x1003
 
+	@staticmethod
+	def buildClickableText(message, renderer, idle_color, pressed_color, hover_color, pos=(0,0)):
+		return Button(
+			Text(message, renderer, 48, idle_color),
+			Text(message, renderer, 48, pressed_color),
+			Text(message, renderer, 48, hover_color),
+			pos
+		)
+
 	def __init__(self, idle_state, pressed_state, hover_state=None, pos=(0,0)):
 		self.idle = idle_state
 		self.hover = hover_state if hover_state is not None else idle_state
@@ -39,7 +48,7 @@ class Button:
 		if self.idle.size != self.hover.size or self.idle.size != self.pressed.size:
 			raise ValueError()
 		self.size = self.idle.size
-	
+
 	def render(self, renderer):
 		if self.state == self.PRESSED:
 			self.pressed.render(renderer, self.position)
@@ -60,6 +69,3 @@ class Button:
 				self.state = self.HOVER
 		else:
 			self.state = self.IDLE
-
-		#hud = Text('x:{}, y:{}'.format(x.value,y.value), renderer, size=constants.UPPER_MARGIN-10)
-		#if event.type == sdl2.SDL_MOU

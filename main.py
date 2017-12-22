@@ -8,7 +8,6 @@ import sdl2.sdlttf
 import level
 import menu
 import loader
-import text
 from colour import Colour
 from constants import *
 from gameobject import Ball, Palette, Brick

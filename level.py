@@ -6,7 +6,7 @@ from vec2 import *
 import gameinstance
 import constants
 import sdl2
-import text
+import hud
 
 class Level(gameinstance.GameInstance):
 	"""A single level representation."""
@@ -168,11 +168,11 @@ class Level(gameinstance.GameInstance):
 		for j in self.bonuses:
 			pass#j.render(renderer)
 
-		hud = text.Text(str(self.score), renderer, size=constants.UPPER_MARGIN-10)
-		hud.render(renderer, (constants.SIDE_MARGIN + 50, 5))
+		h = hud.Text(str(self.score), renderer, size=constants.UPPER_MARGIN-10)
+		h.render(renderer, (constants.SIDE_MARGIN + 50, 5))
 
-		hud.load(str(self.lives), renderer, size=constants.UPPER_MARGIN-10)
-		hud.render(renderer, (constants.WINDOW_SIZE.x - constants.SIDE_MARGIN - 80, 5))
+		h.load(str(self.lives), renderer, size=constants.UPPER_MARGIN-10)
+		h.render(renderer, (constants.WINDOW_SIZE.x - constants.SIDE_MARGIN - 80, 5))
 
 	def restart(self):
 		self.ball = Ball(vec2(0, 0), vec2(0, 1), self.palette)

@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 
 import gameinstance
-import colour
-import text
+from colour import Colour
 import sdl2
+import hud
 
 class Menu(gameinstance.GameInstance):
 	"""Game menu representation."""
@@ -11,14 +11,11 @@ class Menu(gameinstance.GameInstance):
 	def __init__(self, renderer):
 		self.choice = None
 		self.is_open = True
-		self.title = text.Text('pyNoid', renderer, 128)
-		#self.sub = text.Text('New game', renderer, 48, colour.Colour.Green)
+		self.title = hud.Text('pyNoid', renderer, 128)
 
-		self.sub = text.Button(
-			text.Text('New Game', renderer, 48, colour.Colour.White),
-			text.Text('New Game', renderer, 48, colour.Colour.Green),
-			text.Text('New Game', renderer, 48, colour.Colour.greyscale(0.45)),
-			(150, 350)
+		self.sub = hud.Button.buildClickableText(
+			'New Game', renderer,
+			Colour.White, Colour.Green, Colour.greyscale(0.75), (150, 350)
 		)
 
 	def update(self):
@@ -29,7 +26,7 @@ class Menu(gameinstance.GameInstance):
 		"""Process relevant events."""
 
 		self.sub.handleEvent(e)
-		if self.sub.state == text.Button.PRESSED:
+		if self.sub.state == hud.Button.PRESSED:
 			self.choice = 'levels/p1.noid'
 
 		#if e.type == sdl2.SDL_MOUSEBUTTONDOWN:
