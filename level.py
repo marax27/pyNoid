@@ -176,3 +176,7 @@ class Level(gameinstance.GameInstance):
 
 	def restart(self):
 		self.ball = Ball(vec2(0, 0), vec2(0, 1), self.palette)
+
+	def isOpen(self):
+		"""Returns False if GameInstance should be no longer active."""
+		return not self.endgame
