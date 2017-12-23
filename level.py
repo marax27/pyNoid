@@ -5,6 +5,7 @@ from collision import *
 from vec2 import *
 import gameinstance
 import constants
+import misc
 import sdl2
 import hud
 
@@ -23,6 +24,9 @@ class Level(gameinstance.GameInstance):
 		self.palette = Palette()
 		self.bricks  = bricks
 		self.ball    = Ball(vec2(0, 0), vec2(0, 1), self.palette)
+
+		mx, my = misc.getMousePos()
+		self.palette.setPosition(mx)
 
 	def update(self):
 		"""Update game state."""
@@ -122,12 +126,14 @@ class Level(gameinstance.GameInstance):
 
 	def handleEvent(self, e):
 		"""Process events such as palette movement."""
+		
 		if e.type == sdl2.SDL_MOUSEMOTION:
-			x = e.motion.x
-			self.palette.setPosition(x)
-			
 			# Since palette is considered unstoppable force, if palette now
 			# covers space occupied by the ball, the ball must bend.
+
+			x = e.motion.x
+			self.palette.setPosition(x)
+
 			c = circleBoxCollision(self.ball.position, self.ball.RADIUS, self.palette.rect())
 			if c != NO_COLLISION:
 				#self.ball.position.y = self.palette.position.y - 2*self.ball.RADIUS
