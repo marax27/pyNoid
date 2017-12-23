@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from gameobject import Ball, Palette, Brick, Wall
+from gameobject import Ball, Palette, Brick, Wall, Bonus
 from collision import *
 from vec2 import *
 import gameinstance
@@ -33,7 +33,7 @@ class Level(gameinstance.GameInstance):
 		# 1. Update objects' positions.
 		self.ball.update()
 		for i in self.bonuses:
-			pass  #i.update()
+			i.update()
 		
 		# 2. Check for collisions.
 		#          WALLS BALL PALETTE BONUSES BRICKS
@@ -115,6 +115,13 @@ class Level(gameinstance.GameInstance):
 				# 
 				# if hits > 1:
 					# break
+			
+		"""Spawning a bonus."""
+		for i in to_delete:
+			if misc.randomBool(constants.BONUS_SPAWN_CHANCE):
+				bonus = Bonus(i.center())
+				self.bonuses.append(bonus)
+
 		self.bricks = [x for x in self.bricks if x not in to_delete]
 
 		# 2d)
@@ -174,7 +181,7 @@ class Level(gameinstance.GameInstance):
 		for i in self.bricks:
 			i.render(renderer)
 		for j in self.bonuses:
-			pass#j.render(renderer)
+			j.render(renderer)
 
 		h = hud.Text(str(self.score), renderer, size=constants.UPPER_MARGIN-10)
 		h.render(renderer, (constants.SIDE_MARGIN + 50, 5))

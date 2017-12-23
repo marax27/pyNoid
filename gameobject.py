@@ -6,6 +6,7 @@ import math
 import collision
 from vec2 import *
 from constants import *
+from random import random
 
 import sdl2
 
@@ -60,6 +61,9 @@ class Brick(GameObject):
 		if bt != self.EMPTY:
 			renderer.copy(self.TEXTURES[self.brick_type], None, self.rect())
 
+	def center(self):
+		sp = self.screenPos()
+		return vec2(sp[0] + BRICKSIZE.x//2, sp[1] + BRICKSIZE.y//2)
 
 class PhysicalObject(GameObject):
 	"""PhysicalObject - base class for bonuses and balls."""
@@ -153,10 +157,49 @@ class Ball(PhysicalObject):
 	def render(self, renderer):
 		p = self.position
 		t = int(p.x), int(p.y), 2*self.RADIUS, 2*self.RADIUS
-		renderer.copy(self.TEXTURE, None, t )
+		renderer.copy(self.TEXTURE, None, t)
 
 	def update(self):
 		if not self.binding:
 			self.position += self.velocity.normalized() * self.SPEED * DELTA_T
 		else:
 			self.position = self.binding.position + vec2(20, -2*self.RADIUS)
+
+class Bonus(PhysicalObject):
+	"""Base class for all bonuses/pickups."""
+	TEXTURE = None
+	START_SPEED = 9.0
+
+	# Types of bonuses.
+	EXTRA_LIFE       = 0x2001
+	WIDER_PALETTE    = 0X2002
+	NARROWER_PALETTE = 0x2003
+	# ... TODO
+
+	def __init__(self, position, bonus_type=None):
+		"""Create new bonus. Initial velocity angle is randomly generated."""
+		self.position = position - vec2(BONUS_SIZE//2, BONUS_SIZE//2)
+
+		print('Receiving pos: {}'.format(position))
+
+		# Randomly select the bonus type.
+		#if not bonus_type:
+		#	pass  #TODO
+
+		self.type = bonus_type
+
+		phi = random() * math.pi
+		self.velocity = self.START_SPEED * vec2(math.cos(phi), -math.sin(phi))
+	
+	def update(self):
+		self.position += vec2(
+			self.velocity.x * DELTA_T,
+			self.velocity.y * DELTA_T + G_ACCEL * DELTA_T * DELTA_T
+		)
+		self.velocity.y += G_ACCEL * DELTA_T
+	
+	def render(self, renderer):
+		# TODO
+		t = int(self.position.x), int(self.position.y), BONUS_SIZE, BONUS_SIZE
+		renderer.copy(self.TEXTURE, None, t)
+

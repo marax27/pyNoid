@@ -51,6 +51,10 @@ class vec2(object):
 		"""Vector division."""
 		return vec2(self.x / scalar, self.y / scalar)
 
+	def __div__(self, scalar):
+		"""Vector integer division."""
+		return vec2(self.x // scalar, self.y // scalar)
+
 	def __neg__(self):
 		"""Equivalent of -1 * vector"""
 		return vec2(-self.x, -self.y)

@@ -15,8 +15,17 @@ UPPER_MARGIN = BRICKSIZE.y * 2
 
 LOWER_MARGIN = BRICKSIZE.y * 2
 
+"""Size of a pickup."""
+BONUS_SIZE = 64
+
+"""Probability of bonus spawning after a brick is destroyed."""
+BONUS_SPAWN_CHANCE = 1
+
 """Duration of a single simulation step."""
 DELTA_T = 0.8
+
+"""Gravitational acceleration."""
+G_ACCEL = 0.25
 
 """Font sizes."""
 FONT_SIZE_1 = 36

@@ -73,7 +73,6 @@ def run(file = None):
 		# Draw and update window.
 		#dev.dissectWindow(renderer)
 		instance.render(renderer)
-
 		renderer.present()
 
 	sdl2.ext.quit()
