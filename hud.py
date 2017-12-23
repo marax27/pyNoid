@@ -7,6 +7,7 @@ import sdl2
 import ctypes
 
 class Text:
+	"""Single piece of text."""
 	font_manager = sdl2.ext.FontManager('resources/vga_437.ttf', size=FONT_SIZE_1)
 
 	def __init__(self, text, renderer, size=None, color=None):
@@ -14,6 +15,7 @@ class Text:
 		self.load(text, renderer, size, color)
 	
 	def render(self, renderer, pos=None):
+		"""Render the text, using the renderer."""
 		r = sdl2.SDL_Rect(self.position[0] if not pos else pos[0],
 		                  self.position[1] if not pos else pos[1],
 		                  self.size[0],
@@ -21,15 +23,18 @@ class Text:
 		sdl2.SDL_RenderCopy(renderer.renderer, self.texture, None, r)
 
 	def load(self, text, renderer, size=None, color=None):
+		"""Update a Text object."""
 		surf = Text.font_manager.render(text, size=size, color=color)
 		self.size = (surf.w, surf.h)
 		self.texture = sdl2.SDL_CreateTextureFromSurface(renderer.renderer, surf)
 
 class Button:
+	"""Button class."""
 	IDLE, HOVER, PRESSED = 0x1001, 0x1002, 0x1003
 
 	@staticmethod
 	def buildClickableText(message, renderer, idle_color, pressed_color, hover_color, pos=(0,0)):
+		"""Generates a text label that will change color according to whether it's pressed or not."""
 		return Button(
 			Text(message, renderer, 48, idle_color),
 			Text(message, renderer, 48, pressed_color),
@@ -51,13 +56,16 @@ class Button:
 
 	def render(self, renderer):
 		if self.state == self.PRESSED:
-			self.pressed.render(renderer, self.position)
-		if self.state == self.HOVER:
-			self.hover.render(renderer, self.position)
+			i = self.pressed
+		elif self.state == self.HOVER:
+			i = self.hover
 		else:
-			self.idle.render(renderer, self.position)
+			i = self.idle
+
+		i.render(renderer, self.position)
 
 	def handleEvent(self, event):
+		"""Handle mouse events."""
 		x, y = ctypes.c_int(0), ctypes.c_int(0)
 		sdl2.SDL_GetMouseState(ctypes.byref(x), ctypes.byref(y))
 

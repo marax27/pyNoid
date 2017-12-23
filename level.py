@@ -50,11 +50,13 @@ class Level(gameinstance.GameInstance):
 		r = self.ball.RADIUS
 
 		# 2a)
+		MAGIC = 14  #lowers the 'death zone', so that the game doesn't stop
+		            #immediately as ball hits the bottom of the window. 
 		gs = constants.gameSpace()
 		self.ball.handleCollision(circleLineCollision(bpos, r, x=gs[0]))
 		self.ball.handleCollision(circleLineCollision(bpos, r, y=gs[1]))
 		self.ball.handleCollision(circleLineCollision(bpos, r, x=gs[0]+gs[2]))
-		if(circleLineCollision(bpos, r, y=gs[1]+gs[3]) != NO_COLLISION):
+		if(circleLineCollision(bpos, r, y=gs[1]+gs[3]+MAGIC) != NO_COLLISION):
 			self.lives -= 1
 			if self.lives == 0:
 				self.endgame = True
