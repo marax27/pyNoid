@@ -43,26 +43,24 @@ class Button:
 		)
 
 	def __init__(self, idle_state, pressed_state, hover_state=None, pos=(0,0)):
-		self.idle = idle_state
-		self.hover = hover_state if hover_state is not None else idle_state
-		self.pressed = pressed_state
+		#self.idle = idle_state
+		#self.hover = hover_state if hover_state is not None else idle_state
+		#self.pressed = pressed_state
+		self.states = {}
+		self.states[self.IDLE] = idle_state
+		self.states[self.HOVER] = hover_state if hover_state is not None else idle_state
+		self.states[self.PRESSED] = pressed_state
 
 		self.state = self.IDLE
 		self.position = pos
 
-		if self.idle.size != self.hover.size or self.idle.size != self.pressed.size:
+		# Size restriction.
+		if self.states[self.IDLE].size != self.states[self.HOVER].size or self.states[self.IDLE].size != self.states[self.PRESSED].size:
 			raise ValueError()
-		self.size = self.idle.size
+		self.size = self.states[self.IDLE].size
 
 	def render(self, renderer):
-		if self.state == self.PRESSED:
-			i = self.pressed
-		elif self.state == self.HOVER:
-			i = self.hover
-		else:
-			i = self.idle
-
-		i.render(renderer, self.position)
+		self.states[self.state].render(renderer, self.position)
 
 	def handleEvent(self, event):
 		"""Handle mouse events."""
