@@ -14,6 +14,7 @@ class Level(gameinstance.GameInstance):
 
 	class Score:
 		BRICK_HIT = 10
+		PICKUP    = 20
 		# TODO
 
 	def __init__(self, bricks):
@@ -56,7 +57,7 @@ class Level(gameinstance.GameInstance):
 		# 2a)
 		MAGIC = 14  #lowers the 'death zone', so that the game doesn't stop
 		            #immediately as ball hits the bottom of the window. 
-		gs = constants.gameSpace()
+		gs = misc.gameSpace()
 		self.ball.handleCollision(circleLineCollision(bpos, r, x=gs[0]))
 		self.ball.handleCollision(circleLineCollision(bpos, r, y=gs[1]))
 		self.ball.handleCollision(circleLineCollision(bpos, r, x=gs[0]+gs[2]))
@@ -101,21 +102,6 @@ class Level(gameinstance.GameInstance):
 			if i.brick_type != Brick.INVULNERABLE:
 				self.score += self.Score.BRICK_HIT
 
-		# hits = 0
-		# to_delete = []
-		# for i in self.bricks:
-			# c = circleBoxCollision(bpos, r, i.rect())
-			# if c != NO_COLLISION:
-				# hits += 1
-				# self.ball.handleCollision(c)
-
-				# i.handleCollision()
-				# if i.brick_type == Brick.EMPTY:
-					# to_delete.append(i)
-				# 
-				# if hits > 1:
-					# break
-			
 		"""Spawning a bonus."""
 		for i in to_delete:
 			if misc.randomBool(constants.BONUS_SPAWN_CHANCE):
@@ -130,6 +116,29 @@ class Level(gameinstance.GameInstance):
 			self.palette.position.x = gs[0]
 		elif p_x + self.palette.SIZE.x > gs[0] + gs[2]:
 			self.palette.position.x = gs[0] + gs[2] - self.palette.SIZE.x
+
+		MAGIC1 = 64
+		to_delete, to_handle = [], []
+		for i in self.bonuses:
+			# 2e)
+			r = i.rect()
+			i.handleCollision(boxLineCollision(r, x=gs[0]))
+			i.handleCollision(boxLineCollision(r, y=gs[1]))
+			i.handleCollision(boxLineCollision(r, x=gs[0]+gs[2]))
+			if boxLineCollision(r, y=gs[1]+gs[3]+MAGIC1) != NO_COLLISION:
+				to_delete.append(i)
+			
+			# 2f)
+			c = boxBoxCollision(i.rect(), self.palette.rect())
+			if c:
+				to_handle.append(i)
+		
+		# Handle pickups that have been caught.
+		for i in to_handle:
+			self.handleBonus(i.type)
+
+		# Remove pickups that were caught or fell down.
+		self.bonuses = [x for x in self.bonuses if (x not in to_delete and x not in to_handle)]
 
 	def handleEvent(self, e):
 		"""Process events such as palette movement."""
@@ -146,7 +155,7 @@ class Level(gameinstance.GameInstance):
 				#self.ball.position.y = self.palette.position.y - 2*self.ball.RADIUS
 				r = self.ball.RADIUS
 				bx, px = self.ball.position.x + r, self.palette.position.x
-				gs = constants.gameSpace()
+				gs = misc.gameSpace()
 				if bx < px + r and px > gs[0] + 2*r:
 					# Shift left.
 					self.ball.position.x = px - 2*r
@@ -168,6 +177,9 @@ class Level(gameinstance.GameInstance):
 				self.palette.move(-1)
 			elif key == sdl2.SDLK_RIGHT:
 				self.palette.move(+1)"""
+
+	def handleBonus(self, bonus_type):
+		self.score += self.Score.PICKUP
 
 	def render(self, renderer):
 		"""Render the level."""

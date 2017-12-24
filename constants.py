@@ -22,7 +22,7 @@ BONUS_SIZE = 64
 BONUS_SPAWN_CHANCE = 1
 
 """Duration of a single simulation step."""
-DELTA_T = 0.8
+DELTA_T = 0.6
 
 """Gravitational acceleration."""
 G_ACCEL = 0.25
@@ -36,10 +36,3 @@ WINDOW_SIZE = vec2(
 	BRICKSIZE.x * TILES.x + 2*SIDE_MARGIN,
 	BRICKSIZE.y * TILES.y + UPPER_MARGIN + LOWER_MARGIN
 )
-
-def gameSpace():
-	"""Returns the rectangle within which the game 'runs'."""
-	return (SIDE_MARGIN,
-	        0, #UPPER_MARGIN,
-		    WINDOW_SIZE.x - 2*SIDE_MARGIN,
-		    WINDOW_SIZE.y ) #- UPPER_MARGIN)

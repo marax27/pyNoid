@@ -1,7 +1,8 @@
 import sdl2
 import sdl2.ext
 import ctypes
-from random import random
+import constants
+from random import random, randrange
 
 def getMousePos():
 	"""Obtain current mouse position."""
@@ -12,3 +13,22 @@ def getMousePos():
 def randomBool(probability):
 	"""probability should belong to interval [0, 1]."""
 	return random() < probability
+
+def randomDict(d):
+	"""Returns random weighted dict record. Values are assumed to be weights."""
+	total_weight = sum(d.values())
+	r = randrange(total_weight)
+	pos = 0
+	for k,v in d.items():
+		if pos <= r < pos+v:
+			return k
+		else:
+			pos += v
+	raise ValueError('Unexpected end of loop.')
+
+def gameSpace():
+	"""Returns the rectangle within which the game 'runs'."""
+	return (constants.SIDE_MARGIN,
+	        0, #UPPER_MARGIN,
+		    constants.WINDOW_SIZE.x - 2 * constants.SIDE_MARGIN,
+		    constants.WINDOW_SIZE.y ) #- UPPER_MARGIN)

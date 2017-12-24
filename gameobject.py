@@ -3,11 +3,11 @@
 import dev
 import copy
 import math
+import random
 import collision
 from vec2 import *
 from constants import *
-from random import random
-
+from misc import randomDict
 import sdl2
 
 #------------------------------------------------------------
@@ -29,6 +29,8 @@ class GameObject:
 	"""GameObject - base class for many game objects (duh)."""
 	def __init__(self, position):
 		self.position = position
+
+#-----------------------------------------------------------
 
 class Brick(GameObject):
 	"""A brick class."""
@@ -65,12 +67,16 @@ class Brick(GameObject):
 		sp = self.screenPos()
 		return vec2(sp[0] + BRICKSIZE.x//2, sp[1] + BRICKSIZE.y//2)
 
+#-----------------------------------------------------------
+
 class PhysicalObject(GameObject):
 	"""PhysicalObject - base class for bonuses and balls."""
 	def __init__(self, position, velocity):
 		super().__init__(position)
 		self.velocity = velocity
-	
+
+#-----------------------------------------------------------
+
 class Palette(GameObject):
 	"""Palette representation."""
 	TEXTURE = None
@@ -103,6 +109,8 @@ class Palette(GameObject):
 
 	def rect(self):
 		return tuple(self.position) + tuple(self.SIZE)
+
+#-----------------------------------------------------------
 
 class Ball(PhysicalObject):
 	"""Ball class"""
@@ -165,6 +173,8 @@ class Ball(PhysicalObject):
 		else:
 			self.position = self.binding.position + vec2(20, -2*self.RADIUS)
 
+#-----------------------------------------------------------
+
 class Bonus(PhysicalObject):
 	"""Base class for all bonuses/pickups."""
 	TEXTURE = None
@@ -172,23 +182,42 @@ class Bonus(PhysicalObject):
 
 	# Types of bonuses.
 	EXTRA_LIFE       = 0x2001
-	WIDER_PALETTE    = 0X2002
-	NARROWER_PALETTE = 0x2003
+	TECH_SUPPORT     = 0x2002
+	WIDER_PALETTE    = 0x2003
+	NARROWER_PALETTE = 0x2004
+	SUPER_SPEED	     = 0x2005
+	STRIKE_THROUGH   = 0x2006
+	FIREBALL         = 0x2007
+	DEATH            = 0x2008
+	SKYFALL          = 0x2009
+	CATCH_N_HOLD     = 0x200a
 	# ... TODO
+
+	"""Dictionary of possible bonuses' types. Type code is a key, whereas a value is the weight."""
+	types = {
+		EXTRA_LIFE       : 6,
+		TECH_SUPPORT     : 12,
+		WIDER_PALETTE    : 36,
+		NARROWER_PALETTE : 36,
+		SUPER_SPEED      : 20,
+		STRIKE_THROUGH   : 12,
+		FIREBALL         : 12,
+		DEATH            : 20,
+		SKYFALL          : 8,
+		CATCH_N_HOLD     : 8
+	}
 
 	def __init__(self, position, bonus_type=None):
 		"""Create new bonus. Initial velocity angle is randomly generated."""
 		self.position = position - vec2(BONUS_SIZE//2, BONUS_SIZE//2)
 
-		print('Receiving pos: {}'.format(position))
-
 		# Randomly select the bonus type.
-		#if not bonus_type:
-		#	pass  #TODO
+		if not bonus_type:
+			bonus_type = randomDict(self.types)
 
 		self.type = bonus_type
 
-		phi = random() * math.pi
+		phi = random.random() * math.pi
 		self.velocity = self.START_SPEED * vec2(math.cos(phi), -math.sin(phi))
 	
 	def update(self):
@@ -198,8 +227,17 @@ class Bonus(PhysicalObject):
 		)
 		self.velocity.y += G_ACCEL * DELTA_T
 	
+	def handleCollision(self, collision_type):
+		if collision_type == collision.X_AXIS_COLLISION:
+			self.velocity.x = -self.velocity.x
+		elif collision_type == collision.Y_AXIS_COLLISION:
+			self.velocity.y = -self.velocity.y
+	
 	def render(self, renderer):
 		# TODO
 		t = int(self.position.x), int(self.position.y), BONUS_SIZE, BONUS_SIZE
 		renderer.copy(self.TEXTURE, None, t)
+
+	def rect(self):
+		return tuple(self.position) + (BONUS_SIZE, BONUS_SIZE)
 
