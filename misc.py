@@ -26,6 +26,19 @@ def randomDict(d):
 			pos += v
 	raise ValueError('Unexpected end of loop.')
 
+def randomWithWeights(values, weights):
+	length = len(values)
+	if length != len(weights):
+		raise ValueError()
+	total_weight = sum(weights)
+	r = randrange(total_weight)
+	pos = 0
+	for i in range(length):
+		if pos <= r < pos+weights[i]:
+			return values[i]
+		else:
+			pos += weights[i]
+
 def gameSpace():
 	"""Returns the rectangle within which the game 'runs'."""
 	return (constants.SIDE_MARGIN,

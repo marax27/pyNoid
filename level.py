@@ -62,11 +62,7 @@ class Level(gameinstance.GameInstance):
 		self.ball.handleCollision(circleLineCollision(bpos, r, y=gs[1]))
 		self.ball.handleCollision(circleLineCollision(bpos, r, x=gs[0]+gs[2]))
 		if(circleLineCollision(bpos, r, y=gs[1]+gs[3]+MAGIC) != NO_COLLISION):
-			self.lives -= 1
-			if self.lives == 0:
-				self.endgame = True
-			else:
-				self.restart()
+			self.performDeath()
 			#return
 
 		# 2b)
@@ -180,6 +176,27 @@ class Level(gameinstance.GameInstance):
 
 	def handleBonus(self, bonus_type):
 		self.score += self.Score.PICKUP
+		
+		if bonus_type == Bonus.EXTRA_LIFE:
+			self.lives += 1
+		elif bonus_type == Bonus.TECH_SUPPORT:
+			pass
+		elif bonus_type == Bonus.WIDER_PALETTE:
+			Palette.SIZE.x *= 2
+		elif bonus_type == Bonus.NARROWER_PALETTE:
+			Palette.SIZE.x //= 2
+		elif bonus_type == Bonus.SUPER_SPEED:
+			Ball.SPEED *= 2
+		elif bonus_type == Bonus.STRIKE_THROUGH:
+			pass
+		elif bonus_type == Bonus.FIREBALL:
+			pass
+		elif bonus_type == Bonus.DEATH:
+			self.performDeath()
+		elif bonus_type == Bonus.SKYFALL:
+			pass
+		elif bonus_type == Bonus.CATCH_N_HOLD:
+			pass
 
 	def render(self, renderer):
 		"""Render the level."""
@@ -200,6 +217,13 @@ class Level(gameinstance.GameInstance):
 
 		h.load(str(self.lives), renderer, size=constants.UPPER_MARGIN-10)
 		h.render(renderer, (constants.WINDOW_SIZE.x - constants.SIDE_MARGIN - 80, 5))
+
+	def performDeath(self):
+		self.lives -= 1
+		if self.lives == 0:
+			self.endgame = True
+		else:
+			self.restart()
 
 	def restart(self):
 		self.ball = Ball(vec2(0, 0), vec2(0, 1), self.palette)

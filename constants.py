@@ -22,10 +22,10 @@ BONUS_SIZE = 64
 BONUS_SPAWN_CHANCE = 1
 
 """Duration of a single simulation step."""
-DELTA_T = 0.6
+DELTA_T = 0.8
 
 """Gravitational acceleration."""
-G_ACCEL = 0.25
+G_ACCEL = 0.08
 
 """Font sizes."""
 FONT_SIZE_1 = 36

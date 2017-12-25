@@ -7,7 +7,7 @@ import random
 import collision
 from vec2 import *
 from constants import *
-from misc import randomDict
+from misc import randomWithWeights
 import sdl2
 
 #------------------------------------------------------------
@@ -175,10 +175,15 @@ class Ball(PhysicalObject):
 
 #-----------------------------------------------------------
 
+class Type:
+	def __init__(self, weight, rect):
+		self.weight = weight
+		self.rect = rect
+
 class Bonus(PhysicalObject):
 	"""Base class for all bonuses/pickups."""
 	TEXTURE = None
-	START_SPEED = 9.0
+	START_SPEED = 7.0
 
 	# Types of bonuses.
 	EXTRA_LIFE       = 0x2001
@@ -193,18 +198,19 @@ class Bonus(PhysicalObject):
 	CATCH_N_HOLD     = 0x200a
 	# ... TODO
 
+
 	"""Dictionary of possible bonuses' types. Type code is a key, whereas a value is the weight."""
 	types = {
-		EXTRA_LIFE       : 6,
-		TECH_SUPPORT     : 12,
-		WIDER_PALETTE    : 36,
-		NARROWER_PALETTE : 36,
-		SUPER_SPEED      : 20,
-		STRIKE_THROUGH   : 12,
-		FIREBALL         : 12,
-		DEATH            : 20,
-		SKYFALL          : 8,
-		CATCH_N_HOLD     : 8
+		EXTRA_LIFE       : Type(6,  (0, 0, BONUS_SIZE, BONUS_SIZE)),
+		TECH_SUPPORT     : Type(12, (BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
+		WIDER_PALETTE    : Type(36, (2*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
+		NARROWER_PALETTE : Type(36, (3*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
+		SUPER_SPEED      : Type(20, (4*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
+		STRIKE_THROUGH   : Type(12, (0, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
+		FIREBALL         : Type(12, (BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
+		DEATH            : Type(20, (2*BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
+		SKYFALL          : Type(8,  (3*BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
+		CATCH_N_HOLD     : Type(8,  (4*BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE))
 	}
 
 	def __init__(self, position, bonus_type=None):
@@ -213,7 +219,8 @@ class Bonus(PhysicalObject):
 
 		# Randomly select the bonus type.
 		if not bonus_type:
-			bonus_type = randomDict(self.types)
+			#bonus_type = randomDict(self.types)
+			bonus_type = randomWithWeights(list(self.types.keys()), [x.weight for x in self.types.values()])
 
 		self.type = bonus_type
 
@@ -236,7 +243,7 @@ class Bonus(PhysicalObject):
 	def render(self, renderer):
 		# TODO
 		t = int(self.position.x), int(self.position.y), BONUS_SIZE, BONUS_SIZE
-		renderer.copy(self.TEXTURE, None, t)
+		renderer.copy(self.TEXTURE, self.types[self.type].rect, t)
 
 	def rect(self):
 		return tuple(self.position) + (BONUS_SIZE, BONUS_SIZE)

@@ -96,4 +96,4 @@ def loadTextures(renderer):
 	}
 
 	Wall.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("wall.png"))
-	Bonus.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("base_pickup.png"))
+	Bonus.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("p.png"))
