@@ -13,8 +13,10 @@ class Level(gameinstance.GameInstance):
 	"""A single level representation."""
 
 	class Score:
-		BRICK_HIT = 10
-		PICKUP    = 20
+		BRICK_HIT   = 10
+		PICKUP      = 20
+		GOOD_PICKUP = 20
+		BAD_PICKUP  = -20
 		# TODO
 
 	def __init__(self, bricks):
@@ -28,6 +30,10 @@ class Level(gameinstance.GameInstance):
 
 		mx, my = misc.getMousePos()
 		self.palette.setPosition(mx)
+
+		# Bonus-related flags.
+		self.catch_n_hold = False
+		self.skyfall = False
 
 	def update(self):
 		"""Update game state."""
@@ -67,7 +73,8 @@ class Level(gameinstance.GameInstance):
 
 		# 2b)
 		c = circleBoxCollision(bpos, r, self.palette.rect())
-		self.ball.handlePaletteCollision(c, self.palette)
+		if c != NO_COLLISION:
+			self.handleBallPaletteCollision(c)
 		
 		# 2c)
 		hit_bricks, to_delete = [], []
@@ -175,14 +182,20 @@ class Level(gameinstance.GameInstance):
 				self.palette.move(+1)"""
 
 	def handleBonus(self, bonus_type):
-		self.score += self.Score.PICKUP
+		ss = self.Score.PICKUP
 		
 		if bonus_type == Bonus.EXTRA_LIFE:
+			ss += self.Score.GOOD_PICKUP
 			self.lives += 1
 		elif bonus_type == Bonus.TECH_SUPPORT:
+			ss += self.Score.GOOD_PICKUP
 			pass
 		elif bonus_type == Bonus.WIDER_PALETTE:
 			Palette.SIZE.x *= 2
+			gs = misc.gameSpace()
+			if Palette.SIZE.x > gs[2]:
+				Palette.SIZE.x = gs[2]
+			self.palette.position.x -= self.palette.position.x+self.palette.SIZE.x-gs[0]-gs[2]
 		elif bonus_type == Bonus.NARROWER_PALETTE:
 			Palette.SIZE.x //= 2
 		elif bonus_type == Bonus.SUPER_SPEED:
@@ -192,15 +205,28 @@ class Level(gameinstance.GameInstance):
 		elif bonus_type == Bonus.FIREBALL:
 			pass
 		elif bonus_type == Bonus.DEATH:
+			ss += self.Score.BAD_PICKUP
 			self.performDeath()
 		elif bonus_type == Bonus.SKYFALL:
-			pass
+			self.skyfall = True
 		elif bonus_type == Bonus.CATCH_N_HOLD:
-			pass
+			self.catch_n_hold = True
+		
+		self.score += ss
+	
+	def handleBallPaletteCollision(self, collision_type):
+		if self.skyfall:
+			self.performSkyfall()
+	
+		if self.catch_n_hold:
+			if not self.ball.binding:
+				self.ball.binding = self.palette
+				self.ball.offset = self.ball.position.x + self.ball.RADIUS - self.palette.position.x
+		else:
+			self.ball.handlePaletteCollision(collision_type, self.palette)
 
 	def render(self, renderer):
 		"""Render the level."""
-		
 		renderer.copy(Wall.TEXTURE, None, (0, 0, constants.SIDE_MARGIN, constants.WINDOW_SIZE.y))
 		renderer.copy(Wall.TEXTURE, None, (constants.WINDOW_SIZE.x-constants.SIDE_MARGIN, 0, constants.SIDE_MARGIN, constants.WINDOW_SIZE.y))
 
@@ -218,7 +244,28 @@ class Level(gameinstance.GameInstance):
 		h.load(str(self.lives), renderer, size=constants.UPPER_MARGIN-10)
 		h.render(renderer, (constants.WINDOW_SIZE.x - constants.SIDE_MARGIN - 80, 5))
 
+	def performSkyfall(self):
+		"""Move all bricks 1 step down."""
+		# Organize existing bricks into columns.
+		columns = {}  #key: number of column; value - bricks belonging to the column.
+		for i in self.bricks:
+			k = i.position.x
+			if k not in columns.keys():
+				columns[k] = []
+			columns[k].append(i)
+		
+		for k,v in columns.items():
+			v = sorted(v, key=lambda brick: -brick.position.y)  #minus shall revert the sorting
+			# The 0-th element of 'v' is the lowest brick in a column.
+			if v[0].position.y < constants.TILES.y-1:
+				v[0].position.y += 1
+			for i in range(1, len(v)):
+				if v[i].position.y != v[i-1].position.y-1:
+					v[i].position.y += 1
+
+
 	def performDeath(self):
+		"""Handle ball death sequence. Result depends on an amount of lives player has."""
 		self.lives -= 1
 		if self.lives == 0:
 			self.endgame = True

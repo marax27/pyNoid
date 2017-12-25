@@ -123,7 +123,8 @@ class Ball(PhysicalObject):
 		self.binding = binding  # If a ball lies upon a palette, binding represents
 		                        # the palette. If ball flies, binding=None.
 		if binding:
-			position = binding.position + vec2(20, -2*self.RADIUS)
+			self.offset = 20
+			position = binding.position + vec2(self.offset, -2*self.RADIUS)
 
 	def handleCollision(self, collision_type):
 		v = self.velocity.clone()
@@ -171,7 +172,7 @@ class Ball(PhysicalObject):
 		if not self.binding:
 			self.position += self.velocity.normalized() * self.SPEED * DELTA_T
 		else:
-			self.position = self.binding.position + vec2(20, -2*self.RADIUS)
+			self.position = self.binding.position + vec2(self.offset, -2*self.RADIUS)
 
 #-----------------------------------------------------------
 
@@ -203,13 +204,13 @@ class Bonus(PhysicalObject):
 	types = {
 		EXTRA_LIFE       : Type(6,  (0, 0, BONUS_SIZE, BONUS_SIZE)),
 		TECH_SUPPORT     : Type(12, (BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
-		WIDER_PALETTE    : Type(36, (2*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
-		NARROWER_PALETTE : Type(36, (3*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
+		WIDER_PALETTE    : Type(30, (2*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
+		NARROWER_PALETTE : Type(30, (3*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
 		SUPER_SPEED      : Type(20, (4*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
 		STRIKE_THROUGH   : Type(12, (0, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
 		FIREBALL         : Type(12, (BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
 		DEATH            : Type(20, (2*BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
-		SKYFALL          : Type(8,  (3*BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
+		SKYFALL          : Type(899,  (3*BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
 		CATCH_N_HOLD     : Type(8,  (4*BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE))
 	}
 

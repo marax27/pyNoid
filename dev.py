@@ -5,6 +5,7 @@ import pickle
 import sdl2.ext
 import gameobject
 from constants import *
+from misc import gameSpace
 
 """Development tools."""
 
@@ -24,7 +25,7 @@ def drawGrid(renderer, color=(0x44, 0x44, 0x44, 0xff)):
 	renderer.color = color
 	for i in range(TILES.x):
 		for j in range(0, TILES.y):
-			pass
+			renderer.draw_rect( (SIDE_MARGIN + BRICKSIZE.x*i, UPPER_MARGIN + BRICKSIZE.y*j) + tuple(BRICKSIZE), color=color )
 
 def dissectWindow(renderer):
 	drawGrid(renderer)
