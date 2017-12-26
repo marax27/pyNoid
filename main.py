@@ -47,11 +47,11 @@ def run(file = None):
 			if e.type == sdl2.SDL_QUIT:
 				is_open = False
 				break
-			elif e.type == sdl2.SDL_KEYDOWN:
-				key = e.key.keysym.sym
-				if key == sdl2.SDLK_ESCAPE:
-					is_open = False
-				break
+			#elif e.type == sdl2.SDL_KEYDOWN:
+			#	key = e.key.keysym.sym
+			#	if key == sdl2.SDLK_ESCAPE:
+			#		is_open = False
+			#	break
 
 		# Clear window.
 		renderer.clear(color=Colour.Black)

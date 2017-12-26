@@ -143,6 +143,11 @@ class Level(gameinstance.GameInstance):
 		# Remove pickups that were caught or fell down.
 		self.bonuses = [x for x in self.bonuses if (x not in to_delete and x not in to_handle)]
 
+		# If the ball somehow escaped, restart the game.
+		dist = (self.ball.position - self.palette.position).length()
+		if dist > 1000:
+			self.performDeath()
+
 	def handleEvent(self, e):
 		"""Process events such as palette movement."""
 		
@@ -172,6 +177,11 @@ class Level(gameinstance.GameInstance):
 		elif e.type == sdl2.SDL_MOUSEBUTTONDOWN:
 			if e.button.button == sdl2.SDL_BUTTON_LEFT:
 				self.ball.handleMouseKey()
+				
+		elif e.type == sdl2.SDL_KEYDOWN:
+			key = e.key.keysym.sym
+			if key == sdl2.SDLK_ESCAPE:
+				self.endgame = True
 
 		# Deprecated: moving palette with a keyboard.
 		"""if e.type == sdl2.SDL_KEYDOWN:
@@ -195,7 +205,8 @@ class Level(gameinstance.GameInstance):
 			gs = misc.gameSpace()
 			if Palette.SIZE.x > gs[2]:
 				Palette.SIZE.x = gs[2]
-			self.palette.position.x -= self.palette.position.x+self.palette.SIZE.x-gs[0]-gs[2]
+			if self.palette.position.x + Palette.SIZE.x > gs[0]+gs[2]:
+				self.palette.position.x -= self.palette.position.x+self.palette.SIZE.x-gs[0]-gs[2]
 		elif bonus_type == Bonus.NARROWER_PALETTE:
 			Palette.SIZE.x //= 2
 		elif bonus_type == Bonus.SUPER_SPEED:
@@ -221,7 +232,7 @@ class Level(gameinstance.GameInstance):
 		if self.catch_n_hold:
 			if not self.ball.binding:
 				self.ball.binding = self.palette
-				self.ball.offset = self.ball.position.x + self.ball.RADIUS - self.palette.position.x
+				self.ball.offset = self.ball.position.x -self.palette.position.x #+ self.ball.RADIUS - self.palette.position.x
 		else:
 			self.ball.handlePaletteCollision(collision_type, self.palette)
 
@@ -267,6 +278,8 @@ class Level(gameinstance.GameInstance):
 	def performDeath(self):
 		"""Handle ball death sequence. Result depends on an amount of lives player has."""
 		self.lives -= 1
+		self.skyfall = False
+		self.catch_n_hold = False
 		if self.lives == 0:
 			self.endgame = True
 		else:
