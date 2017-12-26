@@ -3,7 +3,7 @@
 from vec2 import vec2
 
 """Width and height of the game board."""
-TILES = vec2(18, 20)
+TILES = vec2(18, 24)
 
 """Size of a single brick."""
 BRICKSIZE = vec2(65, 25) #vec2(85, 30)

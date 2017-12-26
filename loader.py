@@ -17,7 +17,7 @@ def loadLevel(filename):
 	result = []
 	with io.open(filename, 'r') as reader:
 		# Get all lines from file, and remove newline character from end.
-		lines = [ x[:-1] for x in reader.readlines() ]
+		lines = [ x[:-1] if x[-1] == '\n' else x for x in reader.readlines() ]
 		lines.remove('')  #remove empty lines
 		
 		# Split each line into tokens.
@@ -25,7 +25,8 @@ def loadLevel(filename):
 
 		brick_types = {
 			"regular": Brick.REGULAR, "heavy": Brick.HEAVY,
-			"heavier": Brick.HEAVIER, "invulnerable": Brick.INVULNERABLE
+			"heavier": Brick.HEAVIER, "invulnerable": Brick.INVULNERABLE,
+			"explosive": Brick.EXPLOSIVE
 		}
 
 		for line in tokens:
@@ -92,7 +93,8 @@ def loadTextures(renderer):
 		Brick.REGULAR: sprite_factory.from_image(RESOURCES.get_path("brick.png")),
 		Brick.INVULNERABLE: sprite_factory.from_image(RESOURCES.get_path("invulnerable.png")),
 		Brick.HEAVY: sprite_factory.from_image(RESOURCES.get_path("heavy.bmp")),
-		Brick.HEAVIER: sprite_factory.from_image(RESOURCES.get_path("heavier.bmp"))
+		Brick.HEAVIER: sprite_factory.from_image(RESOURCES.get_path("heavier.bmp")),
+		Brick.EXPLOSIVE: sprite_factory.from_image(RESOURCES.get_path("explosive.png"))
 	}
 
 	Wall.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("wall.png"))

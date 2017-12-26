@@ -84,8 +84,13 @@ class Level(gameinstance.GameInstance):
 				continue
 
 			hit_bricks.append( (i, c) )
+
+			prev_type = i.brick_type
 			i.handleCollision()
 			if i.brick_type == Brick.EMPTY:
+				if prev_type == Brick.EXPLOSIVE:
+					for n in self.neighboursOf(i):
+						to_delete.append(n)
 				to_delete.append(i)
 			
 			if len(hit_bricks) > 1:
@@ -105,7 +110,7 @@ class Level(gameinstance.GameInstance):
 			if i.brick_type != Brick.INVULNERABLE:
 				self.score += self.Score.BRICK_HIT
 
-		"""Spawning a bonus."""
+		#Spawning a bonus.
 		for i in to_delete:
 			if misc.randomBool(constants.BONUS_SPAWN_CHANCE):
 				bonus = Bonus(i.center())
@@ -284,6 +289,21 @@ class Level(gameinstance.GameInstance):
 			self.endgame = True
 		else:
 			self.restart()
+	
+	def neighboursOf(self, brick):
+		"""Returns list of brick's neighbours."""
+		x, y = brick.position.x, brick.position.y
+		result = []
+		for i in self.bricks:
+			if i.position.x == x and i.position.y in (y-1, y+1):
+				result.append(i)
+				continue
+			elif i.position.x in (x-1, x+1) and i.position.y in (y-1, y, y+1):
+				result.append(i)
+				continue
+		for n in result:
+			print('{} '.format(n.position), end='')
+		return result
 
 	def restart(self):
 		self.ball = Ball(vec2(0, 0), vec2(0, 1), self.palette)

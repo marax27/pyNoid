@@ -17,11 +17,13 @@ class Menu(gameinstance.GameInstance):
 		self.title = hud.Text('pyNoid', renderer, TITLE_FONT_SIZE)
 		self.title.position = vec2(50, 50)
 
+		grey = Colour.greyscale(0.75)
+
 		sub1 = hud.Button.buildClickableText('New Game', renderer,
-			Colour.White, Colour.Green, Colour.greyscale(0.75)
+			Colour.White, grey, grey
 		)
 		sub2 = hud.Button.buildClickableText('Exit', renderer,
-			Colour.White, Colour.Green, Colour.greyscale(0.75)
+			Colour.White, grey, grey
 		)
 		self.menu = hud.VerticalContainer([sub1, sub2], WINDOW_SIZE.y//2)
 

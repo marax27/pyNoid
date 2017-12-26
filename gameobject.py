@@ -35,7 +35,7 @@ class GameObject:
 class Brick(GameObject):
 	"""A brick class."""
 	TEXTURES = None
-	EMPTY, REGULAR, HEAVY, HEAVIER, INVULNERABLE = range(5)
+	EMPTY, REGULAR, HEAVY, HEAVIER, INVULNERABLE, EXPLOSIVE, EXPLOSION_VICTIM = range(7)
 	
 	def __init__(self, position, brick_type):
 		super().__init__(position)
@@ -49,6 +49,8 @@ class Brick(GameObject):
 			self.brick_type = Brick.REGULAR
 		elif self.brick_type == Brick.HEAVIER:
 			self.brick_type = Brick.HEAVY
+		elif self.brick_type == Brick.EXPLOSIVE:
+			self.brick_type = Brick.EMPTY
 		else:
 			pass
 
