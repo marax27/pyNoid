@@ -69,4 +69,19 @@ def circleBoxCollision(circle_pos, circle_radius, box):
 
 def boxBoxCollision(box1, box2):
 	"""Check whether two boxes intersect."""
-	return NotImplemented
+	x_overlap = (box2[0] <= box1[0] <= box2[0]+box2[2]) or (box1[0] <= box2[0] <= box1[0]+box1[2])
+	y_overlap = (box2[1] <= box1[1] <= box2[1]+box2[3]) or (box1[1] <= box2[1] <= box1[1]+box1[3])
+	return x_overlap and y_overlap
+
+def boxLineCollision(box, x=None, y=None):
+	"""Check whether an infinite line - either horizontal or vertical - intersects a box."""
+	if x == y or (x is not None and y is not None):
+		return NO_COLLISION  #precisely one argument must be specified
+
+	if x is None:
+		# Horizontal line intersection.
+		return Y_AXIS_COLLISION if box[1] <= y <= box[1]+box[3] else NO_COLLISION
+	else:
+		# Vertical line intersection.
+		return X_AXIS_COLLISION if box[0] <= x <= box[0]+box[2] else NO_COLLISION
+
