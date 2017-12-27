@@ -1,14 +1,12 @@
 number 1
-#regular 2,2 3,3 4,3 3,4 6-7,6-7
-#invulnerable 5-8,5
 
-regular      1-2,1 2-3,2 3-4,3 4-5,4
-invulnerable 1,2   2,3   3,4   4,5
+regular.red    1-2,1 2-3,2 3-4,3 4-5,4
+invulnerable   1,2   2,3   3,4   4,5
 
-regular      9-10,2 10-11,3 11-12,4 12-13,5
-invulnerable 9,3    10,4    11,5    12,6
+regular.blue   9-10,2 10-11,3 11-12,4 12-13,5
+invulnerable   9,3    10,4    11,5    12,6
 
-regular 6-7,13 5-8,14 4-5,15 3-4,16 8-9,15 9-10,16 10-11,17
-heavier 0,10 2,10
+regular.green  6-7,13 5-8,14 4-5,15 3-4,16 8-9,15 9-10,16 10-11,17
+heavier.blue   0-2,10
 
 explosive 3-6,12

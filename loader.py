@@ -28,17 +28,40 @@ def loadLevel(filename):
 			"heavier": Brick.HEAVIER, "invulnerable": Brick.INVULNERABLE,
 			"explosive": Brick.EXPLOSIVE
 		}
+		# Types of bricks that are present in more than one colour.
+		COLOURFUL_BRICKS = ('regular', 'heavy', 'heavier')
 
 		for line in tokens:
 			# Very unlikely, empty lines removal should deal with it.
 			if len(line) == 0:
 				continue
 
-			# A line content is determined by its first token.
-			line_type = line[0]
-			if len(line_type) == 0 or line_type[0] == "#":
-				# Comment - to omit.
+			# Line content is determined by its first token.
+			if len(line[0]) == 0 or line[0][0] == "#":
+				# Line is a comment - to omit.
 				continue
+			
+			decomposition = line[0].split('.')
+			if decomposition[0] in COLOURFUL_BRICKS:
+				if len(decomposition) != 2:
+					raise NoidError('Expected colour.')
+			else:
+				if len(decomposition) != 1:
+					raise NoidError('Too much information.')
+
+			line_type = decomposition[0]
+			colour = None
+			if line_type in COLOURFUL_BRICKS:
+				line_colour = decomposition[1]
+				if line_colour == 'red':
+					colour = Brick.Colour.RED
+				elif line_colour == 'green':
+					colour = Brick.Colour.GREEN
+				elif line_colour == 'blue':
+					colour = Brick.Colour.BLUE
+				else:
+					raise NoidError('Unknown colour name: "{}".'.format(line_colour))
+
 			if line_type in brick_types.keys():
 				for i in line[1:]:
 					# Read brick coordinates and form bricks array.
@@ -79,7 +102,7 @@ def loadLevel(filename):
 							pos = vec2(x, y)
 							if [i for i in result if intmatch(i.position, pos)]:
 								raise NoidError("More than 1 brick occupy exact same space")
-							brick = Brick(pos, brick_types[line_type])
+							brick = Brick(pos, brick_types[line_type], colour)
 							result.append(brick)
 	return result 
 
@@ -90,10 +113,10 @@ def loadTextures(renderer):
 	Palette.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("palette.bmp"))
 	Ball.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("ball.png"))
 	Brick.TEXTURES = {
-		Brick.REGULAR: sprite_factory.from_image(RESOURCES.get_path("brick.png")),
+		Brick.REGULAR: sprite_factory.from_image(RESOURCES.get_path("brick_set.png")),
 		Brick.INVULNERABLE: sprite_factory.from_image(RESOURCES.get_path("invulnerable.png")),
-		Brick.HEAVY: sprite_factory.from_image(RESOURCES.get_path("heavy.bmp")),
-		Brick.HEAVIER: sprite_factory.from_image(RESOURCES.get_path("heavier.bmp")),
+		Brick.HEAVY: sprite_factory.from_image(RESOURCES.get_path("heavy.png")),
+		Brick.HEAVIER: sprite_factory.from_image(RESOURCES.get_path("heavier.png")),
 		Brick.EXPLOSIVE: sprite_factory.from_image(RESOURCES.get_path("explosive.png"))
 	}
 

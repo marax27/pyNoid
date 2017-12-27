@@ -35,11 +35,17 @@ class GameObject:
 class Brick(GameObject):
 	"""A brick class."""
 	TEXTURES = None
-	EMPTY, REGULAR, HEAVY, HEAVIER, INVULNERABLE, EXPLOSIVE, EXPLOSION_VICTIM = range(7)
+	EMPTY, REGULAR, HEAVY, HEAVIER, INVULNERABLE, EXPLOSIVE = range(6)
+
+	class Colour:
+		RED   = (0, 0, 200, 80)
+		GREEN = (0, 80, 200, 80)
+		BLUE  = (0, 160, 200, 80)
 	
-	def __init__(self, position, brick_type):
+	def __init__(self, position, brick_type, colour=None):
 		super().__init__(position)
 		self.brick_type = brick_type
+		self.colour = colour
 
 	def handleCollision(self):
 		"""React to ball collision."""
@@ -63,7 +69,7 @@ class Brick(GameObject):
 	def render(self, renderer):
 		bt = self.brick_type
 		if bt != self.EMPTY:
-			renderer.copy(self.TEXTURES[self.brick_type], None, self.rect())
+			renderer.copy(self.TEXTURES[self.brick_type], self.colour, self.rect())
 
 	def center(self):
 		sp = self.screenPos()
