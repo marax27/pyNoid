@@ -77,21 +77,31 @@ class Level(gameinstance.GameInstance):
 			self.handleBallPaletteCollision(c)
 		
 		# 2c)
+
+		# hit_bricks: contains (brick, collision type) information.
+		# to_delete: list of bricks to be removed.
+		# scored: number of hits that should increase the score.
 		hit_bricks, to_delete = [], []
+		scored = 0
+
 		for i in self.bricks:
 			c = circleBoxCollision(bpos, r, i.rect())
 			if c == NO_COLLISION:
 				continue
 
+			# Collision ball-brick confirmed.
 			hit_bricks.append( (i, c) )
 
 			prev_type = i.brick_type
 			i.handleCollision()
 			if i.brick_type == Brick.EMPTY:
 				if prev_type == Brick.EXPLOSIVE:
-					for n in self.neighboursOf(i):
-						to_delete.append(n)
-				to_delete.append(i)
+					ei = set(self.explosionImpact(i))
+					to_delete += ei
+					scored += len(ei)
+				else:
+					to_delete.append(i)
+					scored += 1
 			
 			if len(hit_bricks) > 1:
 				break
@@ -106,9 +116,9 @@ class Level(gameinstance.GameInstance):
 		else:
 			self.ball.handleCollision(CORNER_NEG_COLLISION)
 
-		for i, j in hit_bricks:
-			if i.brick_type != Brick.INVULNERABLE:
-				self.score += self.Score.BRICK_HIT
+		#for i, j in hit_bricks:
+		#	if i.brick_type != Brick.INVULNERABLE:
+		self.score += self.Score.BRICK_HIT * scored
 
 		#Spawning a bonus.
 		for i in to_delete:
@@ -150,7 +160,7 @@ class Level(gameinstance.GameInstance):
 
 		# If the ball somehow escaped, restart the game.
 		dist = (self.ball.position - self.palette.position).length()
-		if dist > 1000:
+		if dist > 5000:
 			self.performDeath()
 
 	def handleEvent(self, e):
@@ -198,6 +208,7 @@ class Level(gameinstance.GameInstance):
 
 	def handleBonus(self, bonus_type):
 		ss = self.Score.PICKUP
+		prev_palette_width = Palette.SIZE.x
 		
 		if bonus_type == Bonus.EXTRA_LIFE:
 			ss += self.Score.GOOD_PICKUP
@@ -229,6 +240,11 @@ class Level(gameinstance.GameInstance):
 			self.catch_n_hold = True
 		
 		self.score += ss
+
+		# If ball is tied to the palette, adjust ball's position.
+		if prev_palette_width != Palette.SIZE.x and self.ball.binding:
+			a = self.ball.position.x - self.palette.position.x
+			self.ball.position.x = self.palette.position.x + Palette.SIZE.x / prev_palette_width * a
 	
 	def handleBallPaletteCollision(self, collision_type):
 		if self.skyfall:
@@ -301,8 +317,16 @@ class Level(gameinstance.GameInstance):
 			elif i.position.x in (x-1, x+1) and i.position.y in (y-1, y, y+1):
 				result.append(i)
 				continue
-		for n in result:
-			print('{} '.format(n.position), end='')
+		return result
+
+	def explosionImpact(self, brick, explosives=[]):
+		if explosives == []:
+			explosives = [brick]
+		neighbours = self.neighboursOf(brick)
+		result = neighbours[:]
+		for x in [y for y in neighbours if y.brick_type == Brick.EXPLOSIVE and y not in explosives]:
+			explosives.append(x)
+			result += self.explosionImpact(x, explosives)
 		return result
 
 	def restart(self):
