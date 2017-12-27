@@ -35,11 +35,17 @@ class GameObject:
 class Brick(GameObject):
 	"""A brick class."""
 	TEXTURES = None
-	EMPTY, REGULAR, HEAVY, HEAVIER, INVULNERABLE = range(5)
+	EMPTY, REGULAR, HEAVY, HEAVIER, INVULNERABLE, EXPLOSIVE = range(6)
+
+	class Colour:
+		RED   = (0, 0, 200, 80)
+		GREEN = (0, 80, 200, 80)
+		BLUE  = (0, 160, 200, 80)
 	
-	def __init__(self, position, brick_type):
+	def __init__(self, position, brick_type, colour=None):
 		super().__init__(position)
 		self.brick_type = brick_type
+		self.colour = colour
 
 	def handleCollision(self):
 		"""React to ball collision."""
@@ -49,6 +55,8 @@ class Brick(GameObject):
 			self.brick_type = Brick.REGULAR
 		elif self.brick_type == Brick.HEAVIER:
 			self.brick_type = Brick.HEAVY
+		elif self.brick_type == Brick.EXPLOSIVE:
+			self.brick_type = Brick.EMPTY
 		else:
 			pass
 
@@ -61,7 +69,7 @@ class Brick(GameObject):
 	def render(self, renderer):
 		bt = self.brick_type
 		if bt != self.EMPTY:
-			renderer.copy(self.TEXTURES[self.brick_type], None, self.rect())
+			renderer.copy(self.TEXTURES[self.brick_type], self.colour, self.rect())
 
 	def center(self):
 		sp = self.screenPos()
@@ -206,7 +214,7 @@ class Bonus(PhysicalObject):
 		TECH_SUPPORT     : Type(0, (BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
 		WIDER_PALETTE    : Type(30, (2*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
 		NARROWER_PALETTE : Type(30, (3*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
-		SUPER_SPEED      : Type(20, (4*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
+		SUPER_SPEED      : Type(12, (4*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
 		STRIKE_THROUGH   : Type(0, (0, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
 		FIREBALL         : Type(0, (BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
 		DEATH            : Type(20, (2*BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
