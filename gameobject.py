@@ -38,9 +38,9 @@ class Brick(GameObject):
 	EMPTY, REGULAR, HEAVY, HEAVIER, INVULNERABLE, EXPLOSIVE = range(6)
 
 	class Colour:
-		RED   = (0, 0, 200, 80)
-		GREEN = (0, 80, 200, 80)
-		BLUE  = (0, 160, 200, 80)
+		RED   = 0
+		GREEN = 1
+		BLUE  = 2
 	
 	def __init__(self, position, brick_type, colour=None):
 		super().__init__(position)
@@ -69,7 +69,8 @@ class Brick(GameObject):
 	def render(self, renderer):
 		bt = self.brick_type
 		if bt != self.EMPTY:
-			renderer.copy(self.TEXTURES[self.brick_type], self.colour, self.rect())
+			src = None if self.colour is None else (0, self.colour*BRICK_TEXTURESIZE.y, BRICK_TEXTURESIZE.x, BRICK_TEXTURESIZE.y)
+			renderer.copy(self.TEXTURES[self.brick_type], src, self.rect())
 
 	def center(self):
 		sp = self.screenPos()

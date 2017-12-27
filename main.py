@@ -27,7 +27,8 @@ def run(file = None):
 
 	window = sdl2.ext.Window("pyNoid", size=tuple(WINDOW_SIZE), position=None, flags=sdl2.SDL_WINDOW_SHOWN)
 	renderer = sdl2.ext.Renderer(window, flags=sdl2.SDL_RENDERER_ACCELERATED|sdl2.SDL_RENDERER_PRESENTVSYNC)
-
+	renderer.blendmode = sdl2.SDL_BLENDMODE_BLEND
+	
 	loader.loadTextures(renderer)
 
 	#game = level.Level( loader.loadLevel('levels/p1.noid') )

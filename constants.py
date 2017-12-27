@@ -5,8 +5,11 @@ from vec2 import vec2
 """Width and height of the game board."""
 TILES = vec2(18, 24)
 
-"""Size of a single brick."""
+"""Size of a single brick (in game)."""
 BRICKSIZE = vec2(65, 25) #vec2(85, 30)
+
+"""Size of a single brick texture (in image file)."""
+BRICK_TEXTURESIZE = vec2(200, 80)
 
 """Width of space between the board and left/right window edge."""
 SIDE_MARGIN = BRICKSIZE.x
