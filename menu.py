@@ -4,6 +4,7 @@ import gameinstance
 from colour import Colour
 from constants import WINDOW_SIZE, TITLE_FONT_SIZE
 from vec2 import vec2
+from misc import Fade
 import sdl2
 import hud
 
@@ -37,7 +38,7 @@ class Menu(gameinstance.GameInstance):
 			i.handleEvent(e)
 
 		if self.menu.elem[0].isPressed():
-			self.choice = 'levels/p1.noid'
+			self.fading = True
 		elif self.menu.elem[1].isPressed():
 			self.is_open = False
 	
@@ -45,8 +46,12 @@ class Menu(gameinstance.GameInstance):
 		"""Render scene."""
 		self.title.render(renderer)
 		self.menu.render(renderer)
-		#for i in self.options:
-		#	i.render(renderer)
+		if self.fading:
+			self.fader.draw(renderer)
+			if self.fader.finished():
+				self.fading = False
+				self.fader.reset()
+				self.choice = 'levels/p1.noid'
 
 	def isOpen(self):
 		"""Returns False if GameInstance should be no longer active."""

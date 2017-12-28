@@ -12,6 +12,11 @@ import hud
 class Level(gameinstance.GameInstance):
 	"""A single level representation."""
 
+	# Reasons to end/restart the level.
+	DEATH      = 0x1234
+	NEXT_LEVEL = 0x1235
+	QUIT_LEVEL = 0x1236
+
 	class Score:
 		BRICK_HIT   = 10
 		PICKUP      = 20
@@ -27,6 +32,7 @@ class Level(gameinstance.GameInstance):
 		self.palette = Palette()
 		self.bricks  = bricks
 		self.ball    = Ball(vec2(0, 0), vec2(0, 1), self.palette)
+		self.break_reason = None
 
 		mx, my = misc.getMousePos()
 		self.palette.setPosition(mx)
@@ -68,8 +74,7 @@ class Level(gameinstance.GameInstance):
 		self.ball.handleCollision(circleLineCollision(bpos, r, y=gs[1]))
 		self.ball.handleCollision(circleLineCollision(bpos, r, x=gs[0]+gs[2]))
 		if(circleLineCollision(bpos, r, y=gs[1]+gs[3]+MAGIC) != NO_COLLISION):
-			self.performDeath()
-			#return
+			self.performBreak(self.DEATH)
 
 		# 2b)
 		c = circleBoxCollision(bpos, r, self.palette.rect())
@@ -126,7 +131,13 @@ class Level(gameinstance.GameInstance):
 				bonus = Bonus(i.center())
 				self.bonuses.append(bonus)
 
-		self.bricks = [x for x in self.bricks if x not in to_delete]
+		if len(to_delete):
+			# Remove destroyed bricks.
+			self.bricks = [x for x in self.bricks if x not in to_delete]
+
+			# Check whether player destroyed all the blocks.
+			if not len([x for x in self.bricks if x.brick_type != Brick.INVULNERABLE]):
+				self.performBreak(self.NEXT_LEVEL)
 
 		# 2d)
 		p_x = self.palette.position.x
@@ -161,7 +172,7 @@ class Level(gameinstance.GameInstance):
 		# If the ball somehow escaped, restart the game.
 		dist = (self.ball.position - self.palette.position).length()
 		if dist > 5000:
-			self.performDeath()
+			self.performBreak(self.DEATH)
 
 	def handleEvent(self, e):
 		"""Process events such as palette movement."""
@@ -233,7 +244,7 @@ class Level(gameinstance.GameInstance):
 			pass
 		elif bonus_type == Bonus.DEATH:
 			ss += self.Score.BAD_PICKUP
-			self.performDeath()
+			self.performBreak(self.DEATH)
 		elif bonus_type == Bonus.SKYFALL:
 			self.skyfall = True
 		elif bonus_type == Bonus.CATCH_N_HOLD:
@@ -276,6 +287,13 @@ class Level(gameinstance.GameInstance):
 		h.load(str(self.lives), renderer, size=constants.UPPER_MARGIN-10)
 		h.render(renderer, (constants.WINDOW_SIZE.x - constants.SIDE_MARGIN - 80, 5))
 
+		if self.fading:
+			self.fader.draw(renderer)
+			if self.fader.finished():
+				self.fading = False
+				self.fader.reset()
+				self.completeBreak()
+
 	def performSkyfall(self):
 		"""Move all bricks 1 step down."""
 		# Organize existing bricks into columns.
@@ -295,16 +313,38 @@ class Level(gameinstance.GameInstance):
 				if v[i].position.y != v[i-1].position.y-1:
 					v[i].position.y += 1
 
-
-	def performDeath(self):
-		"""Handle ball death sequence. Result depends on an amount of lives player has."""
-		self.lives -= 1
+	def performBreak(self, reason):
+		"""Either completed level or death."""
 		self.skyfall = False
 		self.catch_n_hold = False
-		if self.lives == 0:
+		self.fading = True
+		self.break_reason = reason
+
+	def completeBreak(self):
+		"""Complete break sequence."""
+		if self.break_reason == self.DEATH:
+			self.lives -= 1
+			if self.lives == 0:
+				self.endgame = True
+			else:
+				self.bonuses = []
+				self.restart()
+		elif self.break_reason == self.NEXT_LEVEL:
+			pass
+		elif self.break_reason == self.QUIT_LEVEL:
 			self.endgame = True
-		else:
-			self.restart()
+	
+	# def completeDeath(self):
+		# """Handle ball death sequence. Result depends on an amount of lives player has."""
+		# self.lives -= 1
+		# if self.lives == 0:
+			# self.endgame = True
+		# else:
+			# self.bonuses = []
+			# self.restart()
+	# 
+	# def performVictory(self):
+		# self.performBreak(self.NEXT_LEVEL)
 	
 	def neighboursOf(self, brick):
 		"""Returns list of brick's neighbours."""
