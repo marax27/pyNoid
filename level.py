@@ -40,6 +40,7 @@ class Level(gameinstance.GameInstance):
 		# Bonus-related flags.
 		self.catch_n_hold = False
 		self.skyfall = False
+		self.fireball = False
 
 	def update(self):
 		"""Update game state."""
@@ -49,8 +50,15 @@ class Level(gameinstance.GameInstance):
 			i.update()
 
 		# Remove bricks that exploded at previous frame.
-		self.bricks = [x for x in self.bricks if x.brick_type != Brick.EXPLOSION_VICTIM]
-		
+		destroyed = len(self.bricks)
+		self.bricks = [x for x in self.bricks if x.brick_type != Brick.EXPLOSION_VICTIM or x.countdown > 0]
+		destroyed -= len(self.bricks)
+		self.score += destroyed * self.Score.BRICK_HIT
+
+		for i in self.bricks:
+			if i.brick_type == Brick.EXPLOSION_VICTIM:
+				i.countdown -= 1
+
 		# 2. Check for collisions.
 		#          WALLS BALL PALETTE BONUSES BRICKS
 		#   WALLS    0    1     1       1       0
@@ -100,18 +108,28 @@ class Level(gameinstance.GameInstance):
 			# Collision ball-brick confirmed.
 			hit_bricks.append( (i, c) )
 
-			prev_type = i.brick_type
-			i.handleCollision()
-			if i.brick_type == Brick.EMPTY:
-				if prev_type == Brick.EXPLOSIVE:
-					ei = set(self.explosionImpact(i))
-					for i in ei:
-						i.brick_type = Brick.EXPLOSION_VICTIM
-					#to_delete += ei
-					#scored += len(ei)
-				else:
-					to_delete.append(i)
-					scored += 1
+			if self.fireball:
+				i.brick_type = Brick.EXPLOSION_VICTIM
+				i.colour = None
+				ei = set(self.explosionImpact(i))
+				for j in ei:
+					j.brick_type = Brick.EXPLOSION_VICTIM
+					j.colour = None
+			else:
+				prev_type = i.brick_type
+				i.handleCollision()
+
+				if i.brick_type == Brick.EMPTY:
+					if prev_type == Brick.EXPLOSIVE:
+						ei = set(self.explosionImpact(i))
+						for j in ei:
+							j.brick_type = Brick.EXPLOSION_VICTIM
+							j.colour = None
+						#to_delete += ei
+						#scored += len(ei)
+					else:
+						to_delete.append(i)
+						scored += 1
 			
 			if len(hit_bricks) > 1:
 				break
@@ -140,9 +158,9 @@ class Level(gameinstance.GameInstance):
 			# Remove destroyed bricks.
 			self.bricks = [x for x in self.bricks if x not in to_delete]
 
-			# Check whether player destroyed all the blocks.
-			if not len([x for x in self.bricks if x.brick_type != Brick.INVULNERABLE]):
-				self.performBreak(self.NEXT_LEVEL)
+		# Check whether player destroyed all the blocks.
+		if not len([x for x in self.bricks if x.brick_type != Brick.INVULNERABLE]):
+			self.performBreak(self.NEXT_LEVEL)
 
 		# 2d)
 		p_x = self.palette.position.x
@@ -246,7 +264,7 @@ class Level(gameinstance.GameInstance):
 		elif bonus_type == Bonus.STRIKE_THROUGH:
 			pass
 		elif bonus_type == Bonus.FIREBALL:
-			pass
+			self.fireball = True
 		elif bonus_type == Bonus.DEATH:
 			ss += self.Score.BAD_PICKUP
 			self.performBreak(self.DEATH)
@@ -259,8 +277,8 @@ class Level(gameinstance.GameInstance):
 
 		# If ball is tied to the palette, adjust ball's position.
 		if prev_palette_width != Palette.SIZE.x and self.ball.binding:
-			a = self.ball.position.x - self.palette.position.x
-			self.ball.position.x = self.palette.position.x + Palette.SIZE.x / prev_palette_width * a
+			a = (self.ball.position.x + self.ball.RADIUS - self.palette.position.x) / prev_palette_width
+			self.ball.offset = a * Palette.SIZE.x - self.ball.RADIUS
 	
 	def handleBallPaletteCollision(self, collision_type):
 		if self.skyfall:
@@ -321,6 +339,7 @@ class Level(gameinstance.GameInstance):
 	def performBreak(self, reason):
 		"""Either completed level or death."""
 		self.skyfall = False
+		self.fireball = False
 		self.catch_n_hold = False
 		self.fading = True
 		self.break_reason = reason

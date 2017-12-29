@@ -46,6 +46,7 @@ class Brick(GameObject):
 		super().__init__(position)
 		self.brick_type = brick_type
 		self.colour = colour
+		self.countdown = 10
 
 	def handleCollision(self):
 		"""React to ball collision."""
@@ -213,12 +214,12 @@ class Bonus(PhysicalObject):
 	types = {
 		EXTRA_LIFE       : Type(6,  (0, 0, BONUS_SIZE, BONUS_SIZE)),
 		TECH_SUPPORT     : Type(0, (BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
-		WIDER_PALETTE    : Type(30, (2*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
-		NARROWER_PALETTE : Type(30, (3*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
+		WIDER_PALETTE    : Type(16, (2*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
+		NARROWER_PALETTE : Type(16, (3*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
 		SUPER_SPEED      : Type(12, (4*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
 		STRIKE_THROUGH   : Type(0, (0, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
-		FIREBALL         : Type(0, (BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
-		DEATH            : Type(20, (2*BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
+		FIREBALL         : Type(10, (BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
+		DEATH            : Type(16, (2*BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
 		SKYFALL          : Type(8,  (3*BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
 		CATCH_N_HOLD     : Type(8,  (4*BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE))
 	}

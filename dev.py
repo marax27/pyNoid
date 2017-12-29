@@ -19,7 +19,9 @@ def handleEvent(event, game):
 		elif key == sdl2.SDLK_UP:  game.ball.velocity.y -= 0.5;
 		elif key == sdl2.SDLK_DOWN:  game.ball.velocity.y += 0.5;
 		elif key == sdl2.SDLK_LEFT:  game.ball.velocity.x -= 0.5;
-		elif key == sdl2.SDLK_RIGHT:  game.ball.velocity.x += 0.5;		
+		elif key == sdl2.SDLK_RIGHT:  game.ball.velocity.x += 0.5;
+		elif key == sdl2.SDLK_p:
+			game.bonuses.append( gameobject.Bonus(vec2(100,100)) )
 
 def drawGrid(renderer, color=(0x44, 0x44, 0x44, 0xff)):
 	renderer.color = color
