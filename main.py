@@ -79,6 +79,7 @@ def run(file = None):
 	sdl2.ext.quit()
 	return 0
 
+#------------------------------
 
 if __name__ == "__main__":
 	args = sys.argv

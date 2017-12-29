@@ -47,6 +47,9 @@ class Level(gameinstance.GameInstance):
 		self.ball.update()
 		for i in self.bonuses:
 			i.update()
+
+		# Remove bricks that exploded at previous frame.
+		self.bricks = [x for x in self.bricks if x.brick_type != Brick.EXPLOSION_VICTIM]
 		
 		# 2. Check for collisions.
 		#          WALLS BALL PALETTE BONUSES BRICKS
@@ -102,8 +105,10 @@ class Level(gameinstance.GameInstance):
 			if i.brick_type == Brick.EMPTY:
 				if prev_type == Brick.EXPLOSIVE:
 					ei = set(self.explosionImpact(i))
-					to_delete += ei
-					scored += len(ei)
+					for i in ei:
+						i.brick_type = Brick.EXPLOSION_VICTIM
+					#to_delete += ei
+					#scored += len(ei)
 				else:
 					to_delete.append(i)
 					scored += 1
@@ -330,7 +335,7 @@ class Level(gameinstance.GameInstance):
 				self.bonuses = []
 				self.restart()
 		elif self.break_reason == self.NEXT_LEVEL:
-			pass
+			self.endgame = True
 		elif self.break_reason == self.QUIT_LEVEL:
 			self.endgame = True
 	

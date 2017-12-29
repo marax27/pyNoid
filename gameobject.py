@@ -35,7 +35,7 @@ class GameObject:
 class Brick(GameObject):
 	"""A brick class."""
 	TEXTURES = None
-	EMPTY, REGULAR, HEAVY, HEAVIER, INVULNERABLE, EXPLOSIVE = range(6)
+	EMPTY, REGULAR, HEAVY, HEAVIER, INVULNERABLE, EXPLOSIVE, EXPLOSION_VICTIM = range(7)
 
 	class Colour:
 		RED   = 0
