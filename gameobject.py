@@ -100,6 +100,7 @@ class Palette(GameObject):
 		))
 
 	def move(self, offset):
+		"""Used to control palette using a keyboard. Deprecated."""
 		new_x = self.position.x + offset * self.SPEED
 		self.setPosition(new_x)
 	
@@ -125,7 +126,7 @@ class Palette(GameObject):
 class Ball(PhysicalObject):
 	"""Ball class"""
 	TEXTURE = None
-	RADIUS = 5
+	RADIUS = 6
 	SPEED = 6.0
 
 	def __init__(self, position, velocity, binding=None):

@@ -8,8 +8,12 @@ from constants import *
 from misc import gameSpace
 
 """Development tools."""
+DEV_MODE = False
 
 def handleEvent(event, game):
+	if not DEV_MODE:
+		return
+
 	if event.type == sdl2.SDL_KEYDOWN:
 		key = event.key.keysym.sym
 		if key == sdl2.SDLK_KP_PLUS:

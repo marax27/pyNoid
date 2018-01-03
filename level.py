@@ -265,7 +265,7 @@ class Level(gameinstance.GameInstance):
 		elif bonus_type == Bonus.NARROWER_PALETTE:
 			Palette.SIZE.x //= 2
 		elif bonus_type == Bonus.SUPER_SPEED:
-			Ball.SPEED *= 2
+			self.ball.SPEED *= 2
 		elif bonus_type == Bonus.STRIKE_THROUGH:
 			pass
 		elif bonus_type == Bonus.FIREBALL:
