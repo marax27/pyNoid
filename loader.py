@@ -112,7 +112,7 @@ def loadTextures(renderer):
 	"""Load necessary textures from drive."""
 	sprite_factory = sdl2.ext.SpriteFactory(sdl2.ext.TEXTURE, renderer=renderer)
 
-	Palette.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("palette.bmp"))
+	Palette.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("palette.png"))
 	Ball.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("ball.png"))
 	Brick.TEXTURES = {
 		Brick.REGULAR: sprite_factory.from_image(RESOURCES.get_path("brick_set.png")),
