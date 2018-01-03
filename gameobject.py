@@ -125,7 +125,7 @@ class Palette(GameObject):
 class Ball(PhysicalObject):
 	"""Ball class"""
 	TEXTURE = None
-	RADIUS = 7
+	RADIUS = 5
 	SPEED = 6.0
 
 	def __init__(self, position, velocity, binding=None):

@@ -58,6 +58,11 @@ class Level(gameinstance.GameInstance):
 		for i in self.bricks:
 			if i.brick_type == Brick.EXPLOSION_VICTIM:
 				i.countdown -= 1
+				if i.countdown == 5:  #magic
+					# Spawn a bonus.
+					if misc.randomBool(constants.BONUS_SPAWN_CHANCE):
+						bonus = Bonus(i.center())
+						self.bonuses.append(bonus)
 
 		# 2. Check for collisions.
 		#          WALLS BALL PALETTE BONUSES BRICKS
