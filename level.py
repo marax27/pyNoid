@@ -29,13 +29,19 @@ class Level(gameinstance.GameInstance):
 		"""Simple pseudo-number generator (with extra steps).
 		It aims to spawn bonuses more evenly."""
 		coef = constants.BONUS_SPAWN_CHANCE
-		def spawn(self):
+		def spawn(self, pos, bonus_array):
+			if len(bonus_array) > 4:  #arbitrary limit
+				return
 			if misc.randomBool(self.coef):
 				self.coef = constants.BONUS_SPAWN_CHANCE
-				return True
+				b = Bonus(pos)
+
+				while len([x for x in bonus_array if x.type == b.type]) > 2:
+					b = Bonus(pos)
+				
+				bonus_array.append(b)
 			else:
 				self.coef = 1.1*self.coef if 1.1*self.coef < 1 else self.coef
-				return False
 
 	def __init__(self, bricks):
 		self.endgame = False
@@ -77,9 +83,7 @@ class Level(gameinstance.GameInstance):
 				if i.countdown == 5:  #magic
 					# Spawn a bonus.
 					#if misc.randomBool(constants.BONUS_SPAWN_CHANCE):
-					if self.spawner.spawn():
-						bonus = Bonus(i.center())
-						self.bonuses.append(bonus)
+					self.spawner.spawn(i.center(), self.bonuses)
 
 		# 2. Check for collisions.
 		#          WALLS BALL PALETTE BONUSES BRICKS
@@ -173,9 +177,7 @@ class Level(gameinstance.GameInstance):
 		#Spawning a bonus.
 		for i in to_delete:
 			#if misc.randomBool(constants.BONUS_SPAWN_CHANCE):
-			if self.spawner.spawn():
-				bonus = Bonus(i.center())
-				self.bonuses.append(bonus)
+			self.spawner.spawn(i.center(), self.bonuses)
 
 		if len(to_delete):
 			# Remove destroyed bricks.

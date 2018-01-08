@@ -120,7 +120,7 @@ class Palette(GameObject):
 			renderer.copy(self.TEXTURE, None, tuple(self.position) + (self.width, self.SIZE.y))
 
 	def rect(self):
-		return tuple(self.position) + tuple(self.SIZE)
+		return tuple(self.position) + (self.width, self.SIZE.y)
 
 #-----------------------------------------------------------
 
@@ -165,7 +165,7 @@ class Ball(PhysicalObject):
 		if collision_type == collision.Y_AXIS_COLLISION:
 			v = self.velocity.clone()
 			a = self.position.x + self.RADIUS - palette.position.x
-			w = palette.SIZE.x
+			w = palette.width
 			eta_prim = -math.pi/3.0 * math.cos(a * math.pi / w)
 			self.velocity = vec2(
 				math.sin(eta_prim),
