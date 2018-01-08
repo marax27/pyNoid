@@ -98,6 +98,7 @@ class Palette(GameObject):
 			self.SIZE.x // 2,
 			WINDOW_SIZE.y - self.SIZE.y - 10
 		))
+		self.width = self.SIZE.x
 
 	def move(self, offset):
 		"""Used to control palette using a keyboard. Deprecated."""
@@ -116,7 +117,7 @@ class Palette(GameObject):
 
 	def render(self, renderer):
 		if self.TEXTURE is not None:
-			renderer.copy(self.TEXTURE, None, vectorsToTuple(self.position, self.SIZE))
+			renderer.copy(self.TEXTURE, None, tuple(self.position) + (self.width, self.SIZE.y))
 
 	def rect(self):
 		return tuple(self.position) + tuple(self.SIZE)
@@ -210,11 +211,10 @@ class Bonus(PhysicalObject):
 	CATCH_N_HOLD     = 0x200a
 	# ... TODO
 
-
 	"""Dictionary of possible bonuses' types. Type code is a key, whereas a value is the weight."""
 	types = {
 		EXTRA_LIFE       : Type(6,  (0, 0, BONUS_SIZE, BONUS_SIZE)),
-		TECH_SUPPORT     : Type(0, (BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
+		TECH_SUPPORT     : Type(8, (BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
 		WIDER_PALETTE    : Type(16, (2*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
 		NARROWER_PALETTE : Type(16, (3*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
 		SUPER_SPEED      : Type(12, (4*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),

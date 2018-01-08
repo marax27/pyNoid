@@ -5,6 +5,7 @@ from collision import *
 from vec2 import *
 import gameinstance
 import constants
+import colour
 import misc
 import sdl2
 import hud
@@ -23,6 +24,18 @@ class Level(gameinstance.GameInstance):
 		GOOD_PICKUP = 20
 		BAD_PICKUP  = -20
 		# TODO
+	
+	class Spawner:
+		"""Simple pseudo-number generator (with extra steps).
+		It aims to spawn bonuses more evenly."""
+		coef = constants.BONUS_SPAWN_CHANCE
+		def spawn(self):
+			if misc.randomBool(self.coef):
+				self.coef = constants.BONUS_SPAWN_CHANCE
+				return True
+			else:
+				self.coef = 1.1*self.coef if 1.1*self.coef < 1 else self.coef
+				return False
 
 	def __init__(self, bricks):
 		self.endgame = False
@@ -34,6 +47,8 @@ class Level(gameinstance.GameInstance):
 		self.ball    = Ball(vec2(0, 0), vec2(0, 1), self.palette)
 		self.break_reason = None
 
+		self.spawner = self.Spawner()
+
 		mx, my = misc.getMousePos()
 		self.palette.setPosition(mx)
 
@@ -41,6 +56,7 @@ class Level(gameinstance.GameInstance):
 		self.catch_n_hold = False
 		self.skyfall = False
 		self.fireball = False
+		self.tech_support = True #False
 
 	def update(self):
 		"""Update game state."""
@@ -60,7 +76,8 @@ class Level(gameinstance.GameInstance):
 				i.countdown -= 1
 				if i.countdown == 5:  #magic
 					# Spawn a bonus.
-					if misc.randomBool(constants.BONUS_SPAWN_CHANCE):
+					#if misc.randomBool(constants.BONUS_SPAWN_CHANCE):
+					if self.spawner.spawn():
 						bonus = Bonus(i.center())
 						self.bonuses.append(bonus)
 
@@ -155,7 +172,8 @@ class Level(gameinstance.GameInstance):
 
 		#Spawning a bonus.
 		for i in to_delete:
-			if misc.randomBool(constants.BONUS_SPAWN_CHANCE):
+			#if misc.randomBool(constants.BONUS_SPAWN_CHANCE):
+			if self.spawner.spawn():
 				bonus = Bonus(i.center())
 				self.bonuses.append(bonus)
 
@@ -171,8 +189,8 @@ class Level(gameinstance.GameInstance):
 		p_x = self.palette.position.x
 		if p_x < gs[0]:
 			self.palette.position.x = gs[0]
-		elif p_x + self.palette.SIZE.x > gs[0] + gs[2]:
-			self.palette.position.x = gs[0] + gs[2] - self.palette.SIZE.x
+		elif p_x + self.palette.width > gs[0] + gs[2]:
+			self.palette.position.x = gs[0] + gs[2] - self.palette.width
 
 		MAGIC1 = 64
 		to_delete, to_handle = [], []
@@ -221,9 +239,9 @@ class Level(gameinstance.GameInstance):
 				if bx < px + r and px > gs[0] + 2*r:
 					# Shift left.
 					self.ball.position.x = px - 2*r
-				elif bx>px + self.palette.SIZE.x-r and px+self.palette.SIZE.x < gs[0]+gs[2]-2*r:
+				elif bx>px + self.palette.width-r and px+self.palette.width < gs[0]+gs[2]-2*r:
 					# Shift right.
-					self.ball.position.x = px + self.palette.SIZE.x
+					self.ball.position.x = px + self.palette.width
 				else:
 					# Shift up.
 					self.ball.position.y = self.palette.position.y - 2*r
@@ -247,23 +265,23 @@ class Level(gameinstance.GameInstance):
 
 	def handleBonus(self, bonus_type):
 		ss = self.Score.PICKUP
-		prev_palette_width = Palette.SIZE.x
+		prev_palette_width = self.palette.width
 		
 		if bonus_type == Bonus.EXTRA_LIFE:
 			ss += self.Score.GOOD_PICKUP
 			self.lives += 1
 		elif bonus_type == Bonus.TECH_SUPPORT:
 			ss += self.Score.GOOD_PICKUP
-			pass
+			self.tech_support = True
 		elif bonus_type == Bonus.WIDER_PALETTE:
-			Palette.SIZE.x *= 2
+			self.palette.width *= 2
 			gs = misc.gameSpace()
-			if Palette.SIZE.x > gs[2]:
-				Palette.SIZE.x = gs[2]
-			if self.palette.position.x + Palette.SIZE.x > gs[0]+gs[2]:
-				self.palette.position.x -= self.palette.position.x+self.palette.SIZE.x-gs[0]-gs[2]
+			if self.palette.width > gs[2]:
+				self.palette.width = gs[2]
+			if self.palette.position.x + self.palette.width > gs[0]+gs[2]:
+				self.palette.position.x -= self.palette.position.x+self.palette.width-gs[0]-gs[2]
 		elif bonus_type == Bonus.NARROWER_PALETTE:
-			Palette.SIZE.x //= 2
+			self.palette.width //= 2
 		elif bonus_type == Bonus.SUPER_SPEED:
 			self.ball.SPEED *= 2
 		elif bonus_type == Bonus.STRIKE_THROUGH:
@@ -281,9 +299,9 @@ class Level(gameinstance.GameInstance):
 		self.score += ss
 
 		# If ball is tied to the palette, adjust ball's position.
-		if prev_palette_width != Palette.SIZE.x and self.ball.binding:
+		if prev_palette_width != self.palette.width and self.ball.binding:
 			a = (self.ball.position.x + self.ball.RADIUS - self.palette.position.x) / prev_palette_width
-			self.ball.offset = a * Palette.SIZE.x - self.ball.RADIUS
+			self.ball.offset = a * self.palette.width - self.ball.RADIUS
 	
 	def handleBallPaletteCollision(self, collision_type):
 		if self.skyfall:
@@ -315,12 +333,25 @@ class Level(gameinstance.GameInstance):
 		h.load(str(self.lives), renderer, size=constants.UPPER_MARGIN-10)
 		h.render(renderer, (constants.WINDOW_SIZE.x - constants.SIDE_MARGIN - 80, 5))
 
+		if self.tech_support:
+			self.renderTechSupport(renderer)
+
 		if self.fading:
 			self.fader.draw(renderer)
 			if self.fader.finished():
 				self.fading = False
 				self.fader.reset()
 				self.completeBreak()
+	
+	def renderTechSupport(self, renderer):
+		"""Make bonus named Tech Support useful."""
+		return
+		origin = self.ball.position + vec2(Ball.RADIUS, Ball.RADIUS)
+		versor = self.ball.velocity.normalized()
+		for i in range(20):
+			pos = origin + versor * i*i * 4
+			pos = int(pos.x), int(pos.y)
+			renderer.draw_point([*pos], colour.Colour.greyscale(0.77))
 
 	def performSkyfall(self):
 		"""Move all bricks 1 step down."""
@@ -346,6 +377,7 @@ class Level(gameinstance.GameInstance):
 		self.skyfall = False
 		self.fireball = False
 		self.catch_n_hold = False
+		self.tech_support = False
 		self.fading = True
 		self.break_reason = reason
 
@@ -400,6 +432,9 @@ class Level(gameinstance.GameInstance):
 
 	def restart(self):
 		self.ball = Ball(vec2(0, 0), vec2(0, 1), self.palette)
+		pos = self.palette.position
+		self.palette = Palette()
+		self.palette.position = pos
 
 	def isOpen(self):
 		"""Returns False if GameInstance should be no longer active."""
