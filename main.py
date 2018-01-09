@@ -9,7 +9,7 @@ import level
 import menu
 import loader
 from colour import Colour
-from constants import *
+from constants import Constants
 from gameobject import Ball, Palette, Brick
 
 from vec2 import vec2
@@ -17,15 +17,17 @@ from vec2 import vec2
 #------------------------------
 
 def run(file = None):
+	print("Welcome!!!")
 	# Initialization.
 	sdl2.ext.init()
+	Constants.init((1300, 700))
 
 	if file is not None:
 		unpacked_log = dev.unpack(file)
 		for i in unpacked_log:
 			print("<{}>".format(i))
 
-	window = sdl2.ext.Window("pyNoid", size=tuple(WINDOW_SIZE), position=None, flags=sdl2.SDL_WINDOW_SHOWN)
+	window = sdl2.ext.Window("pyNoid", size=tuple(Constants.WINDOW_SIZE), position=None, flags=sdl2.SDL_WINDOW_SHOWN)
 	renderer = sdl2.ext.Renderer(window, flags=sdl2.SDL_RENDERER_ACCELERATED|sdl2.SDL_RENDERER_PRESENTVSYNC)
 	renderer.blendmode = sdl2.SDL_BLENDMODE_BLEND
 	

@@ -2,7 +2,7 @@
 
 import gameinstance
 from colour import Colour
-from constants import WINDOW_SIZE, TITLE_FONT_SIZE
+from constants import Constants
 from vec2 import vec2
 from misc import Fade
 import sdl2
@@ -15,7 +15,7 @@ class Menu(gameinstance.GameInstance):
 		self.choice = None
 		self.is_open = True
 
-		self.title = hud.Text('pyNoid', renderer, TITLE_FONT_SIZE)
+		self.title = hud.Text('pyNoid', renderer, Constants.TITLE_FONT_SIZE)
 		self.title.position = vec2(50, 50)
 
 		grey = Colour.greyscale(0.75)
@@ -26,7 +26,7 @@ class Menu(gameinstance.GameInstance):
 		sub2 = hud.Button.buildClickableText('Exit', renderer,
 			Colour.White, grey, grey
 		)
-		self.menu = hud.VerticalContainer([sub1, sub2], WINDOW_SIZE.y//2)
+		self.menu = hud.VerticalContainer([sub1, sub2], Constants.WINDOW_SIZE.y//2)
 
 	def update(self):
 		"""Update game state."""

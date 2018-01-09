@@ -6,21 +6,11 @@ import math
 import random
 import collision
 from vec2 import *
-from constants import *
+from constants import Constants
 from misc import randomWithWeights
 import sdl2
 
-#------------------------------------------------------------
-
-# def brickToScreenCoords(x, y):
-# 	"""Turn brick's position into window pixel coordinates."""
-# 	return x * BRICKSIZE.x + SIDE_MARGIN, y * BRICKSIZE.y + UPPER_MARGIN
-
-# def brickCoordsToRect(x, y):
-# 	"""Returns x-, y-position, width, height of a specific brick."""
-# 	return brickToScreenCoords(x, y) + tuple(BRICKSIZE)
-
-#------------------------------------------------------------
+#-----------------------------------------------------------
 
 class Wall:
 	TEXTURE = None
@@ -62,20 +52,20 @@ class Brick(GameObject):
 			pass
 
 	def screenPos(self):
-		return self.position.x * BRICKSIZE.x + SIDE_MARGIN, self.position.y * BRICKSIZE.y + UPPER_MARGIN
+		return self.position.x * Constants.BRICKSIZE.x + Constants.SIDE_MARGIN, self.position.y * Constants.BRICKSIZE.y + Constants.UPPER_MARGIN
 	
 	def rect(self):
-		return self.screenPos() + tuple(BRICKSIZE)
+		return self.screenPos() + tuple(Constants.BRICKSIZE)
 
 	def render(self, renderer):
 		bt = self.brick_type
 		if bt != self.EMPTY:
-			src = None if self.colour is None else (0, self.colour*BRICK_TEXTURESIZE.y, BRICK_TEXTURESIZE.x, BRICK_TEXTURESIZE.y)
+			src = None if self.colour is None else (0, self.colour*Constants.BRICK_TEXTURESIZE.y, Constants.BRICK_TEXTURESIZE.x, Constants.BRICK_TEXTURESIZE.y)
 			renderer.copy(self.TEXTURES[self.brick_type], src, self.rect())
 
 	def center(self):
 		sp = self.screenPos()
-		return vec2(sp[0] + BRICKSIZE.x//2, sp[1] + BRICKSIZE.y//2)
+		return vec2(sp[0] + Constants.BRICKSIZE.x//2, sp[1] + Constants.BRICKSIZE.y//2)
 
 #-----------------------------------------------------------
 
@@ -96,7 +86,7 @@ class Palette(GameObject):
 	def __init__(self):
 		super().__init__(vec2(
 			self.SIZE.x // 2,
-			WINDOW_SIZE.y - self.SIZE.y - 10
+			Constants.WINDOW_SIZE.y - self.SIZE.y - 10
 		))
 		self.width = self.SIZE.x
 
@@ -108,10 +98,10 @@ class Palette(GameObject):
 	def setPosition(self, x):
 		if x == self.position.x:
 			return
-		if x < SIDE_MARGIN:
-			x = SIDE_MARGIN
-		elif x >= WINDOW_SIZE.x - self.SIZE.x - SIDE_MARGIN:
-			x = WINDOW_SIZE.x - self.SIZE.x - SIDE_MARGIN
+		if x < Constants.SIDE_MARGIN:
+			x = Constants.SIDE_MARGIN
+		elif x >= Constants.WINDOW_SIZE.x - self.SIZE.x - Constants.SIDE_MARGIN:
+			x = Constants.WINDOW_SIZE.x - self.SIZE.x - Constants.SIDE_MARGIN
 		self.position.x = x
 		dev.report('pmov', self.position.x)
 
@@ -182,7 +172,7 @@ class Ball(PhysicalObject):
 
 	def update(self):
 		if not self.binding:
-			self.position += self.velocity.normalized() * self.SPEED * DELTA_T
+			self.position += self.velocity.normalized() * self.SPEED * Constants.DELTA_T
 		else:
 			self.position = self.binding.position + vec2(self.offset, -2*self.RADIUS)
 
@@ -213,21 +203,21 @@ class Bonus(PhysicalObject):
 
 	"""Dictionary of possible bonuses' types. Type code is a key, whereas a value is the weight."""
 	types = {
-		EXTRA_LIFE       : Type(6,  (0, 0, BONUS_SIZE, BONUS_SIZE)),
-		TECH_SUPPORT     : Type(8, (BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
-		WIDER_PALETTE    : Type(13, (2*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
-		NARROWER_PALETTE : Type(13, (3*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
-		SUPER_SPEED      : Type(12, (4*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
-		STRIKE_THROUGH   : Type(0, (0, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
-		FIREBALL         : Type(10, (BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
-		DEATH            : Type(16, (2*BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
-		SKYFALL          : Type(8,  (3*BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
-		CATCH_N_HOLD     : Type(8,  (4*BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE))
+		EXTRA_LIFE       : Type(6,  (0, 0, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
+		TECH_SUPPORT     : Type(8, (Constants.BONUS_SIZE, 0, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
+		WIDER_PALETTE    : Type(13, (2*Constants.BONUS_SIZE, 0, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
+		NARROWER_PALETTE : Type(13, (3*Constants.BONUS_SIZE, 0, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
+		SUPER_SPEED      : Type(12, (4*Constants.BONUS_SIZE, 0, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
+		STRIKE_THROUGH   : Type(0, (0, Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
+		FIREBALL         : Type(10, (Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
+		DEATH            : Type(16, (2*Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
+		SKYFALL          : Type(8,  (3*Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
+		CATCH_N_HOLD     : Type(8,  (4*Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE))
 	}
 
 	def __init__(self, position, bonus_type=None):
 		"""Create new bonus. Initial velocity angle is randomly generated."""
-		self.position = position - vec2(BONUS_SIZE//2, BONUS_SIZE//2)
+		self.position = position - vec2(Constants.BONUS_SIZE//2, Constants.BONUS_SIZE//2)
 
 		# Randomly select the bonus type.
 		if not bonus_type:
@@ -241,10 +231,10 @@ class Bonus(PhysicalObject):
 	
 	def update(self):
 		self.position += vec2(
-			self.velocity.x * DELTA_T,
-			self.velocity.y * DELTA_T + G_ACCEL * DELTA_T * DELTA_T
+			self.velocity.x * Constants.DELTA_T,
+			self.velocity.y * Constants.DELTA_T + Constants.G_ACCEL * Constants.DELTA_T * Constants.DELTA_T
 		)
-		self.velocity.y += G_ACCEL * DELTA_T
+		self.velocity.y += Constants.G_ACCEL * Constants.DELTA_T
 	
 	def handleCollision(self, collision_type):
 		if collision_type == collision.X_AXIS_COLLISION:
@@ -254,9 +244,9 @@ class Bonus(PhysicalObject):
 	
 	def render(self, renderer):
 		# TODO
-		t = int(self.position.x), int(self.position.y), BONUS_SIZE, BONUS_SIZE
+		t = int(self.position.x), int(self.position.y), Constants.BONUS_SIZE, Constants.BONUS_SIZE
 		renderer.copy(self.TEXTURE, self.types[self.type].rect, t)
 
 	def rect(self):
-		return tuple(self.position) + (BONUS_SIZE, BONUS_SIZE)
+		return tuple(self.position) + (Constants.BONUS_SIZE, Constants.BONUS_SIZE)
 

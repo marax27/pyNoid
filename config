@@ -1,0 +1,7 @@
+# Basic config file
+
+width: 1300
+height: 700
+
+# Fullscreen overrides resolution settings above.
+fullscreen: 1

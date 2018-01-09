@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 
 from gameobject import Ball, Palette, Brick, Wall, Bonus
+from constants import Constants
 from collision import *
 from vec2 import *
 import gameinstance
-import constants
 import colour
 import misc
 import sdl2
@@ -28,12 +28,12 @@ class Level(gameinstance.GameInstance):
 	class Spawner:
 		"""Simple pseudo-number generator (with extra steps).
 		It aims to spawn bonuses more evenly."""
-		coef = constants.BONUS_SPAWN_CHANCE
+		coef = Constants.BONUS_SPAWN_CHANCE
 		def spawn(self, pos, bonus_array):
 			if len(bonus_array) > 2:  #arbitrary limit
 				return
 			if misc.randomBool(self.coef):
-				self.coef = constants.BONUS_SPAWN_CHANCE
+				self.coef = Constants.BONUS_SPAWN_CHANCE
 				b = Bonus(pos)
 
 				while len([x for x in bonus_array if x.type == b.type]) > 2:
@@ -82,7 +82,7 @@ class Level(gameinstance.GameInstance):
 				i.countdown -= 1
 				if i.countdown == 5:  #magic
 					# Spawn a bonus.
-					#if misc.randomBool(constants.BONUS_SPAWN_CHANCE):
+					#if misc.randomBool(Constants.BONUS_SPAWN_CHANCE):
 					self.spawner.spawn(i.center(), self.bonuses)
 
 		# 2. Check for collisions.
@@ -176,7 +176,7 @@ class Level(gameinstance.GameInstance):
 
 		#Spawning a bonus.
 		for i in to_delete:
-			#if misc.randomBool(constants.BONUS_SPAWN_CHANCE):
+			#if misc.randomBool(Constants.BONUS_SPAWN_CHANCE):
 			self.spawner.spawn(i.center(), self.bonuses)
 
 		if len(to_delete):
@@ -318,8 +318,8 @@ class Level(gameinstance.GameInstance):
 
 	def render(self, renderer):
 		"""Render the level."""
-		renderer.copy(Wall.TEXTURE, None, (0, 0, constants.SIDE_MARGIN, constants.WINDOW_SIZE.y))
-		renderer.copy(Wall.TEXTURE, None, (constants.WINDOW_SIZE.x-constants.SIDE_MARGIN, 0, constants.SIDE_MARGIN, constants.WINDOW_SIZE.y))
+		renderer.copy(Wall.TEXTURE, None, (0, 0, Constants.SIDE_MARGIN, Constants.WINDOW_SIZE.y))
+		renderer.copy(Wall.TEXTURE, None, (Constants.WINDOW_SIZE.x-Constants.SIDE_MARGIN, 0, Constants.SIDE_MARGIN, Constants.WINDOW_SIZE.y))
 
 		self.palette.render(renderer)
 		if not self.endgame:
@@ -329,11 +329,11 @@ class Level(gameinstance.GameInstance):
 		for j in self.bonuses:
 			j.render(renderer)
 
-		h = hud.Text(str(self.score), renderer, size=constants.UPPER_MARGIN-10)
-		h.render(renderer, (constants.SIDE_MARGIN + 50, 5))
+		h = hud.Text(str(self.score), renderer, size=Constants.UPPER_MARGIN-10)
+		h.render(renderer, (Constants.SIDE_MARGIN + 50, 5))
 
-		h.load(str(self.lives), renderer, size=constants.UPPER_MARGIN-10)
-		h.render(renderer, (constants.WINDOW_SIZE.x - constants.SIDE_MARGIN - 80, 5))
+		h.load(str(self.lives), renderer, size=Constants.UPPER_MARGIN-10)
+		h.render(renderer, (Constants.WINDOW_SIZE.x - Constants.SIDE_MARGIN - 80, 5))
 
 		if self.tech_support:
 			self.renderTechSupport(renderer)
@@ -368,7 +368,7 @@ class Level(gameinstance.GameInstance):
 		for k,v in columns.items():
 			v = sorted(v, key=lambda brick: -brick.position.y)  #minus shall revert the sorting
 			# The 0-th element of 'v' is the lowest brick in a column.
-			if v[0].position.y < constants.TILES.y-1:
+			if v[0].position.y < Constants.TILES.y-1:
 				v[0].position.y += 1
 			for i in range(1, len(v)):
 				if v[i].position.y != v[i-1].position.y-1:

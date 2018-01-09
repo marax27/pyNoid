@@ -4,7 +4,7 @@ import io
 import pickle
 import sdl2.ext
 import gameobject
-from constants import *
+from constants import Constants
 from misc import gameSpace
 
 """Development tools."""
@@ -29,18 +29,18 @@ def handleEvent(event, game):
 
 def drawGrid(renderer, color=(0x44, 0x44, 0x44, 0xff)):
 	renderer.color = color
-	for i in range(TILES.x):
-		for j in range(0, TILES.y):
-			renderer.draw_rect( (SIDE_MARGIN + BRICKSIZE.x*i, UPPER_MARGIN + BRICKSIZE.y*j) + tuple(BRICKSIZE), color=color )
+	for i in range(Constants.TILES.x):
+		for j in range(0, Constants.TILES.y):
+			renderer.draw_rect( (Constants.SIDE_MARGIN + Constants.BRICKSIZE.x*i, Constants.UPPER_MARGIN + Constants.BRICKSIZE.y*j) + tuple(Constants.BRICKSIZE), color=color )
 
 def dissectWindow(renderer):
 	drawGrid(renderer)
 
-	renderer.draw_rect( (0, 0, SIDE_MARGIN, WINDOW_SIZE.y) )
-	renderer.draw_rect( (WINDOW_SIZE.x-SIDE_MARGIN, 0, SIDE_MARGIN, WINDOW_SIZE.y) )
+	renderer.draw_rect( (0, 0, Constants.SIDE_MARGIN, WINDOW_SIZE.y) )
+	renderer.draw_rect( (WINDOW_SIZE.x-Constants.SIDE_MARGIN, 0, Constants.SIDE_MARGIN, WINDOW_SIZE.y) )
 
-	renderer.draw_rect( (SIDE_MARGIN, 0, WINDOW_SIZE.x-2*SIDE_MARGIN, UPPER_MARGIN) )
-	renderer.draw_rect( (BRICKSIZE.x, WINDOW_SIZE.y-LOWER_MARGIN, WINDOW_SIZE.x - 2*BRICKSIZE.x, LOWER_MARGIN) )
+	renderer.draw_rect( (Constants.SIDE_MARGIN, 0, WINDOW_SIZE.x-2*Constants.SIDE_MARGIN, Constants.UPPER_MARGIN) )
+	renderer.draw_rect( (Constants.BRICKSIZE.x, WINDOW_SIZE.y-Constants.LOWER_MARGIN, WINDOW_SIZE.x - 2*Constants.BRICKSIZE.x, Constants.LOWER_MARGIN) )
 
 	renderer.draw_rect( gameSpace(), color=(0xff, 0, 0, 0xff) )
 

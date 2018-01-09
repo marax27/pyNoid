@@ -2,7 +2,7 @@
 
 from gameobject import Brick, Palette, Ball, Wall, Bonus
 from vec2 import vec2, intmatch
-from constants import BRICKSIZE
+from constants import Constants
 from colour import Colour
 import sdl2.ext
 import io
@@ -120,7 +120,7 @@ def loadTextures(renderer):
 		Brick.HEAVY: sprite_factory.from_image(RESOURCES.get_path("heavy.png")),
 		Brick.HEAVIER: sprite_factory.from_image(RESOURCES.get_path("heavier.png")),
 		Brick.EXPLOSIVE: sprite_factory.from_image(RESOURCES.get_path("explosive.png")),
-		Brick.EXPLOSION_VICTIM: sprite_factory.from_color(Colour.White, BRICKSIZE)
+		Brick.EXPLOSION_VICTIM: sprite_factory.from_color(Colour.White, vec2(10, 10))
 	}
 
 	Wall.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("wall.png"))

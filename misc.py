@@ -1,7 +1,7 @@
 import sdl2
 import sdl2.ext
 import ctypes
-import constants
+from constants import Constants
 from random import random, randrange
 
 def getMousePos():
@@ -41,10 +41,10 @@ def randomWithWeights(values, weights):
 
 def gameSpace():
 	"""Returns the rectangle within which the game 'runs'."""
-	return (constants.SIDE_MARGIN,
+	return (Constants.SIDE_MARGIN,
 	        0, #UPPER_MARGIN,
-		    constants.WINDOW_SIZE.x - 2 * constants.SIDE_MARGIN,
-		    constants.WINDOW_SIZE.y ) #- UPPER_MARGIN)
+		    Constants.WINDOW_SIZE.x - 2 * Constants.SIDE_MARGIN,
+		    Constants.WINDOW_SIZE.y ) #- UPPER_MARGIN)
 
 class Fade():
 	MAXIMUM = 50
@@ -73,4 +73,4 @@ class Fade():
 		self.direction = Fade.DARKEN if darken else Fade.LIGHTEN
 
 	def draw(self, renderer):
-		renderer.fill((0, 0, constants.WINDOW_SIZE.x, constants.WINDOW_SIZE.y), color=self.getColour())
+		renderer.fill((0, 0, Constants.WINDOW_SIZE.x, Constants.WINDOW_SIZE.y), color=self.getColour())

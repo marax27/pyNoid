@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from constants import FONT_SIZE_1, WINDOW_SIZE
+from constants import Constants
 from vec2 import vec2
 import sdl2.sdlttf
 import sdl2.ext
@@ -13,10 +13,10 @@ class UIElement:
 		self.size = vec2(0,0)
 	
 	def centerHorizontally(self):
-		self.position.x = (WINDOW_SIZE.x - self.size[0])//2
+		self.position.x = (Constants.WINDOW_SIZE.x - self.size[0])//2
 	
 	def centerVertically(self):
-		self.position.y = (WINDOW_SIZE.y - self.size[1])//2
+		self.position.y = (Constants.WINDOW_SIZE.y - self.size[1])//2
 
 	def center(self):
 		self.centerHorizontally()
@@ -24,7 +24,7 @@ class UIElement:
 
 class Text(UIElement):
 	"""Single piece of text."""
-	font_manager = sdl2.ext.FontManager('resources/vga_437.ttf', size=FONT_SIZE_1)
+	font_manager = sdl2.ext.FontManager('resources/vga_437.ttf', size=24)
 
 	def __init__(self, text, renderer, size=None, color=None):
 		self.load(text, renderer, size, color)
