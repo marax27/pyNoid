@@ -30,7 +30,7 @@ class Level(gameinstance.GameInstance):
 		It aims to spawn bonuses more evenly."""
 		coef = constants.BONUS_SPAWN_CHANCE
 		def spawn(self, pos, bonus_array):
-			if len(bonus_array) > 4:  #arbitrary limit
+			if len(bonus_array) > 2:  #arbitrary limit
 				return
 			if misc.randomBool(self.coef):
 				self.coef = constants.BONUS_SPAWN_CHANCE
