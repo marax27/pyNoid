@@ -49,13 +49,24 @@ class Constants:
 	FONT_SIZE_1     = None
 	TITLE_FONT_SIZE = None
 	MENU_FONT_SIZE  = None
-	FULLSCREEB = False
+	IS_FULLSCREEN = False
+
+	_scale_ratio = 1.0
 
 	@staticmethod
 	def init(win_size):
-		Constants.WINDOW_SIZE = vec2(int(win_size[0]), int(win_size[1]))
+		print('Received win_size == {}'.format(win_size))
 
-		ratio = 0.5 * (win_size[0]/1300 + win_size[1]/700)
+		Constants.WINDOW_SIZE = vec2(int(win_size[0]), int(win_size[1]))
+		if win_size[0] < 0 and win_size[1] < 0:
+			raise ValueError('Either width of height of the screen must be provided, not both.')
+		if win_size[0] < 0:
+			Constants.WINDOW_SIZE.x = int(win_size[1] * 1300 / 700)
+		if win_size[1] < 0:
+			Constants.WINDOW_SIZE.y = int(win_size[0] * 700 / 1300)
+
+		ratio = 0.5 * (Constants.WINDOW_SIZE[0]/1300 + Constants.WINDOW_SIZE[1]/700)
+		Constants._scale_ratio = ratio
 
 		Constants.BRICKSIZE = vec2(int(65 * ratio), int(25 * ratio))
 		Constants.SIDE_MARGIN = int(Constants.BRICKSIZE.x)

@@ -332,8 +332,8 @@ class Level(gameinstance.GameInstance):
 		h = hud.Text(str(self.score), renderer, size=Constants.UPPER_MARGIN-10)
 		h.render(renderer, (Constants.SIDE_MARGIN + 50, 5))
 
-		h.load(str(self.lives), renderer, size=Constants.UPPER_MARGIN-10)
-		h.render(renderer, (Constants.WINDOW_SIZE.x - Constants.SIDE_MARGIN - 80, 5))
+		h.load(str(self.lives) + ' lives', renderer, size=Constants.UPPER_MARGIN-10)
+		h.render(renderer, (Constants.WINDOW_SIZE.x - Constants.SIDE_MARGIN - 250, 5))
 
 		if self.tech_support:
 			self.renderTechSupport(renderer)
@@ -357,6 +357,9 @@ class Level(gameinstance.GameInstance):
 
 	def performSkyfall(self):
 		"""Move all bricks 1 step down."""
+		if self.ball.binding:
+			return
+
 		# Organize existing bricks into columns.
 		columns = {}  #key: number of column; value - bricks belonging to the column.
 		for i in self.bricks:

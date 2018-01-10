@@ -18,7 +18,7 @@ def readConfig():
 		lines = [ x[:-1] if x[-1] == '\n' else x for x in reader.readlines() ]
 		lines.remove('')  #remove empty lines
 
-		win_size = vec2(0, 0)
+		win_size = vec2(-1, -1)
 
 		for line in lines:
 			m = re.match('^(.*): (.*)$', line)
@@ -31,7 +31,7 @@ def readConfig():
 				elif gr[0] == 'height':
 					win_size.y = int(gr[1])
 				elif gr[0] == 'fullscreen':
-					Constants.IS_FULLSCREEN = (gr[1] in ['True', 'true', 1])
+					Constants.IS_FULLSCREEN = (gr[1] in ['True', 'true', '1'])
 
 		Constants.init(win_size)
 

@@ -212,7 +212,7 @@ class Bonus(PhysicalObject):
 		FIREBALL         : Type(10, (Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
 		DEATH            : Type(16, (2*Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
 		SKYFALL          : Type(8,  (3*Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
-		CATCH_N_HOLD     : Type(8,  (4*Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE))
+		CATCH_N_HOLD     : Type(18,  (4*Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE))
 	}
 
 	def __init__(self, position, bonus_type=None):

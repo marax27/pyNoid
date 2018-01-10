@@ -19,7 +19,7 @@ from vec2 import vec2
 def run(file = None):
 	# Initialization.
 	sdl2.ext.init()
-	Constants.init((1300, 700))
+	#Constants.init((1300, 700))
 
 	if file is not None:
 		unpacked_log = dev.unpack(file)
@@ -28,10 +28,25 @@ def run(file = None):
 	
 	loader.readConfig()
 
-	window = sdl2.ext.Window("pyNoid", size=tuple(Constants.WINDOW_SIZE), position=None, flags=sdl2.SDL_WINDOW_SHOWN)
+	if Constants.IS_FULLSCREEN:
+		print('Fullscreen')
+		flags = sdl2.SDL_WINDOW_SHOWN | sdl2.SDL_WINDOW_FULLSCREEN_DESKTOP
+	else:
+		flags = sdl2.SDL_WINDOW_SHOWN
+
+	window = sdl2.ext.Window("pyNoid", size=tuple(Constants.WINDOW_SIZE), position=None, flags=flags)
 	renderer = sdl2.ext.Renderer(window, flags=sdl2.SDL_RENDERER_ACCELERATED|sdl2.SDL_RENDERER_PRESENTVSYNC)
 	renderer.blendmode = sdl2.SDL_BLENDMODE_BLEND
-	
+
+	# In case of fullscreen mode.
+	Constants.WINDOW_SIZE = vec2(window.size[0], window.size[1])
+
+	# Scale game objects.
+	Ball.RADIUS *= Constants._scale_ratio
+	Ball.RADIUS = int(Ball.RADIUS)	
+	Palette.SIZE *= Constants._scale_ratio
+	Palette.SIZE = vec2(int(Palette.SIZE.x), int(Palette.SIZE.y))
+
 	loader.loadTextures(renderer)
 
 	#game = level.Level( loader.loadLevel('levels/p1.noid') )
