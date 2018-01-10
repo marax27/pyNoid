@@ -48,6 +48,8 @@ class Constants:
 	LOWER_MARGIN = None
 	FONT_SIZE_1     = None
 	TITLE_FONT_SIZE = None
+	MENU_FONT_SIZE  = None
+	FULLSCREEB = False
 
 	@staticmethod
 	def init(win_size):
@@ -62,3 +64,4 @@ class Constants:
 
 		Constants.FONT_SIZE_1 = int(36 * ratio)
 		Constants.TITLE_FONT_SIZE = int(96 * ratio)
+		Constants.MENU_FONT_SIZE = int(48 * ratio)

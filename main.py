@@ -17,7 +17,6 @@ from vec2 import vec2
 #------------------------------
 
 def run(file = None):
-	print("Welcome!!!")
 	# Initialization.
 	sdl2.ext.init()
 	Constants.init((1300, 700))
@@ -26,6 +25,8 @@ def run(file = None):
 		unpacked_log = dev.unpack(file)
 		for i in unpacked_log:
 			print("<{}>".format(i))
+	
+	loader.readConfig()
 
 	window = sdl2.ext.Window("pyNoid", size=tuple(Constants.WINDOW_SIZE), position=None, flags=sdl2.SDL_WINDOW_SHOWN)
 	renderer = sdl2.ext.Renderer(window, flags=sdl2.SDL_RENDERER_ACCELERATED|sdl2.SDL_RENDERER_PRESENTVSYNC)

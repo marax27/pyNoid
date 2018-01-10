@@ -21,10 +21,10 @@ class Menu(gameinstance.GameInstance):
 		grey = Colour.greyscale(0.75)
 
 		sub1 = hud.Button.buildClickableText('New Game', renderer,
-			Colour.White, grey, grey
+			Colour.White, grey, grey, Constants.MENU_FONT_SIZE
 		)
 		sub2 = hud.Button.buildClickableText('Exit', renderer,
-			Colour.White, grey, grey
+			Colour.White, grey, grey, Constants.MENU_FONT_SIZE
 		)
 		self.menu = hud.VerticalContainer([sub1, sub2], Constants.WINDOW_SIZE.y//2)
 

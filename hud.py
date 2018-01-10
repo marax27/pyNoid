@@ -48,12 +48,12 @@ class Button(UIElement):
 	IDLE, HOVER, PRESSED = 0x1001, 0x1002, 0x1003
 
 	@staticmethod
-	def buildClickableText(message, renderer, idle_color, pressed_color, hover_color, pos=None):
+	def buildClickableText(message, renderer, idle_color, pressed_color, hover_color, size, pos=None):
 		"""Generates a text label that will change color according to whether it's pressed or not."""
 		return Button(
-			Text(message, renderer, 48, idle_color),
-			Text(message, renderer, 48, pressed_color),
-			Text(message, renderer, 48, hover_color),
+			Text(message, renderer, size, idle_color),
+			Text(message, renderer, size, pressed_color),
+			Text(message, renderer, size, hover_color),
 			pos
 		)
 

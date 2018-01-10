@@ -13,6 +13,28 @@ RESOURCES = sdl2.ext.Resources(__file__, "resources")
 class NoidError(IOError):
 	pass
 
+def readConfig():
+	with io.open('config', 'r') as reader:
+		lines = [ x[:-1] if x[-1] == '\n' else x for x in reader.readlines() ]
+		lines.remove('')  #remove empty lines
+
+		win_size = vec2(0, 0)
+
+		for line in lines:
+			m = re.match('^(.*): (.*)$', line)
+			if m:
+				gr = m.groups()
+				if len(gr) != 2:
+					raise NoidError('Invalid config record.')
+				if gr[0] == 'width':
+					win_size.x = int(gr[1])
+				elif gr[0] == 'height':
+					win_size.y = int(gr[1])
+				elif gr[0] == 'fullscreen':
+					Constants.IS_FULLSCREEN = (gr[1] in ['True', 'true', 1])
+
+		Constants.init(win_size)
+
 def loadLevel(filename):
 	"""Returns array of bricks that makes a level."""
 	
