@@ -51,6 +51,7 @@ def run(file = None):
 	loader.loadTextures(renderer)
 
 	#game = level.Level( loader.loadLevel('levels/p1.noid') )
+	current_level = 0
 	main_menu = menu.Menu(renderer)
 	instance = main_menu
 
@@ -81,14 +82,25 @@ def run(file = None):
 		instance.update()
 
 		if instance is main_menu and main_menu.choice is not None:
-			instance = level.Level( loader.loadLevel(main_menu.choice) )
+			current_level = main_menu.choice
+			instance = level.Level( loader.loadLevel('levels/' + Constants.getLevel(current_level)) )
 			main_menu.choice = None
 			sdl2.SDL_ShowCursor(False)
 			continue
 
 		if instance is not main_menu and not instance.isOpen():
-			instance = main_menu  #TODO
-			sdl2.SDL_ShowCursor(True)
+			print("Break reason: {}".format(instance.break_reason))
+			current_level += 1
+			lvl = Constants.getLevel(current_level)
+			if instance.break_reason == level.Level.NEXT_LEVEL and lvl:
+				# Obtain score and number of lives from previous level,
+				# and pass it to the next level.
+				score, lives = instance.score, instance.lives
+				instance = level.Level(loader.loadLevel('levels/' + lvl))
+				instance.score, instance.lives = score, lives
+			else:
+				instance = main_menu
+				sdl2.SDL_ShowCursor(True)
 
 		# Draw and update window.
 		#dev.dissectWindow(renderer)

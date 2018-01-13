@@ -255,7 +255,8 @@ class Level(gameinstance.GameInstance):
 		elif e.type == sdl2.SDL_KEYDOWN:
 			key = e.key.keysym.sym
 			if key == sdl2.SDLK_ESCAPE:
-				self.endgame = True
+				self.performBreak(Level.QUIT_LEVEL)
+				#self.endgame = True
 
 		# Deprecated: moving palette with a keyboard.
 		"""if e.type == sdl2.SDL_KEYDOWN:

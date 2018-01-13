@@ -24,14 +24,18 @@ def readConfig():
 			m = re.match('^(.*): (.*)$', line)
 			if m:
 				gr = m.groups()
+				first = gr[0].lower()
+
 				if len(gr) != 2:
 					raise NoidError('Invalid config record.')
-				if gr[0] == 'width':
+				if first == 'width':
 					win_size.x = int(gr[1])
-				elif gr[0] == 'height':
+				elif first == 'height':
 					win_size.y = int(gr[1])
-				elif gr[0] == 'fullscreen':
+				elif first == 'fullscreen':
 					Constants.IS_FULLSCREEN = (gr[1] in ['True', 'true', '1'])
+				elif first == 'levels':
+					Constants.LEVELS = gr[1].split()
 
 		Constants.init(win_size)
 
@@ -42,7 +46,7 @@ def loadLevel(filename):
 	with io.open(filename, 'r') as reader:
 		# Get all lines from file, and remove newline character from end.
 		lines = [ x[:-1] if x[-1] == '\n' else x for x in reader.readlines() ]
-		lines.remove('')  #remove empty lines
+		lines = [x for x in lines if x != '']  #remove empty lines
 		
 		# Split each line into tokens.
 		tokens = [ x.split(' ') for x in lines ]

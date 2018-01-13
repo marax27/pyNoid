@@ -30,6 +30,7 @@ class Constants:
 	TITLE_FONT_SIZE = None
 	MENU_FONT_SIZE  = None
 	IS_FULLSCREEN   = False
+	LEVELS = None
 
 	_scale_ratio = 1.0
 
@@ -60,3 +61,9 @@ class Constants:
 		Constants.FONT_SIZE_1 = int(36 * ratio)
 		Constants.TITLE_FONT_SIZE = int(96 * ratio)
 		Constants.MENU_FONT_SIZE = int(48 * ratio)
+
+	@staticmethod
+	def getLevel(number):
+		if number >= len(Constants.LEVELS):
+			return None
+		return Constants.LEVELS[number]

@@ -51,7 +51,7 @@ class Menu(gameinstance.GameInstance):
 			if self.fader.finished():
 				self.fading = False
 				self.fader.reset()
-				self.choice = 'levels/p1.noid'
+				self.choice = 0
 
 	def isOpen(self):
 		"""Returns False if GameInstance should be no longer active."""
