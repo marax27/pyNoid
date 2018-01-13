@@ -49,13 +49,13 @@ class Constants:
 	FONT_SIZE_1     = None
 	TITLE_FONT_SIZE = None
 	MENU_FONT_SIZE  = None
-	IS_FULLSCREEN = False
+	IS_FULLSCREEN   = False
 
 	_scale_ratio = 1.0
 
 	@staticmethod
 	def init(win_size):
-		print('Received win_size == {}'.format(win_size))
+		#print('Received win_size == {}'.format(win_size))
 
 		Constants.WINDOW_SIZE = vec2(int(win_size[0]), int(win_size[1]))
 		if win_size[0] < 0 and win_size[1] < 0:

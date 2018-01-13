@@ -100,8 +100,8 @@ class Palette(GameObject):
 			return
 		if x < Constants.SIDE_MARGIN:
 			x = Constants.SIDE_MARGIN
-		elif x >= Constants.WINDOW_SIZE.x - self.SIZE.x - Constants.SIDE_MARGIN:
-			x = Constants.WINDOW_SIZE.x - self.SIZE.x - Constants.SIDE_MARGIN
+		elif x >= Constants.WINDOW_SIZE.x - self.width - Constants.SIDE_MARGIN:
+			x = Constants.WINDOW_SIZE.x - self.width - Constants.SIDE_MARGIN
 		self.position.x = x
 		dev.report('pmov', self.position.x)
 

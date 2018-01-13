@@ -29,7 +29,7 @@ def run(file = None):
 	loader.readConfig()
 
 	if Constants.IS_FULLSCREEN:
-		print('Fullscreen')
+		#print('Fullscreen')
 		flags = sdl2.SDL_WINDOW_SHOWN | sdl2.SDL_WINDOW_FULLSCREEN_DESKTOP
 	else:
 		flags = sdl2.SDL_WINDOW_SHOWN
