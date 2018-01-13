@@ -6,18 +6,8 @@ class Constants:
 	"""Width and height of the game board."""
 	TILES = vec2(18, 24)
 
-	"""Size of a single brick (in game).
-	BRICKSIZE = vec2(65, 25) #vec2(85, 30)"""
-
 	"""Size of a single brick texture (in image file)."""
 	BRICK_TEXTURESIZE = vec2(200, 80)
-
-	"""Width of space between the board and left/right window edge.
-	SIDE_MARGIN = BRICKSIZE.x
-
-	UPPER_MARGIN = BRICKSIZE.y * 2
-
-	LOWER_MARGIN = BRICKSIZE.y * 2"""
 
 	"""Size of a pickup."""
 	BONUS_SIZE = 64
@@ -30,16 +20,6 @@ class Constants:
 
 	"""Gravitational acceleration."""
 	G_ACCEL = 0.08
-
-	"""Font sizes.
-	FONT_SIZE_1 = 36
-	TITLE_FONT_SIZE = 96"""
-
-	"""Total size of a game window.
-	WINDOW_SIZE = vec2(
-		BRICKSIZE.x * TILES.x + 2*SIDE_MARGIN,
-		BRICKSIZE.y * TILES.y + UPPER_MARGIN + LOWER_MARGIN
-	)"""
 
 	WINDOW_SIZE  = None
 	BRICKSIZE    = None
@@ -55,8 +35,7 @@ class Constants:
 
 	@staticmethod
 	def init(win_size):
-		#print('Received win_size == {}'.format(win_size))
-
+		#Total size of a game window.
 		Constants.WINDOW_SIZE = vec2(int(win_size[0]), int(win_size[1]))
 		if win_size[0] < 0 and win_size[1] < 0:
 			raise ValueError('Either width of height of the screen must be provided, not both.')
@@ -68,11 +47,16 @@ class Constants:
 		ratio = 0.5 * (Constants.WINDOW_SIZE[0]/1300 + Constants.WINDOW_SIZE[1]/700)
 		Constants._scale_ratio = ratio
 
+		"""Size of a single brick (in game)."""
 		Constants.BRICKSIZE = vec2(int(65 * ratio), int(25 * ratio))
+
+		"""Width of space between the board and left/right window edge."""
 		Constants.SIDE_MARGIN = int(Constants.BRICKSIZE.x)
+
 		Constants.UPPER_MARGIN = int(Constants.BRICKSIZE.y*2)
 		Constants.LOWER_MARGIN = int(Constants.BRICKSIZE.y*2)
 
+		#Font sizes.
 		Constants.FONT_SIZE_1 = int(36 * ratio)
 		Constants.TITLE_FONT_SIZE = int(96 * ratio)
 		Constants.MENU_FONT_SIZE = int(48 * ratio)
