@@ -118,7 +118,7 @@ class Ball(PhysicalObject):
 	"""Ball class"""
 	TEXTURE = None
 	RADIUS = 6
-	SPEED = 6.0
+	SPEED = 5.0
 
 	def __init__(self, position, velocity, binding=None):
 		super().__init__(position, self.SPEED*velocity.normalized()) 

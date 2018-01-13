@@ -43,7 +43,8 @@ def run(file = None):
 
 	# Scale game objects.
 	Ball.RADIUS *= Constants._scale_ratio
-	Ball.RADIUS = int(Ball.RADIUS)	
+	Ball.RADIUS = int(Ball.RADIUS)
+	Ball.SPEED *= Constants._scale_ratio
 	Palette.SIZE *= Constants._scale_ratio
 	Palette.SIZE = vec2(int(Palette.SIZE.x), int(Palette.SIZE.y))
 
