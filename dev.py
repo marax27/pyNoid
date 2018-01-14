@@ -9,7 +9,7 @@ from misc import gameSpace
 from constants import Constants
 
 """Development tools."""
-DEV_MODE = True
+DEV_MODE = False
 
 def handleEvent(event, game):
 	if not DEV_MODE:

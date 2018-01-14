@@ -27,6 +27,7 @@ class Text(UIElement):
 	font_manager = sdl2.ext.FontManager('resources/vga_437.ttf', size=24)
 
 	def __init__(self, text, renderer, size=None, color=None):
+		self.position = vec2(0,0)
 		self.load(text, renderer, size, color)
 	
 	def render(self, renderer, pos=None):

@@ -446,3 +446,6 @@ class Level(gameinstance.GameInstance):
 	def isOpen(self):
 		"""Returns False if GameInstance should be no longer active."""
 		return not self.endgame
+
+	def typeOf(self):
+		return 'Level'

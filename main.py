@@ -8,6 +8,7 @@ import sdl2.sdlttf
 import level
 import menu
 import loader
+import textgetter
 from colour import Colour
 from constants import Constants
 from gameobject import Ball, Palette, Brick
@@ -101,22 +102,33 @@ def run(file = None):
 			continue
 
 		if instance is not main_menu and not instance.isOpen():
-			current_level += 1
-			lvl = Constants.getLevel(current_level)
-			if instance.break_reason == level.Level.NEXT_LEVEL and lvl:
-				# Obtain score and number of lives from previous level,
-				# and pass it to the next level.
-				score, lives = instance.score, instance.lives
-				instance = level.Level(loader.loadLevel('levels/' + lvl))
-				instance.score, instance.lives = score, lives
-			else:
-				# Last level has been completed.
-				final_score = instance.score + level.Level.Score.PRESERVED_LIFE * instance.lives
-				highscores = trimHighscores(highscores + [('Player', final_score)])
-				loader.saveHighscores(highscores)
+			if instance.typeOf() == 'Level':
+				current_level += 1
+				lvl = Constants.getLevel(current_level)
+				if instance.break_reason == level.Level.NEXT_LEVEL and lvl:
+					# Obtain score and number of lives from previous level,
+					# and pass it to the next level.
+					score, lives = instance.score, instance.lives
+					instance = level.Level(loader.loadLevel('levels/' + lvl))
+					instance.score, instance.lives = score, lives
+				else:
+					# Last level has been completed OR player has died.
+					final_score = instance.score + level.Level.Score.PRESERVED_LIFE * instance.lives
+					instance = textgetter.GameOver(renderer, final_score)
+					#highscores = trimHighscores(highscores + [('Player', final_score)])
+					#loader.saveHighscores(highscores)
+					#main_menu = menu.Menu(renderer, highscores)
+					#instance = main_menu
+					#sdl2.SDL_ShowCursor(True)
+			elif instance.typeOf() == 'GameOver':
+				highscores.append(instance.result())
+				highscores = trimHighscores(highscores)
 				main_menu = menu.Menu(renderer, highscores)
 				instance = main_menu
 				sdl2.SDL_ShowCursor(True)
+			else:
+				print('Unrecognized instance type.')
+				break
 
 		# Draw and update window.
 		#dev.dissectWindow(renderer)

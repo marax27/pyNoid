@@ -22,6 +22,8 @@ class GameInstance:
 	def isOpen(self):
 		"""Returns False if GameInstance should be no longer active."""
 		pass
+	
+	def typeOf(self):
+		return 'GameInstance'
 
 #--------------------------------------------------
-

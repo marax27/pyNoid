@@ -72,3 +72,6 @@ class Menu(gameinstance.GameInstance):
 	def isOpen(self):
 		"""Returns False if GameInstance should be no longer active."""
 		return self.is_open
+
+	def typeOf(self):
+		return 'Menu'
