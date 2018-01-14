@@ -38,6 +38,17 @@ def readConfig():
 					Constants.LEVELS = gr[1].split()
 
 		Constants.init(win_size)
+		
+def readHighscores():
+	result = []
+	with io.open('highscores', 'r') as reader:
+		lines = [x.split() for x in reader.readlines()]
+		for i in lines:
+			if len(i) != 2:
+				print("Invalid record in 'highscores'")
+				continue
+			result.append( (i[0] if i[0]!='*' else '', i[1]) )
+	return result
 
 def loadLevel(filename):
 	"""Returns array of bricks that makes a level."""

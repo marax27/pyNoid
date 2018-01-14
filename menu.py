@@ -11,7 +11,7 @@ import hud
 class Menu(gameinstance.GameInstance):
 	"""Game menu representation."""
 
-	def __init__(self, renderer):
+	def __init__(self, renderer, highscores=None):
 		self.choice = None
 		self.is_open = True
 
@@ -27,6 +27,17 @@ class Menu(gameinstance.GameInstance):
 			Colour.White, grey, grey, Constants.MENU_FONT_SIZE
 		)
 		self.menu = hud.VerticalContainer([sub1, sub2], Constants.WINDOW_SIZE.y//2)
+
+		if highscores:
+			leaderboard = []
+			for i in highscores:
+				leaderboard.append( hud.Text('{} {}'.format(i[0], i[1]), renderer, Constants.FONT_SIZE_1) )
+			for idx,text in enumerate(leaderboard):
+				text.position = vec2(
+					int(Constants.WINDOW_SIZE.x - 400*Constants._scale_ratio),
+					int(400*Constants._scale_ratio + idx*Constants.FONT_SIZE_1))
+			self.render_content = leaderboard
+		pass
 
 	def update(self):
 		"""Update game state."""
@@ -46,6 +57,8 @@ class Menu(gameinstance.GameInstance):
 		"""Render scene."""
 		self.title.render(renderer)
 		self.menu.render(renderer)
+		for i in self.render_content:
+			i.render(renderer)
 		if self.fading:
 			self.fader.draw(renderer)
 			if self.fader.finished():

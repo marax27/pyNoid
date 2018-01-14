@@ -27,6 +27,10 @@ def run(file = None):
 			print("<{}>".format(i))
 	
 	loader.readConfig()
+	highscores = sorted(loader.readHighscores(), key=lambda record: -int(record[1]))
+	highscores = highscores[:5]
+
+	print('[\n{}\n]'.format(highscores))
 
 	if Constants.IS_FULLSCREEN:
 		#print('Fullscreen')
@@ -52,7 +56,7 @@ def run(file = None):
 
 	#game = level.Level( loader.loadLevel('levels/p1.noid') )
 	current_level = 0
-	main_menu = menu.Menu(renderer)
+	main_menu = menu.Menu(renderer, highscores=highscores)
 	instance = main_menu
 
 	# Main loop.
@@ -89,7 +93,6 @@ def run(file = None):
 			continue
 
 		if instance is not main_menu and not instance.isOpen():
-			print("Break reason: {}".format(instance.break_reason))
 			current_level += 1
 			lvl = Constants.getLevel(current_level)
 			if instance.break_reason == level.Level.NEXT_LEVEL and lvl:
@@ -99,6 +102,8 @@ def run(file = None):
 				instance = level.Level(loader.loadLevel('levels/' + lvl))
 				instance.score, instance.lives = score, lives
 			else:
+				# Last level has been completed.
+				final_score = instance.score + level.Level.Score.PRESERVED_LIFE * instance.lives
 				instance = main_menu
 				sdl2.SDL_ShowCursor(True)
 

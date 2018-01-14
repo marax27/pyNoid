@@ -23,6 +23,7 @@ class Level(gameinstance.GameInstance):
 		PICKUP      = 20
 		GOOD_PICKUP = 20
 		BAD_PICKUP  = -20
+		PRESERVED_LIFE = 50
 		# TODO
 	
 	class Spawner:
