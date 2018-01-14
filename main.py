@@ -16,10 +16,17 @@ from vec2 import vec2
 
 #------------------------------
 
+def trimHighscores(arr):
+	"""Returns 5 greatest scores from 'arr'."""
+	arr = sorted(arr, key=lambda record: -int(record[1]))
+	return arr[:5]
+
 def run(file = None):
 	# Initialization.
 	sdl2.ext.init()
 	#Constants.init((1300, 700))
+	cursor = sdl2.SDL_CreateSystemCursor(sdl2.SDL_SYSTEM_CURSOR_CROSSHAIR)
+	sdl2.SDL_SetCursor(cursor)
 
 	if file is not None:
 		unpacked_log = dev.unpack(file)
@@ -27,10 +34,11 @@ def run(file = None):
 			print("<{}>".format(i))
 	
 	loader.readConfig()
-	highscores = sorted(loader.readHighscores(), key=lambda record: -int(record[1]))
-	highscores = highscores[:5]
+	highscores = trimHighscores(loader.readHighscores())
+	#highscores = sorted(loader.readHighscores(), key=lambda record: -int(record[1]))
+	#highscores = highscores[:5]
 
-	print('[\n{}\n]'.format(highscores))
+	#print('Highscores:\n{}'.format(highscores))
 
 	if Constants.IS_FULLSCREEN:
 		#print('Fullscreen')
@@ -104,6 +112,9 @@ def run(file = None):
 			else:
 				# Last level has been completed.
 				final_score = instance.score + level.Level.Score.PRESERVED_LIFE * instance.lives
+				highscores = trimHighscores(highscores + [('Player', final_score)])
+				loader.saveHighscores(highscores)
+				main_menu = menu.Menu(renderer, highscores)
 				instance = main_menu
 				sdl2.SDL_ShowCursor(True)
 

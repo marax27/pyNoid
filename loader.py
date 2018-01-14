@@ -50,8 +50,14 @@ def readHighscores():
 			result.append( (i[0] if i[0]!='*' else '', i[1]) )
 	return result
 
+def saveHighscores(arr):
+	"""Saves highscores to 'highscores' file."""
+	with io.open('highscores', 'w') as writer:
+		for i in arr:
+			writer.write('{} {}\n'.format(i[0], i[1]))
+
 def loadLevel(filename):
-	"""Returns array of bricks that makes a level."""
+	"""Returns an array of bricks that makes a level."""
 	
 	result = []
 	with io.open(filename, 'r') as reader:

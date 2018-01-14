@@ -30,14 +30,17 @@ class Menu(gameinstance.GameInstance):
 
 		if highscores:
 			leaderboard = []
+			player_name_length = max([len(x[0]) for x in highscores])
+			s_format = '{:>%d} {}' % player_name_length
 			for i in highscores:
-				leaderboard.append( hud.Text('{} {}'.format(i[0], i[1]), renderer, Constants.FONT_SIZE_1) )
+				leaderboard.append( hud.Text(s_format.format(i[0], i[1]), renderer, Constants.FONT_SIZE_1) )
 			for idx,text in enumerate(leaderboard):
 				text.position = vec2(
 					int(Constants.WINDOW_SIZE.x - 400*Constants._scale_ratio),
 					int(400*Constants._scale_ratio + idx*Constants.FONT_SIZE_1))
 			self.render_content = leaderboard
-		pass
+		else:
+			self.render_content = []
 
 	def update(self):
 		"""Update game state."""
