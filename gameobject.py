@@ -6,21 +6,11 @@ import math
 import random
 import collision
 from vec2 import *
-from constants import *
+from constants import Constants
 from misc import randomWithWeights
 import sdl2
 
-#------------------------------------------------------------
-
-# def brickToScreenCoords(x, y):
-# 	"""Turn brick's position into window pixel coordinates."""
-# 	return x * BRICKSIZE.x + SIDE_MARGIN, y * BRICKSIZE.y + UPPER_MARGIN
-
-# def brickCoordsToRect(x, y):
-# 	"""Returns x-, y-position, width, height of a specific brick."""
-# 	return brickToScreenCoords(x, y) + tuple(BRICKSIZE)
-
-#------------------------------------------------------------
+#-----------------------------------------------------------
 
 class Wall:
 	TEXTURE = None
@@ -35,17 +25,18 @@ class GameObject:
 class Brick(GameObject):
 	"""A brick class."""
 	TEXTURES = None
-	EMPTY, REGULAR, HEAVY, HEAVIER, INVULNERABLE, EXPLOSIVE = range(6)
+	EMPTY, REGULAR, HEAVY, HEAVIER, INVULNERABLE, EXPLOSIVE, EXPLOSION_VICTIM = range(7)
 
 	class Colour:
-		RED   = (0, 0, 200, 80)
-		GREEN = (0, 80, 200, 80)
-		BLUE  = (0, 160, 200, 80)
+		RED   = 0
+		GREEN = 1
+		BLUE  = 2
 	
 	def __init__(self, position, brick_type, colour=None):
 		super().__init__(position)
 		self.brick_type = brick_type
 		self.colour = colour
+		self.countdown = 10
 
 	def handleCollision(self):
 		"""React to ball collision."""
@@ -61,19 +52,20 @@ class Brick(GameObject):
 			pass
 
 	def screenPos(self):
-		return self.position.x * BRICKSIZE.x + SIDE_MARGIN, self.position.y * BRICKSIZE.y + UPPER_MARGIN
+		return self.position.x * Constants.BRICKSIZE.x + Constants.SIDE_MARGIN, self.position.y * Constants.BRICKSIZE.y + Constants.UPPER_MARGIN
 	
 	def rect(self):
-		return self.screenPos() + tuple(BRICKSIZE)
+		return self.screenPos() + tuple(Constants.BRICKSIZE)
 
 	def render(self, renderer):
 		bt = self.brick_type
 		if bt != self.EMPTY:
-			renderer.copy(self.TEXTURES[self.brick_type], self.colour, self.rect())
+			src = None if self.colour is None else (0, self.colour*Constants.BRICK_TEXTURESIZE.y, Constants.BRICK_TEXTURESIZE.x, Constants.BRICK_TEXTURESIZE.y)
+			renderer.copy(self.TEXTURES[self.brick_type], src, self.rect())
 
 	def center(self):
 		sp = self.screenPos()
-		return vec2(sp[0] + BRICKSIZE.x//2, sp[1] + BRICKSIZE.y//2)
+		return vec2(sp[0] + Constants.BRICKSIZE.x//2, sp[1] + Constants.BRICKSIZE.y//2)
 
 #-----------------------------------------------------------
 
@@ -94,37 +86,39 @@ class Palette(GameObject):
 	def __init__(self):
 		super().__init__(vec2(
 			self.SIZE.x // 2,
-			WINDOW_SIZE.y - self.SIZE.y - 10
+			Constants.WINDOW_SIZE.y - self.SIZE.y - 10
 		))
+		self.width = self.SIZE.x
 
 	def move(self, offset):
+		"""Used to control palette using a keyboard. Deprecated."""
 		new_x = self.position.x + offset * self.SPEED
 		self.setPosition(new_x)
 	
 	def setPosition(self, x):
 		if x == self.position.x:
 			return
-		if x < SIDE_MARGIN:
-			x = SIDE_MARGIN
-		elif x >= WINDOW_SIZE.x - self.SIZE.x - SIDE_MARGIN:
-			x = WINDOW_SIZE.x - self.SIZE.x - SIDE_MARGIN
+		if x < Constants.SIDE_MARGIN:
+			x = Constants.SIDE_MARGIN
+		elif x >= Constants.WINDOW_SIZE.x - self.width - Constants.SIDE_MARGIN:
+			x = Constants.WINDOW_SIZE.x - self.width - Constants.SIDE_MARGIN
 		self.position.x = x
 		dev.report('pmov', self.position.x)
 
 	def render(self, renderer):
 		if self.TEXTURE is not None:
-			renderer.copy(self.TEXTURE, None, vectorsToTuple(self.position, self.SIZE))
+			renderer.copy(self.TEXTURE, None, tuple(self.position) + (self.width, self.SIZE.y))
 
 	def rect(self):
-		return tuple(self.position) + tuple(self.SIZE)
+		return tuple(self.position) + (self.width, self.SIZE.y)
 
 #-----------------------------------------------------------
 
 class Ball(PhysicalObject):
 	"""Ball class"""
 	TEXTURE = None
-	RADIUS = 7
-	SPEED = 6.0
+	RADIUS = 6
+	SPEED = 5.0
 
 	def __init__(self, position, velocity, binding=None):
 		super().__init__(position, self.SPEED*velocity.normalized()) 
@@ -161,7 +155,7 @@ class Ball(PhysicalObject):
 		if collision_type == collision.Y_AXIS_COLLISION:
 			v = self.velocity.clone()
 			a = self.position.x + self.RADIUS - palette.position.x
-			w = palette.SIZE.x
+			w = palette.width
 			eta_prim = -math.pi/3.0 * math.cos(a * math.pi / w)
 			self.velocity = vec2(
 				math.sin(eta_prim),
@@ -178,7 +172,7 @@ class Ball(PhysicalObject):
 
 	def update(self):
 		if not self.binding:
-			self.position += self.velocity.normalized() * self.SPEED * DELTA_T
+			self.position += self.velocity.normalized() * self.SPEED * Constants.DELTA_T
 		else:
 			self.position = self.binding.position + vec2(self.offset, -2*self.RADIUS)
 
@@ -207,24 +201,23 @@ class Bonus(PhysicalObject):
 	CATCH_N_HOLD     = 0x200a
 	# ... TODO
 
-
 	"""Dictionary of possible bonuses' types. Type code is a key, whereas a value is the weight."""
 	types = {
-		EXTRA_LIFE       : Type(6,  (0, 0, BONUS_SIZE, BONUS_SIZE)),
-		TECH_SUPPORT     : Type(0, (BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
-		WIDER_PALETTE    : Type(30, (2*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
-		NARROWER_PALETTE : Type(30, (3*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
-		SUPER_SPEED      : Type(12, (4*BONUS_SIZE, 0, BONUS_SIZE, BONUS_SIZE)),
-		STRIKE_THROUGH   : Type(0, (0, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
-		FIREBALL         : Type(0, (BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
-		DEATH            : Type(20, (2*BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
-		SKYFALL          : Type(8,  (3*BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE)),
-		CATCH_N_HOLD     : Type(8,  (4*BONUS_SIZE, BONUS_SIZE, BONUS_SIZE, BONUS_SIZE))
+		EXTRA_LIFE       : Type(6,  (0, 0, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
+		TECH_SUPPORT     : Type(0, (Constants.BONUS_SIZE, 0, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
+		WIDER_PALETTE    : Type(13, (2*Constants.BONUS_SIZE, 0, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
+		NARROWER_PALETTE : Type(13, (3*Constants.BONUS_SIZE, 0, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
+		SUPER_SPEED      : Type(0, (4*Constants.BONUS_SIZE, 0, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
+		STRIKE_THROUGH   : Type(0, (0, Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
+		FIREBALL         : Type(10, (Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
+		DEATH            : Type(16, (2*Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
+		SKYFALL          : Type(8,  (3*Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
+		CATCH_N_HOLD     : Type(12,  (4*Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE))
 	}
 
 	def __init__(self, position, bonus_type=None):
 		"""Create new bonus. Initial velocity angle is randomly generated."""
-		self.position = position - vec2(BONUS_SIZE//2, BONUS_SIZE//2)
+		self.position = position - vec2(Constants.BONUS_SIZE//2, Constants.BONUS_SIZE//2)
 
 		# Randomly select the bonus type.
 		if not bonus_type:
@@ -238,10 +231,10 @@ class Bonus(PhysicalObject):
 	
 	def update(self):
 		self.position += vec2(
-			self.velocity.x * DELTA_T,
-			self.velocity.y * DELTA_T + G_ACCEL * DELTA_T * DELTA_T
+			self.velocity.x * Constants.DELTA_T,
+			self.velocity.y * Constants.DELTA_T + Constants.G_ACCEL * Constants.DELTA_T * Constants.DELTA_T
 		)
-		self.velocity.y += G_ACCEL * DELTA_T
+		self.velocity.y += Constants.G_ACCEL * Constants.DELTA_T
 	
 	def handleCollision(self, collision_type):
 		if collision_type == collision.X_AXIS_COLLISION:
@@ -251,9 +244,9 @@ class Bonus(PhysicalObject):
 	
 	def render(self, renderer):
 		# TODO
-		t = int(self.position.x), int(self.position.y), BONUS_SIZE, BONUS_SIZE
+		t = int(self.position.x), int(self.position.y), Constants.BONUS_SIZE, Constants.BONUS_SIZE
 		renderer.copy(self.TEXTURE, self.types[self.type].rect, t)
 
 	def rect(self):
-		return tuple(self.position) + (BONUS_SIZE, BONUS_SIZE)
+		return tuple(self.position) + (Constants.BONUS_SIZE, Constants.BONUS_SIZE)
 

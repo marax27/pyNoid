@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from constants import FONT_SIZE_1, WINDOW_SIZE
+from constants import Constants
 from vec2 import vec2
 import sdl2.sdlttf
 import sdl2.ext
@@ -13,10 +13,10 @@ class UIElement:
 		self.size = vec2(0,0)
 	
 	def centerHorizontally(self):
-		self.position.x = (WINDOW_SIZE.x - self.size[0])//2
+		self.position.x = (Constants.WINDOW_SIZE.x - self.size[0])//2
 	
 	def centerVertically(self):
-		self.position.y = (WINDOW_SIZE.y - self.size[1])//2
+		self.position.y = (Constants.WINDOW_SIZE.y - self.size[1])//2
 
 	def center(self):
 		self.centerHorizontally()
@@ -24,9 +24,10 @@ class UIElement:
 
 class Text(UIElement):
 	"""Single piece of text."""
-	font_manager = sdl2.ext.FontManager('resources/vga_437.ttf', size=FONT_SIZE_1)
+	font_manager = sdl2.ext.FontManager('resources/vga_437.ttf', size=24)
 
 	def __init__(self, text, renderer, size=None, color=None):
+		self.position = vec2(0,0)
 		self.load(text, renderer, size, color)
 	
 	def render(self, renderer, pos=None):
@@ -42,18 +43,19 @@ class Text(UIElement):
 		surf = Text.font_manager.render(text, size=size, color=color)
 		self.size = (surf.w, surf.h)
 		self.texture = sdl2.SDL_CreateTextureFromSurface(renderer.renderer, surf)
+		sdl2.SDL_FreeSurface(surf)
 
 class Button(UIElement):
 	"""Button class."""
 	IDLE, HOVER, PRESSED = 0x1001, 0x1002, 0x1003
 
 	@staticmethod
-	def buildClickableText(message, renderer, idle_color, pressed_color, hover_color, pos=None):
+	def buildClickableText(message, renderer, idle_color, pressed_color, hover_color, size, pos=None):
 		"""Generates a text label that will change color according to whether it's pressed or not."""
 		return Button(
-			Text(message, renderer, 48, idle_color),
-			Text(message, renderer, 48, pressed_color),
-			Text(message, renderer, 48, hover_color),
+			Text(message, renderer, size, idle_color),
+			Text(message, renderer, size, pressed_color),
+			Text(message, renderer, size, hover_color),
 			pos
 		)
 

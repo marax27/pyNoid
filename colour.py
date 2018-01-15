@@ -6,11 +6,12 @@ class Colour:
 	Should ease a use of colours in rendering functions and so forth."""
 
 	# Color definitions.
-	White = 0xff, 0xff, 0xff, 0xff
-	Black = 0, 0, 0, 0xff
-	Red   = 0xff, 0, 0, 0xff
-	Green = 0, 0xff, 0, 0xff
-	Blue  = 0, 0, 0xff, 0xff
+	White    = 0xff, 0xff, 0xff, 0xff
+	Black    = 0, 0, 0, 0xff
+	Red      = 0xff, 0, 0, 0xff
+	Green    = 0, 0xff, 0, 0xff
+	Blue     = 0, 0, 0xff, 0xff
+	Burgundy = 0x90, 0, 0x20, 0xff
 
 	def greyscale(percent):
 		"""Returns a specific shade of gray (unrelated)."""

@@ -1,7 +1,11 @@
 #!/usr/bin/python3
+from misc import Fade
 
 class GameInstance:
 	"""A base class for classes that represent some game state."""
+
+	fader = Fade()
+	fading = False
 
 	def update(self):
 		"""Update game state."""
@@ -18,6 +22,8 @@ class GameInstance:
 	def isOpen(self):
 		"""Returns False if GameInstance should be no longer active."""
 		pass
+	
+	def typeOf(self):
+		return 'GameInstance'
 
 #--------------------------------------------------
-
