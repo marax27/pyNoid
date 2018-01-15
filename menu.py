@@ -31,14 +31,15 @@ class Menu(gameinstance.GameInstance):
 		if highscores:
 			leaderboard = []
 			player_name_length = max([len(x[0]) for x in highscores])
-			s_format = '{:>%d} {}' % player_name_length
-			for i in highscores:
-				leaderboard.append( hud.Text(s_format.format(i[0], i[1]), renderer, Constants.FONT_SIZE_1) )
-			for idx,text in enumerate(leaderboard):
-				text.position = vec2(
-					int(Constants.WINDOW_SIZE.x - 400*Constants._scale_ratio),
-					int(400*Constants._scale_ratio + idx*Constants.FONT_SIZE_1))
-			self.render_content = leaderboard
+			score_length = max([len(x[1]) for x in highscores])
+			s_format = '{:>%d} {}{}' % player_name_length
+			for idx,item in enumerate(highscores):
+				leaderboard.append( hud.Text(s_format.format(
+					item[0], item[1], ' '*(score_length-len(str(item[1])))),
+					renderer, Constants.FONT_SIZE_1,
+					Colour.greyscale((5-idx) / 5.0 ))
+				)
+			self.render_content = hud.VerticalContainer(leaderboard, Constants.WINDOW_SIZE.y*3//4)
 		else:
 			self.render_content = []
 
@@ -60,8 +61,7 @@ class Menu(gameinstance.GameInstance):
 		"""Render scene."""
 		self.title.render(renderer)
 		self.menu.render(renderer)
-		for i in self.render_content:
-			i.render(renderer)
+		self.render_content.render(renderer)
 		if self.fading:
 			self.fader.draw(renderer)
 			if self.fader.finished():

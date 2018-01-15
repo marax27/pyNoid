@@ -334,7 +334,8 @@ class Level(gameinstance.GameInstance):
 		h = hud.Text(str(self.score), renderer, size=Constants.UPPER_MARGIN-10)
 		h.render(renderer, (Constants.SIDE_MARGIN + 50, 5))
 
-		h.load(str(self.lives) + ' lives', renderer, size=Constants.UPPER_MARGIN-10)
+		msg = '{} live{}'.format(self.lives, 's' if self.lives != 1 else '')
+		h.load(msg, renderer, size=Constants.UPPER_MARGIN-10)
 		h.render(renderer, (Constants.WINDOW_SIZE.x - Constants.SIDE_MARGIN - 250, 5))
 
 		if self.tech_support:

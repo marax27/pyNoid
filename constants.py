@@ -42,20 +42,25 @@ class Constants:
 			raise ValueError('Either width of height of the screen must be provided, not both.')
 		if win_size[0] < 0:
 			Constants.WINDOW_SIZE.x = int(win_size[1] * 1300 / 700)
-		if win_size[1] < 0:
+		elif win_size[1] < 0:
 			Constants.WINDOW_SIZE.y = int(win_size[0] * 700 / 1300)
 
 		ratio = 0.5 * (Constants.WINDOW_SIZE[0]/1300 + Constants.WINDOW_SIZE[1]/700)
 		Constants._scale_ratio = ratio
 
 		"""Size of a single brick (in game)."""
-		Constants.BRICKSIZE = vec2(int(65 * ratio), int(25 * ratio))
+		Constants.BRICKSIZE = vec2(
+			int(Constants.WINDOW_SIZE.x // (Constants.TILES.x+2)),
+			int(Constants.WINDOW_SIZE.y // (Constants.TILES.y+2))
+		)
 
 		"""Width of space between the board and left/right window edge."""
 		Constants.SIDE_MARGIN = int(Constants.BRICKSIZE.x)
 
 		Constants.UPPER_MARGIN = int(Constants.BRICKSIZE.y*2)
 		Constants.LOWER_MARGIN = int(Constants.BRICKSIZE.y*2)
+
+		print('Winsize: {}x{}, brick: {}x{}'.format(*Constants.WINDOW_SIZE, *Constants.BRICKSIZE))
 
 		#Font sizes.
 		Constants.FONT_SIZE_1 = int(36 * ratio)

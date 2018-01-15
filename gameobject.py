@@ -204,15 +204,15 @@ class Bonus(PhysicalObject):
 	"""Dictionary of possible bonuses' types. Type code is a key, whereas a value is the weight."""
 	types = {
 		EXTRA_LIFE       : Type(6,  (0, 0, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
-		TECH_SUPPORT     : Type(8, (Constants.BONUS_SIZE, 0, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
+		TECH_SUPPORT     : Type(0, (Constants.BONUS_SIZE, 0, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
 		WIDER_PALETTE    : Type(13, (2*Constants.BONUS_SIZE, 0, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
 		NARROWER_PALETTE : Type(13, (3*Constants.BONUS_SIZE, 0, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
-		SUPER_SPEED      : Type(12, (4*Constants.BONUS_SIZE, 0, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
+		SUPER_SPEED      : Type(0, (4*Constants.BONUS_SIZE, 0, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
 		STRIKE_THROUGH   : Type(0, (0, Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
 		FIREBALL         : Type(10, (Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
 		DEATH            : Type(16, (2*Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
 		SKYFALL          : Type(8,  (3*Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE)),
-		CATCH_N_HOLD     : Type(18,  (4*Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE))
+		CATCH_N_HOLD     : Type(12,  (4*Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE, Constants.BONUS_SIZE))
 	}
 
 	def __init__(self, position, bonus_type=None):

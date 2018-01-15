@@ -2,11 +2,10 @@
 # Note: in this file, all lines that don't match the pattern
 # "x: y" are ignored, hence considered comments.
 
-width: 1800
-#height--- 700
+width: 1920
+height--- 1080
 
-# Fullscreen overrides resolution settings above.
 fullscreen: 1
 
 # List of levels to be played.
-levels: p1.noid p2.noid p3.noid
+levels: p2.noid p1.noid p3.noid

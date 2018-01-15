@@ -23,10 +23,18 @@ class TextGetter(gameinstance.GameInstance):
 	
 	def handleEvent(self, e):
 		if e.type == sdl2.SDL_TEXTINPUT:
-			self.input += e.text.text.decode()
+			if len(self.input) < 12:
+				self.input += e.text.text.decode()
 		elif e.type == sdl2.SDL_KEYDOWN:
-			if e.key.keysym.sym == sdl2.SDLK_RETURN:
+			key = e.key.keysym.sym
+			if key == sdl2.SDLK_RETURN:
+				if self.input:
+					self.fading = True
+			elif key == sdl2.SDLK_BACKSPACE:
+				self.input = self.input[:-1] if self.input != '' else ''
+			elif key == sdl2.SDLK_ESCAPE:
 				self.fading = True
+				self.input = ""
 	
 	def render(self, renderer):
 		if self.message:
@@ -54,9 +62,9 @@ class TextGetter(gameinstance.GameInstance):
 
 class GameOver(TextGetter):
 	def __init__(self, renderer, score):
-		super().__init__(renderer, 'Your nick: ')
-		self.title = hud.Text('GAME OVER...', renderer, Constants.MENU_FONT_SIZE)
-		self.subtitle = hud.Text('Your score: {}'.format(score), renderer, Constants.MENU_FONT_SIZE)
+		super().__init__(renderer, 'Thy name: ')
+		self.title = hud.Text('GAME OVER', renderer, Constants.TITLE_FONT_SIZE, color=Colour.Burgundy)
+		self.subtitle = hud.Text('Thy score: {}'.format(score), renderer, Constants.MENU_FONT_SIZE)
 
 		self.title.position.y = int(20 * Constants._scale_ratio)
 		self.title.centerHorizontally()

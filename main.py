@@ -121,8 +121,10 @@ def run(file = None):
 					#instance = main_menu
 					#sdl2.SDL_ShowCursor(True)
 			elif instance.typeOf() == 'GameOver':
-				highscores.append(instance.result())
+				if instance.input:
+					highscores.append(instance.result())
 				highscores = trimHighscores(highscores)
+				loader.saveHighscores(highscores)
 				main_menu = menu.Menu(renderer, highscores)
 				instance = main_menu
 				sdl2.SDL_ShowCursor(True)
