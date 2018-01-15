@@ -336,7 +336,7 @@ class Level(gameinstance.GameInstance):
 
 		msg = '{} live{}'.format(self.lives, 's' if self.lives != 1 else '')
 		h.load(msg, renderer, size=Constants.UPPER_MARGIN-10)
-		h.render(renderer, (Constants.WINDOW_SIZE.x - Constants.SIDE_MARGIN - 250, 5))
+		h.render(renderer, (Constants.WINDOW_SIZE.x - 4*Constants.BRICKSIZE.x, 5))
 
 		if self.tech_support:
 			self.renderTechSupport(renderer)

@@ -43,6 +43,7 @@ class Text(UIElement):
 		surf = Text.font_manager.render(text, size=size, color=color)
 		self.size = (surf.w, surf.h)
 		self.texture = sdl2.SDL_CreateTextureFromSurface(renderer.renderer, surf)
+		sdl2.SDL_FreeSurface(surf)
 
 class Button(UIElement):
 	"""Button class."""

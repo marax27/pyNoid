@@ -61,7 +61,8 @@ class Menu(gameinstance.GameInstance):
 		"""Render scene."""
 		self.title.render(renderer)
 		self.menu.render(renderer)
-		self.render_content.render(renderer)
+		if self.render_content:
+			self.render_content.render(renderer)
 		if self.fading:
 			self.fader.draw(renderer)
 			if self.fader.finished():
