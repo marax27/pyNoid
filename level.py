@@ -157,7 +157,9 @@ class Level(gameinstance.GameInstance):
 					else:
 						to_delete.append(i)
 						scored += 1
-			
+				elif i.brick_type in (Brick.HEAVY, Brick.REGULAR):
+					scored += 1
+
 			if len(hit_bricks) > 1:
 				break
 		
