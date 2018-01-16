@@ -1,11 +1,11 @@
 # Left wing
 
 heavier.red   0,4-5
-heavier.green 0,6-7 1,8
+heavier.green 0,6
 heavier.blue  0,8-9 1,9-10
 
 heavy.red   1,5-6 2,6-7
-heavy.green 1,7   2,8-9   3,10
+heavy.green 1,7   2,8
 heavy.blue        2,10-11 3,11-12 4,12-13
 
 regular.red   3,7-8 4,8-9   5,9-10  6,10-11 7,11-12 8,12-13
@@ -19,16 +19,18 @@ regular.green 9,14    10,13    11,12    12,11    13,10-11 14,9
 regular.blue  9,16    10,15-16 11,14-15 12,13-14
 
 heavy.red                     15,6-7   16,5-6
-heavy.green          14,10    15,8-9   16,7
+heavy.green                   15,8     16,7
 heavy.blue  13,12-13 14,11-12 15,10-11
 
 heavier.red        17,4-5
-heavier.green 16,8 17,6-7
+heavier.green      17,6
 heavier.blue  16,9-10 17,8-9
 
 # Miscellaneous
 
 explosive    8-9,17
-invulnerable 7,17 8-9,18 10,17
+invulnerable 7,17   8-9,18 10,17
+explosive    5,12   6,13 7,14 8-9,15 10,14 11,13 12,12
 
-explosive    5,12 6,13 7,14 8-9,15 10,14 11,13 12,12
+explosive    0,3 1,4 2,5 3,6     14,6 15,5 16,4 17,3
+explosive    0,7 1,8 2,9 3,10    14,10 15,9 16,8 17,7

@@ -31,7 +31,7 @@ class Menu(gameinstance.GameInstance):
 		if highscores:
 			leaderboard = []
 			player_name_length = max([len(x[0]) for x in highscores])
-			score_length = max([len(x[1]) for x in highscores])
+			score_length = max([len(str(x[1])) for x in highscores])
 			s_format = '{:>%d} {}{}' % player_name_length
 			for idx,item in enumerate(highscores):
 				leaderboard.append( hud.Text(s_format.format(

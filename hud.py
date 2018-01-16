@@ -28,6 +28,7 @@ class Text(UIElement):
 
 	def __init__(self, text, renderer, size=None, color=None):
 		self.position = vec2(0,0)
+		self.texture = None
 		self.load(text, renderer, size, color)
 	
 	def render(self, renderer, pos=None):
@@ -40,10 +41,12 @@ class Text(UIElement):
 
 	def load(self, text, renderer, size=None, color=None):
 		"""Update a Text object."""
+		if self.texture:
+			sdl2.SDL_DestroyTexture(self.texture)  #That does the trick.
 		surf = Text.font_manager.render(text, size=size, color=color)
+		sprite = sdl2.ext.SoftwareSprite(surf, True)
 		self.size = (surf.w, surf.h)
-		self.texture = sdl2.SDL_CreateTextureFromSurface(renderer.renderer, surf)
-		sdl2.SDL_FreeSurface(surf)
+		self.texture = sdl2.SDL_CreateTextureFromSurface(renderer.renderer, sprite.surface)
 
 class Button(UIElement):
 	"""Button class."""
