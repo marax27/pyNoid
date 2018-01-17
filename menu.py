@@ -14,13 +14,20 @@ class Menu(gameinstance.GameInstance):
 	# Variables to control menu background.
 	backgrounds = []
 	current_bg  = 0
-	bg_offset_at_start = 250
-	bg_offset   = bg_offset_at_start
-	bg_dimness_peak    = 0x88
-	bg_dimness_current = 0xff
-	bg_diminish_rate   = 0.33
+	bg_offset_at_start = None #250
+	bg_offset   = None #bg_offset_at_start
+	bg_dimness_peak    = None #0x88
+	bg_dimness_current = None #0xff
+	bg_diminish_rate   = None #0.33
 
 	def __init__(self, renderer, highscores=None):
+		# Background stuff.
+		Menu.bg_offset_at_start = 250
+		Menu.bg_offset = Menu.bg_offset_at_start
+		Menu.bg_dimness_peak = 0x88
+		Menu.bg_dimness_current = 0xff
+		Menu.bg_diminish_rate = 0.33
+
 		self.choice = None
 		self.is_open = True
 
