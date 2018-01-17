@@ -29,6 +29,7 @@ class Constants:
 	FONT_SIZE_1     = None
 	TITLE_FONT_SIZE = None
 	MENU_FONT_SIZE  = None
+	TINY_FONT_SIZE  = None
 	IS_FULLSCREEN   = False
 	LEVELS = None
 
@@ -63,9 +64,10 @@ class Constants:
 		print('Winsize: {}x{}, brick: {}x{}'.format(*Constants.WINDOW_SIZE, *Constants.BRICKSIZE))
 
 		#Font sizes.
-		Constants.FONT_SIZE_1 = int(36 * ratio)
+		Constants.FONT_SIZE_1     = int(36 * ratio)
 		Constants.TITLE_FONT_SIZE = int(96 * ratio)
-		Constants.MENU_FONT_SIZE = int(48 * ratio)
+		Constants.MENU_FONT_SIZE  = int(48 * ratio)
+		Constants.TINY_FONT_SIZE  = int(20 * ratio)
 
 	@staticmethod
 	def getLevel(number):

@@ -11,12 +11,24 @@ import hud
 class Menu(gameinstance.GameInstance):
 	"""Game menu representation."""
 
+	# Variables to control menu background.
+	backgrounds = []
+	current_bg  = 0
+	bg_offset_at_start = 250
+	bg_offset   = bg_offset_at_start
+	bg_dimness_peak    = 0x88
+	bg_dimness_current = 0xff
+	bg_diminish_rate   = 0.33
+
 	def __init__(self, renderer, highscores=None):
 		self.choice = None
 		self.is_open = True
 
 		self.title = hud.Text('pyNoid', renderer, Constants.TITLE_FONT_SIZE)
 		self.title.position = vec2(50, 50)
+
+		self.credits = hud.Text('Kacper Tonia 2017/18', renderer, Constants.TINY_FONT_SIZE)
+		self.credits.position = self.title.position + vec2(self.title.size[0]//2, self.title.size[1])
 
 		grey = Colour.greyscale(0.75)
 
@@ -45,7 +57,15 @@ class Menu(gameinstance.GameInstance):
 
 	def update(self):
 		"""Update game state."""
-		pass
+		Menu.bg_offset += 2
+		if Menu.bg_offset > 0.85 * Constants.WINDOW_SIZE.x:
+			Menu.bg_dimness_current += Menu.bg_diminish_rate
+			if Menu.bg_dimness_current >= 0xff:
+				Menu.current_bg = (Menu.current_bg + 1) % len(Menu.backgrounds)
+				Menu.bg_offset = Menu.bg_offset_at_start
+				Menu.bg_dimness_current = 0xff
+		elif Menu.bg_dimness_current > Menu.bg_dimness_peak:
+			Menu.bg_dimness_current -= Menu.bg_diminish_rate
 
 	def handleEvent(self, e):
 		"""Process relevant events."""
@@ -59,7 +79,12 @@ class Menu(gameinstance.GameInstance):
 	
 	def render(self, renderer):
 		"""Render scene."""
+		rect = (Constants.WINDOW_SIZE.x - Menu.bg_offset, 0, *Constants.WINDOW_SIZE)
+		renderer.copy(Menu.backgrounds[Menu.current_bg], None, rect)
+		renderer.fill((0, 0, Constants.WINDOW_SIZE.x, Constants.WINDOW_SIZE.y), (0, 0, 0, Menu.bg_dimness_current))
+
 		self.title.render(renderer)
+		self.credits.render(renderer)
 		self.menu.render(renderer)
 		if self.render_content:
 			self.render_content.render(renderer)

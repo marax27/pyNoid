@@ -5,6 +5,7 @@ from vec2 import vec2, intmatch
 from constants import Constants
 from colour import Colour
 import sdl2.ext
+import menu
 import io
 import re
 
@@ -166,5 +167,10 @@ def loadTextures(renderer):
 		Brick.EXPLOSION_VICTIM: sprite_factory.from_color(Colour.White, vec2(10, 10))
 	}
 
-	Wall.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("wall.png"))
+	Wall.TEXTURE = sprite_factory.from_color(Colour.Black, (10,10)) #from_image(RESOURCES.get_path("wall.png"))
 	Bonus.TEXTURE = sprite_factory.from_image(RESOURCES.get_path("p.png"))
+
+	menu.Menu.backgrounds = [
+		sprite_factory.from_image(RESOURCES.get_path("pynoid_bg0.png")),
+		sprite_factory.from_image(RESOURCES.get_path("pynoid_bg1.png"))
+	]
