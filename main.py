@@ -113,8 +113,10 @@ def run(file = None):
 					instance.score, instance.lives = score, lives
 				else:
 					# Last level has been completed OR player has died.
-					final_score = instance.score + level.Level.Score.PRESERVED_LIFE * instance.lives
-					instance = textgetter.GameOver(renderer, final_score)
+					lives = instance.lives
+					final_score = instance.score + level.Level.Score.PRESERVED_LIFE * lives
+					end_reason = textgetter.GameOver.ALL_COMPLETED if lives else textgetter.GameOver.DEFEAT
+					instance = textgetter.GameOver(renderer, final_score, end_reason)
 					#highscores = trimHighscores(highscores + [('Player', final_score)])
 					#loader.saveHighscores(highscores)
 					#main_menu = menu.Menu(renderer, highscores)

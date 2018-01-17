@@ -61,9 +61,16 @@ class TextGetter(gameinstance.GameInstance):
 #--------------------------------------------------
 
 class GameOver(TextGetter):
-	def __init__(self, renderer, score):
+	ALL_COMPLETED = 0x678
+	DEFEAT        = 0x679
+
+	def __init__(self, renderer, score, end_reason=DEFEAT):
 		super().__init__(renderer, 'Thy name: ')
-		self.title = hud.Text('GAME OVER', renderer, Constants.TITLE_FONT_SIZE, color=Colour.Burgundy)
+		self.title = hud.Text(
+			'GAME OVER' if end_reason==GameOver.DEFEAT else 'YOU WIN',
+			renderer, Constants.TITLE_FONT_SIZE,
+			Colour.Burgundy if end_reason==GameOver.DEFEAT else Colour.Green
+		)
 		self.subtitle = hud.Text('Thy score: {}'.format(score), renderer, Constants.MENU_FONT_SIZE)
 
 		self.title.position.y = int(20 * Constants._scale_ratio)

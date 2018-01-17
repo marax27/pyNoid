@@ -128,7 +128,7 @@ class Ball(PhysicalObject):
 			self.offset = 20
 			position = binding.position + vec2(self.offset, -2*self.RADIUS)
 
-	def handleCollision(self, collision_type):
+	def handleCollision(self, collision_type, brick=None):
 		v = self.velocity.clone()
 		if collision_type in (collision.NO_COLLISION, collision.INSIDE):
 			return
@@ -136,10 +136,44 @@ class Ball(PhysicalObject):
 			self.velocity.x = -self.velocity.x
 		elif collision_type == collision.Y_AXIS_COLLISION:
 			self.velocity.y = -self.velocity.y
-		elif collision_type == collision.CORNER_NEG_COLLISION:
-			self.velocity.x, self.velocity.y = -self.velocity.y, -self.velocity.x
-		elif collision_type == collision.CORNER_COLLISION:
-			self.velocity.x, self.velocity.y = self.velocity.y, self.velocity.x			
+		elif collision_type == collision.BOUNCE_BACK:
+			self.velocity = -self.velocity
+		else:
+			# Oo-wee, here comes corner collision.
+			# Things are going to get... physical.
+			# S - center of ball. C - corner of the brick.
+			v = self.velocity.normalized()
+			S = self.position + vec2(Ball.RADIUS, Ball.RADIUS)
+			bpos = vec2(brick[0].position.x * Constants.BRICKSIZE.x + Constants.SIDE_MARGIN,
+			            brick[0].position.y * Constants.BRICKSIZE.y + Constants.UPPER_MARGIN)
+			C = {
+				collision.LT_CORNER: bpos,
+				collision.RT_CORNER: bpos + vec2(Constants.BRICKSIZE.x, 0),
+				collision.LB_CORNER: bpos + vec2(0, Constants.BRICKSIZE.y),
+				collision.RB_CORNER: bpos + Constants.BRICKSIZE
+			}[collision_type]
+
+			# Unit vector, pointing toward the corner that had been hit.
+			unit_i = (C - S).normalized()
+			# Unit vector, perpendicular to 'i'.
+			unit_j = vec2(unit_i.y, -unit_i.x)
+
+			# Ball's velocity can be written as: v0 = ai + bj
+			# The goal is to turn it into v1 = -ai + bj
+			a = unit_i.x*v.x + unit_i.y*v.y
+			b = unit_i.y*v.x - unit_i.x*v.y
+
+			print("Corner coll: from {} to {}".format(v, -a*unit_i + b*unit_j))
+			self.velocity = -a*unit_i + b*unit_j
+
+			# ddd = 0
+			# if abs(self.velocity.x) > abs(self.velocity.y):
+				#self.position.y += Ball.RADIUS - S.y + C.y
+				# print("Y move by {}".format(Ball.RADIUS - S.y + C.y))
+			# else:
+				#self.position.x += Ball.RADIUS + S.x - C.x
+				# print("X move by {}".format(Ball.RADIUS + S.x - C.x))
+
 		dev.report('wbcoll', collision_type, v, self.velocity)
 
 	def handleMouseKey(self):
