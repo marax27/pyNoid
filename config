@@ -3,9 +3,9 @@
 # "x: y" are ignored, hence considered comments.
 
 width: 1920
-height-------1080
+#height 1080
 
 fullscreen: 1
 
 # List of levels to be played.
-levels: p1.noid p2.noid p3.noid
+levels: p2.noid p1.noid

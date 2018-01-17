@@ -163,7 +163,6 @@ class Ball(PhysicalObject):
 			a = unit_i.x*v.x + unit_i.y*v.y
 			b = unit_i.y*v.x - unit_i.x*v.y
 
-			print("Corner coll: from {} to {}".format(v, -a*unit_i + b*unit_j))
 			self.velocity = -a*unit_i + b*unit_j
 
 			# ddd = 0
