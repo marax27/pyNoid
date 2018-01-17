@@ -13,7 +13,7 @@ class Constants:
 	BONUS_SIZE = 64
 
 	"""Probability of bonus spawning after a brick is destroyed."""
-	BONUS_SPAWN_CHANCE = 0.225
+	BONUS_SPAWN_CHANCE = 0.165
 
 	"""Duration of a single simulation step."""
 	DELTA_T = 0.8

@@ -8,4 +8,4 @@ width: 1920
 fullscreen: 1
 
 # List of levels to be played.
-levels: p2.noid p1.noid
+levels: p1.noid p2.noid
