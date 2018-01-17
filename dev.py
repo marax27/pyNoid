@@ -9,7 +9,7 @@ from misc import gameSpace
 from constants import Constants
 
 """Development tools."""
-DEV_MODE = True
+DEV_MODE = False
 
 def handleEvent(event, game):
 	if not DEV_MODE:
@@ -29,6 +29,8 @@ def handleEvent(event, game):
 			game.bonuses.append( gameobject.Bonus(Constants.BRICKSIZE * 2) )
 		elif key == sdl2.SDLK_LEFTBRACKET:
 			exit()
+		
+		game.ball.velocity = game.ball.velocity.normalized()
 
 def drawGrid(renderer, color=(0x44, 0x44, 0x44, 0xff)):
 	renderer.color = color

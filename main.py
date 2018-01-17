@@ -111,15 +111,15 @@ def run(file = None):
 					score, lives = instance.score, instance.lives
 					instance = level.Level(loader.loadLevel('levels/' + lvl))
 					instance.score, instance.lives = score, lives
+				elif instance.break_reason == level.Level.QUIT_LEVEL:
+					instance = main_menu
+					sdl2.SDL_ShowCursor(True)
 				else:
 					# Last level has been completed OR player has died.
-					final_score = instance.score + level.Level.Score.PRESERVED_LIFE * instance.lives
-					instance = textgetter.GameOver(renderer, final_score)
-					#highscores = trimHighscores(highscores + [('Player', final_score)])
-					#loader.saveHighscores(highscores)
-					#main_menu = menu.Menu(renderer, highscores)
-					#instance = main_menu
-					#sdl2.SDL_ShowCursor(True)
+					lives = instance.lives
+					final_score = instance.score + level.Level.Score.PRESERVED_LIFE * lives
+					end_reason = textgetter.GameOver.ALL_COMPLETED if lives else textgetter.GameOver.DEFEAT
+					instance = textgetter.GameOver(renderer, final_score, end_reason)
 			elif instance.typeOf() == 'GameOver':
 				if instance.input:
 					highscores.append(instance.result())

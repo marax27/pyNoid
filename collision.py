@@ -3,8 +3,8 @@
 from vec2 import *
 
 # Collision types. The values (except None) are quite arbitrary.
-NO_COLLISION, X_AXIS_COLLISION, Y_AXIS_COLLISION = None, -1, -2
-CORNER_COLLISION, CORNER_NEG_COLLISION, INSIDE = -3, -4, -5
+NO_COLLISION, X_AXIS_COLLISION, Y_AXIS_COLLISION = None, 0x1655, 0x1656
+LT_CORNER, RT_CORNER, LB_CORNER, RB_CORNER, INSIDE, BOUNCE_BACK = range(0x1657, 0x1657+6)
 
 def circleLineCollision(circle_pos, circle_radius, x=None, y=None):
 	"""Check whether an infinite line - either horizontal or vertical - intersects a circle."""
@@ -29,12 +29,12 @@ def circleBoxCollision(circle_pos, circle_radius, box):
 			# LTZ, TZ or RTZ
 			if center.x < box[0]:
 				if (vec2(box[0], box[1]) - center).length() <= r:
-					return CORNER_NEG_COLLISION  #LTZ
+					return LT_CORNER  #LTZ
 			elif center.x < box[0]+box[2]:
 				return Y_AXIS_COLLISION  #TZ
 			else:
 				if (vec2(box[0]+box[2], box[1]) - center).length() <= r:
-					return CORNER_COLLISION  #RTZ
+					return RT_CORNER  #RTZ
 		elif center.y < box[1]+box[3]:
 			# LZ, RZ or inside the box
 			if center.x < box[0]:
@@ -47,12 +47,12 @@ def circleBoxCollision(circle_pos, circle_radius, box):
 			# LBZ, BZ, RBZ
 			if center.x < box[0]:
 				if (vec2(box[0], box[1]+box[3]) - center).length() <= r:
-					return CORNER_COLLISION  #LBZ
+					return LB_CORNER  #LBZ
 			elif center.x < box[0]+box[2]:
 				return Y_AXIS_COLLISION  #BZ
 			else:
 				if (vec2(box[0]+box[2], box[1]+box[3]) - center).length() <= r:
-					return CORNER_NEG_COLLISION  #RBZ
+					return RB_CORNER  #RBZ
 	
 	return NO_COLLISION
 

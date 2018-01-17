@@ -164,14 +164,17 @@ class Level(gameinstance.GameInstance):
 				break
 		
 		if len(hit_bricks) < 2:
+			# If one bricks's been hit, handle collision.
 			for i in hit_bricks:
-				self.ball.handleCollision(i[1])
+				self.ball.handleCollision(i[1], hit_bricks[0])
 		elif int(hit_bricks[0][0].position.y) == int(hit_bricks[1][0].position.y):
+			# If 2 bricks form a horizontal wall, treat as y-axis collsion.
 			self.ball.handleCollision(Y_AXIS_COLLISION)
 		elif int(hit_bricks[0][0].position.x) == int(hit_bricks[1][0].position.x):
+			# If 2 bricks form a vertical wall, treat as x-axis collsion.			
 			self.ball.handleCollision(X_AXIS_COLLISION)
 		else:
-			self.ball.handleCollision(CORNER_NEG_COLLISION)
+			self.ball.handleCollision(BOUNCE_BACK)
 
 		#for i, j in hit_bricks:
 		#	if i.brick_type != Brick.INVULNERABLE:
