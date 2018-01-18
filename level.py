@@ -24,7 +24,6 @@ class Level(gameinstance.GameInstance):
 		GOOD_PICKUP = 20
 		BAD_PICKUP  = -20
 		PRESERVED_LIFE = 50
-		# TODO
 	
 	class Spawner:
 		"""Simple pseudo-number generator (with extra steps).

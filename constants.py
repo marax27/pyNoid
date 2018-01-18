@@ -61,7 +61,7 @@ class Constants:
 		Constants.UPPER_MARGIN = int(Constants.BRICKSIZE.y*2)
 		Constants.LOWER_MARGIN = int(Constants.BRICKSIZE.y*2)
 
-		print('Winsize: {}x{}, brick: {}x{}'.format(*Constants.WINDOW_SIZE, *Constants.BRICKSIZE))
+		#print('Winsize: {}x{}, brick: {}x{}'.format(*Constants.WINDOW_SIZE, *Constants.BRICKSIZE))
 
 		#Font sizes.
 		Constants.FONT_SIZE_1     = int(36 * ratio)
